@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1595448726660.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2572283243",
+    "id" : "8D6689D2",
+    "lastKnownWriteTime" : 1595472949,
+    "last_content_update" : 1595472949239,
+    "path" : "~/lefser/vignettes/lefser.Rmd",
+    "project_path" : "vignettes/lefser.Rmd",
+    "properties" : {
+        "cursorPosition" : "61,3",
+        "scrollLine" : "46"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1595446741359.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "90AB8FD4",
+    "lastKnownWriteTime" : 1583948270,
+    "last_content_update" : 1583948270,
+    "path" : "~/Documents/BioconductorFiles/work_files/deAnaWithcoinWilcoxon.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "54,20",
+        "scrollLine" : "43"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
