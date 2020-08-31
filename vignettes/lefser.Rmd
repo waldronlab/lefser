@@ -55,10 +55,16 @@ blk8=ifelse(datasets[[8]]$age_category=="adult",0,1)
 datasets[[8]]$BLOCK=blk8
 ```
 
-The dataset[[8]] can now be used with lefser function.
+The dataset[[8]] can now be used with lefser functions. There is the _lefserAnalysis_ function for extracting 
+results in the form of dataframe, names of selected microorganisms and their effect size.
 
 ```{r}
-lefser(dataset[[8]])
+results <- lefserAnalysis(dataset[[8]])
+head(results)
 ```
 
+The other function is _lefserPlot_ should be used to generate a plot of the results.
 
+```{r}
+lefserPlot(results)
+```
