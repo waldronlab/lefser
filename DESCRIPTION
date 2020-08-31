@@ -1,14 +1,17 @@
 Package: lefser
 Type: Package
-Title: lefser finds features that have greatest differences between classes. 
-Version: 0.1.0
-Author: c(
-    person("Asya", "Khleborodova", email = "asya.bioconductor@gmail.com", role = c("cre", "aut"),
-    person("Ludgiw", "Geistlinger", email = "Ludwig.Geistlinger@sph.cuny.edu", role = "are"),
-    person("Levi", "Waldron", email ="levi.waldron@sph.cuny.edu", role = "are"))
-Maintainer: The package maintainer <asya.bioconductor@gmail.com>
-Description: lefser uses Kruskal-Wallis test, Wilcoxon-Rank Sum test, and LDA to find features with the greatest effect sizes.
-License:
+Title: Find features that have greatest differences between classes
+Description: lefser uses Kruskal-Wallis test, Wilcoxon-Rank Sum test, and LDA
+  to find features with the greatest effect sizes.
+Version: 0.99.0
+Authors@R: c(
+    person("Asya", "Khleborodova", email = "asya.bioconductor@gmail.com",
+        role = c("cre", "aut")),
+    person("Ludwig", "Geistlinger", email = "Ludwig.Geistlinger@sph.cuny.edu",
+        role = "ctb"),
+    person("Levi", "Waldron", email ="levi.waldron@sph.cuny.edu", role = "ctb")
+    )
+License: Artistic-2.0
 LazyData: true
 Imports:
 	coin,
