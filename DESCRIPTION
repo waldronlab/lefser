@@ -13,6 +13,8 @@ Authors@R: c(
     )
 License: Artistic-2.0
 LazyData: true
+Depends:
+	R (>= 3.5.0)
 Imports:
 	coin,
 	MASS,
@@ -20,6 +22,7 @@ Imports:
 	Biobase,
 	SummarizedExperiment
 Suggests: 
-    knitr,
-    rmarkdown
+	knitr,
+	rmarkdown,
+	BiocStyle
 VignetteBuilder: knitr

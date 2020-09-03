@@ -22,11 +22,14 @@ knitr::opts_chunk$set(warning = FALSE)
 knitr::opts_chunk$set(cache=TRUE)
 ```
 
-```{r setup, echo=FALSE}
-suppressMessages(suppressWarnings(suppressPackageStartupMessages({
-library(curatedMetagenomicData)
+```{r,include=TRUE,results="hide",message=FALSE,warning=FALSE}
 library(lefser)
-})))
+library(curatedMetagenomicData)
+library(coin)
+library(MASS)
+library(ggplot2)
+library(SummarizedExperiment)
+library(Biobase)
 ```
 
 # Overview and example use of `lefser`
@@ -42,28 +45,27 @@ Set datasets:
 datasets <- curatedMetagenomicData("*metaphlan_bugs_list.stool*", counts=TRUE, dryrun = FALSE)
 ```
 
-Select dataset[[8]]. Within the `ExpressionSet` data set GROUP column 
-to contain class 0 or class 1, (e.g. _control_ and _adenoma_). Set BLOCK to
-be a sublass of each class as 0 or 1 (e.g. _adult_ or _non-adult_).
+Select datasets[[8]]. Within the `ExpressionSet` data set GROUP column 
+to contain class 0 or class 1, (e.g. *control* and *adenoma*). Set BLOCK to
+be a sublass of each class as 0 or 1 (e.g. *adult* or *non-adult*).
 
 ```{r}
-datasets[[8]]=datasets[[8]][,datasets[[8]]$study_condition!="adenoma"]
-grp8=ifelse(datasets[[8]]$study_condition=="control",0,1)
-datasets[[8]]$GROUP=grp8
+datasets[[8]] <- datasets[[8]][,datasets[[8]]$study_condition!="adenoma"]
+datasets[[8]]$GROUP <- ifelse(datasets[[8]]$study_condition=="control",0,1)
 
-blk8=ifelse(datasets[[8]]$age_category=="adult",0,1)
-datasets[[8]]$BLOCK=blk8
+
+datasets[[8]]$BLOCK <-ifelse(datasets[[8]]$age_category=="adult",0,1)
 ```
 
-The dataset[[8]] can now be used with lefser functions. There is the _lefserAnalysis_ function for extracting 
+The datasets[[8]] can now be used with lefser functions. There is the `lefserAnalysis` function for extracting 
 results in the form of dataframe, names of selected microorganisms and their effect size.
 
 ```{r}
-results <- lefserAnalysis(dataset[[8]])
+results <- lefserAnalysis(datasets[[8]])
 head(results)
 ```
 
-The other function is _lefserPlot_ should be used to generate a plot of the results.
+The other function is `lefserPlot` should be used to generate a plot of the results.
 
 ```{r}
 lefserPlot(results)

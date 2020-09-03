@@ -1,0 +1,10 @@
+base
+BiocStyle
+BiocGenerics
+dbplyr
+BiocFileCache
+AnnotationHub
+Biobase
+dplyr
+ExperimentHub
+curatedMetagenomicData
