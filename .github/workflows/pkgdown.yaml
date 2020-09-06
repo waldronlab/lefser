@@ -46,6 +46,16 @@ jobs:
         run: rcmdcheck::rcmdcheck(args = c("--no-manual"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
 
+      - name: codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+	  file: ./coverage.xml # optional
+          files: ./coverage1.xml,./coverage2.xml # optional
+          flags: unittests # optional
+      - name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+    
       - name: Build pkgdown
         run: |
            PATH=$PATH:$HOME/bin/ Rscript -e 'pkgdown::build_site(".")'
