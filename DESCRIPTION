@@ -21,11 +21,12 @@ Imports:
 	Biobase,
 	SummarizedExperiment
 Suggests: 
-  knitr,
-  rmarkdown,
-	curatedMetagenomicData,
-	ggplot2,
-  BiocStyle,
-  testthat
+    knitr,
+    rmarkdown,
+    curatedMetagenomicData,
+    ggplot2,
+    BiocStyle,
+    testthat,
+    covr
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
