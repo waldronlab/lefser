@@ -1,6 +1,6 @@
 Package: lefser
 Type: Package
-Title: Find features that have greatest differences between classes
+Title: R implementation of the LEfSE method to find features that have greatest differences between classes
 Description: lefser uses Kruskal-Wallis test, Wilcoxon-Rank Sum test, and LDA
   to find features with the greatest effect sizes.
 Version: 0.99.0
@@ -14,7 +14,7 @@ Authors@R: c(
 License: Artistic-2.0
 LazyData: true
 Depends:
-	R (>= 3.5.0)
+	R (>= 3.6.0)
 Imports:
 	coin,
 	MASS,
