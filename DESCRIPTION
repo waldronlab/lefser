@@ -18,13 +18,14 @@ Depends:
 Imports:
 	coin,
 	MASS,
-	ggplot2,
 	Biobase,
 	SummarizedExperiment
 Suggests: 
-    knitr,
-    rmarkdown,
-    BiocStyle,
-    testthat
+  knitr,
+  rmarkdown,
+	curatedMetagenomicData,
+	ggplot2,
+  BiocStyle,
+  testthat
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1

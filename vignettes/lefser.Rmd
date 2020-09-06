@@ -22,14 +22,16 @@ knitr::opts_chunk$set(warning = FALSE)
 knitr::opts_chunk$set(cache=TRUE)
 ```
 
-```{r,include=TRUE,results="hide",message=FALSE,warning=FALSE}
-library(lefser)
-library(curatedMetagenomicData)
-library(coin)
-library(MASS)
-library(ggplot2)
-library(SummarizedExperiment)
-library(Biobase)
+```{r, include=TRUE, results="hide", message=FALSE, warning=FALSE}
+suppressPackageStartupMessages({
+  library(lefser)
+  library(curatedMetagenomicData)
+  library(coin)
+  library(MASS)
+  library(ggplot2)
+  library(SummarizedExperiment)
+  library(Biobase)
+})
 ```
 
 # Overview and example use of `lefser`
