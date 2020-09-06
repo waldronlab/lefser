@@ -22,7 +22,8 @@ Imports:
 	Biobase,
 	SummarizedExperiment
 Suggests: 
-	knitr,
-	rmarkdown,
-	BiocStyle
+    knitr,
+    rmarkdown,
+    BiocStyle,
+    testthat
 VignetteBuilder: knitr
