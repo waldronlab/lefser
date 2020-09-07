@@ -3,7 +3,7 @@ title: "Lefser finds features that have greatest differences between classes."
 author: |
  | Asya Khleborodova, Ludwig Geistlinger, and Levi Waldron
  | <small>School of Public Health, City University of New York</small>
-date: "July 22, 2020"
+date: "`r Sys.Date()`"
 abstract: ""
 email:
 output:
@@ -11,9 +11,9 @@ output:
     toc: true
     toc_depth: 2
 vignette: >
-  % \VignetteIndexEntry{Lefser uses Kruskal-Wallis test, Wilcoxon-Rank Sum test, 
-  and LDA to find features with the greatest effect sizes}
-  % \VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Introduction to the lefser R implementation of the popular LEfSE software for biomarker discovery in microbiome analysis.}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
 ---
 
 ```{r style, echo = FALSE, results = 'asis'}
@@ -39,33 +39,42 @@ suppressPackageStartupMessages({
 The `lefser` function can be used with either `SummarizedExperiment`
 or `ExpressionSet` data.
 
-Install and load `curatedMetagenomicData`. 
+Load the ZellerG_2014 example dataset:
 
-Set datasets:
-
-```{r, eval = FALSE}
-datasets <- curatedMetagenomicData("*metaphlan_bugs_list.stool*", counts=TRUE, dryrun = FALSE)
+```{r, eval = TRUE}
+data(exampledata)
+exampledata
 ```
 
-Select datasets[[8]]. Within the `ExpressionSet` data set GROUP column 
-to contain class 0 or class 1, (e.g. *control* and *adenoma*). Set BLOCK to
-be a sublass of each class as 0 or 1 (e.g. *adult* or *non-adult*).
+Within the `ExpressionSet` data set the GROUP column to contain class 0 or class 1, (e.g. *control* and *CRC*). First we remove adenoma samples, because lefser supports only two-group contrasts (**Asya is this true?**):
 
-```{r, eval = FALSE}
-datasets[[8]] <- datasets[[8]][,datasets[[8]]$study_condition!="adenoma"]
-datasets[[8]]$GROUP <- ifelse(datasets[[8]]$study_condition=="control",0,1)
-
-
-datasets[[8]]$BLOCK <-ifelse(datasets[[8]]$age_category=="adult",0,1)
+```{r}
+table(exampledata$study_condition)
+exampledata <- exampledata[, exampledata$study_condition != "adenoma"]
+exampledata$GROUP <- ifelse(exampledata$study_condition == "control", 0, 1)
+table(exampledata$GROUP)
 ```
 
-The datasets[[8]] can now be used with lefser functions. There is the `lefserAnalysis` function for extracting 
+
+Now set BLOCK to be a sublass of each class as 0 or 1 (e.g. *adult* or *non-adult*):
+
+```{r, eval = TRUE}
+table(exampledata$age_category)
+exampledata$BLOCK <- ifelse(exampledata$age_category == "adult", 0, 1)
+table(exampledata$BLOCK, exampledata$GROUP)
+```
+
+The dataset can now be used with lefser functions. There is the `lefserAnalysis` function for extracting 
 results in the form of dataframe, names of selected microorganisms and their effect size.
 
 **NOTE** the following code blocks are temporarily unevaluated to allow checks to pass, but need to be fixed.
 
 ```{r, eval = FALSE}
-results <- lefserAnalysis(datasets[[8]])
+results <- lefserAnalysis(exampledata)
+##  Error in UseMethod("group_vars") : 
+##  no applicable method for 'group_vars' applied to an object of class ##  "logical"
+  
+warnings() ##variables are collinear, conditional covariance matrix has zero diagonal elements - maybe need a different example, or to explain what the collinear variables are and the consequences
 head(results)
 ```
 
