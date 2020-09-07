@@ -50,7 +50,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
-          Rscript -e "covr::codecov()"
+          Rscript -e "covr::codecov()$message"  #$message avoids printing token
 
       - name: Build pkgdown
         run: |
