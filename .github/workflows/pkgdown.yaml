@@ -13,7 +13,7 @@ jobs:
           install.packages('remotes')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
         shell: Rscript {0}
-        
+
       - name: Cache R packages
         if: runner.os != 'Windows'
         uses: actions/cache@v1
@@ -47,11 +47,11 @@ jobs:
         shell: Rscript {0}
 
       - name: generate codecov report
-        env: 
+        env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
-	  Rscript -e "covr::codecov()"
-	  
+          Rscript -e "covr::codecov()"
+
       - name: Build pkgdown
         run: |
            PATH=$PATH:$HOME/bin/ Rscript -e 'pkgdown::build_site(".")'
