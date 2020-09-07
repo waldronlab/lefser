@@ -6,5 +6,5 @@ exampledata <-
   curatedMetagenomicData("ZellerG_2014.metaphlan_bugs_list.stool",
                          counts = TRUE,
                          dryrun = FALSE)[[1]]
-
+exampledata <- as(exampledata, "SummarizedExperiment")
 usethis::use_data(exampledata, overwrite = TRUE)
