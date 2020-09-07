@@ -40,15 +40,18 @@ jobs:
           remotes::install_cran('rcmdcheck')
         shell: Rscript {0}
 
-      - name: codecov
-        uses: codecov/codecov-action@v1
-    
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: rcmdcheck::rcmdcheck(args = c("--no-manual"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
 
+      - name: generate codecov report
+        env: 
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+	  Rscript -e "covr::codecov()"
+	  
       - name: Build pkgdown
         run: |
            PATH=$PATH:$HOME/bin/ Rscript -e 'pkgdown::build_site(".")'
