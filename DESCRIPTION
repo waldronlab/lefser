@@ -28,6 +28,7 @@ Suggests:
     curatedMetagenomicData,
     BiocStyle,
     testthat,
+    pkgdown,
     covr
 Encoding: UTF-8
 VignetteBuilder: knitr
