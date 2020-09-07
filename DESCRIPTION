@@ -19,15 +19,17 @@ Imports:
 	coin,
 	MASS,
 	Biobase,
+	ggplot2,
 	EnrichmentBrowser,
-	SummarizedExperiment
+	SummarizedExperiment,
+	methods
 Suggests: 
     knitr,
     rmarkdown,
     curatedMetagenomicData,
-    ggplot2,
     BiocStyle,
     testthat,
     covr
+Encoding: UTF-8
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1

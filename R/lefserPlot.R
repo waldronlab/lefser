@@ -7,9 +7,12 @@
 #' explain the return value
 #'
 #' @export
+#' @importFrom ggplot2 ggplot aes ylab theme element_blank element_text geom_bar coord_flip
+#' @importFrom methods as is
 #'
 #' @examples
-#' # an example
+#' example("lefseranalysis")
+#' lefserPlot(results)
 lefserPlot <- function(scores_df) {
   if (!require(ggplot2))
     stop("Install ggplot2 to use the lefserPlot function")

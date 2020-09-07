@@ -17,3 +17,11 @@ Explain what the function returns
 Title
 Perform a LEfSe analysis
 }
+\examples{
+library(Biobase)
+exampledata <- exampledata[, exampledata$study_condition != "adenoma"]
+exampledata$GROUP <- ifelse(exampledata$study_condition == "control", 0, 1)
+# keep only taxa with non-zero counts in at least 10 specimens:
+results <- lefserAnalysis(exampledata)
+head(results)
+}
