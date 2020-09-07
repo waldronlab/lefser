@@ -35,8 +35,8 @@ jobs:
       - name: Install dependencies
         run: |
           local_deps <- remotes::local_package_deps(dependencies = TRUE)
-          deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
-          BiocManager::install(local_deps[local_deps %in% deps$package[deps$diff != 0]])
+          deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories(), Ncpus=2)
+          BiocManager::install(local_deps[local_deps %in% deps$package[deps$diff != 0]], Ncpus=2)
           remotes::install_cran('rcmdcheck')
         shell: Rscript {0}
 
