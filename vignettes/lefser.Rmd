@@ -43,7 +43,7 @@ Install and load `curatedMetagenomicData`.
 
 Set datasets:
 
-```{r}
+```{r, eval = FALSE}
 datasets <- curatedMetagenomicData("*metaphlan_bugs_list.stool*", counts=TRUE, dryrun = FALSE)
 ```
 
@@ -51,7 +51,7 @@ Select datasets[[8]]. Within the `ExpressionSet` data set GROUP column
 to contain class 0 or class 1, (e.g. *control* and *adenoma*). Set BLOCK to
 be a sublass of each class as 0 or 1 (e.g. *adult* or *non-adult*).
 
-```{r}
+```{r, eval = FALSE}
 datasets[[8]] <- datasets[[8]][,datasets[[8]]$study_condition!="adenoma"]
 datasets[[8]]$GROUP <- ifelse(datasets[[8]]$study_condition=="control",0,1)
 
