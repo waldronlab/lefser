@@ -18,20 +18,10 @@ vignette: >
 
 ```{r style, echo = FALSE, results = 'asis'}
 knitr::opts_chunk$set(fig.align = "center")
-knitr::opts_chunk$set(warning = FALSE)
-knitr::opts_chunk$set(cache=TRUE)
 ```
 
-```{r, include=TRUE, results="hide", message=FALSE, warning=FALSE}
-suppressPackageStartupMessages({
-  library(lefser)
-  library(curatedMetagenomicData)
-  library(coin)
-  library(MASS)
-  library(ggplot2)
-  library(SummarizedExperiment)
-  library(Biobase)
-})
+```{r, loadpackage}
+suppressPackageStartupMessages(library(lefser))
 ```
 
 # Overview and example use of `lefser`
