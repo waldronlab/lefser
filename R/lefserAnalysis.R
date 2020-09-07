@@ -15,6 +15,10 @@
 #' @import SummarizedExperiment
 
 #'
+#' @param expr
+#' @param kw.threshold
+#' @param wilcoxon.threshold
+#'
 #' @examples
 #' data(exampledata)
 #' exampledata <- exampledata[, exampledata$study_condition != "adenoma"]
@@ -23,7 +27,7 @@
 #' results <- lefserAnalysis(exampledata)
 #' head(results)
 
-lefserAnalysis <- function (expr)
+lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05)
 
 {
   if (is(expr, "ExpressionSet"))
@@ -67,8 +71,8 @@ lefserAnalysis <- function (expr)
   # to detect differential abundance between classes, 0 and 1
   kw.res <- apply(expr, 1, kruskal.test.alt)
 
-  # selects p-values less than or equal to 0.05
-  kw.sub <- kw.res <= 0.05
+  # selects p-values less than or equal to kw.threshold
+  kw.sub <- kw.res <= kw.threshold
 
   # eliminates NAs
   kw.sub[is.na(kw.sub)] <- FALSE
@@ -133,8 +137,8 @@ lefserAnalysis <- function (expr)
   # number of p-values per feature
   num_comp <- length(unique(block)) ^ length(unique(group))
 
-  # converts "pval_mat" into boolean matrix "logical_pval_mat" where p-values<=0.05
-  logical_pval_mat <- pval_mat <= 0.05
+  # converts "pval_mat" into boolean matrix "logical_pval_mat" where p-values <= wilcoxon.threshold
+  logical_pval_mat <- pval_mat <= wilcoxon.threshold
 
   # determines which rows (features) have all p-values<=0.05
   # and selects such rows from the matrix of z-statistics

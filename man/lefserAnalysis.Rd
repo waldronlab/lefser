@@ -5,10 +5,12 @@
 \title{Title
 Perform a LEfSe analysis}
 \usage{
-lefserAnalysis(expr)
+lefserAnalysis(expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05)
 }
 \arguments{
 \item{expr}{Explain expr}
+
+\item{wilcoxon.threshold}{}
 }
 \value{
 Explain what the function returns
