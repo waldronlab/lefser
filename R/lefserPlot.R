@@ -7,15 +7,14 @@
 #' explain the return value
 #'
 #' @export
-#' @importFrom ggplot2 ggplot aes ylab theme element_blank element_text geom_bar coord_flip
-#' @importFrom methods as is
+#' @importFrom ggplot2 ggplot aes ylab theme element_blank element_text
+#' @importFrom ggplot2 geom_bar coord_flip scale_fill_manual
 #'
 #' @examples
-#' example("lefseranalysis")
+#' example("lefserAnalysis")
 #' lefserPlot(results)
 lefserPlot <- function(scores_df) {
-  if (!require(ggplot2))
-    stop("Install ggplot2 to use the lefserPlot function")
+  requireNamespace("ggplot2")
   group <- ifelse(scores_df$scores > 0, 1, 0)
   scores_df$group <- as.factor(group)
   p <-

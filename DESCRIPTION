@@ -1,8 +1,8 @@
 Package: lefser
 Type: Package
-Title: R implementation of the LEfSE method to find features that have greatest differences between classes
+Title: R implementation of the LEfSE method for microbiome biomarker discovery
 Description: lefser uses Kruskal-Wallis test, Wilcoxon-Rank Sum test, and LDA
-  to find features with the greatest effect sizes.
+  to find biomarkers of groups and sub-groups.
 Version: 0.99.0
 Authors@R: c(
     person("Asya", "Khleborodova", email = "asya.bioconductor@gmail.com",
@@ -14,14 +14,13 @@ Authors@R: c(
 License: Artistic-2.0
 LazyData: true
 Depends:
+	SummarizedExperiment,
 	R (>= 3.6.0)
 Imports:
 	coin,
 	MASS,
-	Biobase,
 	ggplot2,
 	EnrichmentBrowser,
-	SummarizedExperiment,
 	methods
 Suggests: 
     knitr,

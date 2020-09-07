@@ -16,6 +16,6 @@ explain the return value
 Title add title
 }
 \examples{
-example("lefseranalysis")
+example("lefserAnalysis")
 lefserPlot(results)
 }
