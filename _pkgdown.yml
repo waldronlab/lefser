@@ -1,0 +1,18 @@
+url: https://waldronlab.io/lefser/
+
+template:
+  params:
+    bootswatch: flatly
+    ganalytics: UA-90028752-3
+
+home:
+  title: "LEfSe in R"
+  type: inverse
+
+
+navbar:
+  right:
+   - icon: fa-github
+     href: https://github.com/waldronlab/lefser/
+     
+
