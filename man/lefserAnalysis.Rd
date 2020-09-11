@@ -20,10 +20,10 @@ Title
 Perform a LEfSe analysis
 }
 \examples{
-data(exampledata)
-exampledata <- exampledata[, exampledata$study_condition != "adenoma"]
-exampledata$GROUP <- ifelse(exampledata$study_condition == "control", 0, 1)
+data(zeller14)
+zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
+zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
 # keep only taxa with non-zero counts in at least 10 specimens:
-results <- lefserAnalysis(exampledata)
+results <- lefserAnalysis(zeller14)
 head(results)
 }

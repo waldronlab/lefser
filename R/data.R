@@ -10,4 +10,4 @@
 #'   ...
 #' }
 #' @source \url{https://pubmed.ncbi.nlm.nih.gov/25432777/}
-"exampledata"
+"zeller14"

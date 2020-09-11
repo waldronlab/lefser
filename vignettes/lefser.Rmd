@@ -13,7 +13,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Introduction to the lefser R implementation of the popular LEfSE software for biomarker discovery in microbiome analysis.}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}  
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r style, echo = FALSE, results = 'asis'}
@@ -32,38 +32,38 @@ or `ExpressionSet` data.
 Load the ZellerG_2014 example dataset:
 
 ```{r, eval = TRUE}
-data(exampledata)
-exampledata
+data(zeller14)
+zeller14
 ```
 
 Within the `ExpressionSet` data set the GROUP column to contain class 0 or class 1, (e.g. *control* and *CRC*). First we remove adenoma samples, because lefser supports only two-group contrasts (**Asya is this true?**):
 
 ```{r}
-table(exampledata$study_condition)
-exampledata <- exampledata[, exampledata$study_condition != "adenoma"]
-exampledata$GROUP <- ifelse(exampledata$study_condition == "control", 0, 1)
-table(exampledata$GROUP)
+table(zeller14$study_condition)
+zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
+zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
+table(zeller14$GROUP)
 ```
 
 
 Now set BLOCK to be a sublass of each class as 0 or 1 (e.g. *adult* or *non-adult*):
 
 ```{r, eval = TRUE}
-table(exampledata$age_category)
-exampledata$BLOCK <- ifelse(exampledata$age_category == "adult", 0, 1)
-table(exampledata$BLOCK, exampledata$GROUP)
+table(zeller14$age_category)
+zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
+table(zeller14$BLOCK, zeller14$GROUP)
 ```
 
-The dataset can now be used with lefser functions. There is the `lefserAnalysis` function for extracting 
+The dataset can now be used with lefser functions. There is the `lefserAnalysis` function for extracting
 results in the form of dataframe, names of selected microorganisms and their effect size.
 
 **NOTE** the following code blocks are temporarily unevaluated to allow checks to pass, but need to be fixed.
 
 ```{r, eval = FALSE}
-results <- lefserAnalysis(exampledata)
-##  Error in UseMethod("group_vars") : 
+results <- lefserAnalysis(zeller14)
+##  Error in UseMethod("group_vars") :
 ##  no applicable method for 'group_vars' applied to an object of class ##  "logical"
-  
+
 warnings() ##variables are collinear, conditional covariance matrix has zero diagonal elements - maybe need a different example, or to explain what the collinear variables are and the consequences
 head(results)
 ```
