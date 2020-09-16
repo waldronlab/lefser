@@ -20,7 +20,6 @@ Imports:
 	coin,
 	MASS,
 	ggplot2,
-	EnrichmentBrowser,
 	methods
 Suggests: 
     knitr,
