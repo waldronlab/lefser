@@ -27,7 +27,7 @@
 #' results <- lefserAnalysis(zeller14)
 #' head(results)
 
-lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05)
+lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05, lda.threshold = 2.0)
 
 {
   if (is(expr, "ExpressionSet"))
@@ -297,5 +297,7 @@ lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05
   # return a dataframe of taxon name and effect size score
   scores <- as.vector(processed_sorted_scores)
   scores_df <- data.frame(Names, scores)
+  threshold_scores <- abs(scores_df$scores)>=lda.threshold
+  scores_df <- scores_df[threshold_scores,]
   return(scores_df)
 }
