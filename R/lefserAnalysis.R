@@ -35,10 +35,9 @@ lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05
   isSE <- is(expr, "SummarizedExperiment")
   if (isSE) {
     se <- expr
-    info <- EnrichmentBrowser:::.extractInfoFromSE(se)
-    expr <- info$expr
-    grp <- info$grp
-    blk <- info$blk
+    expr <- assay(se)
+    grp <- colData(se)$GROUP
+    blk <- colData(se)$BLOCK
   }
   if (!is.matrix(expr))
     stop(
