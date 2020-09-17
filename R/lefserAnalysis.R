@@ -15,6 +15,9 @@
 #' @param wilcoxon.threshold
 #' The p-value for Wilcoxon Rank-Sum Test.
 #' The default is at <= 0.05.
+#' @param lda.threshold
+#' The effect size threshold.
+#' The default is at 2.0.
 #' @return
 #' The function returns a dataframe with two columns, which are
 #' names of microorganisms and their LDA scores.
