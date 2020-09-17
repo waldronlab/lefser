@@ -16,6 +16,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+# Introduction
+
+Lefser is metagenomic biomarker discovery tool that is based on [LEfSe](https://huttenhower.sph.harvard.edu/galaxy/) tool and is published by [Huttenhower et al. 2011](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/). `Lefser` is the R implementation of the `LEfSe` method.
+
+Using statistical analyses, `lefser` compares microbial populations of healthy and diseased subjects to discover differencially expressed microorganisms. `Lefser` than computes effect size, which estimates magnitude of differential expression between the populations for each differentially expressed microorganism. Subclasses of classes can also be assigned and used within the analysis.
+
 ```{r style, echo = FALSE, results = 'asis'}
 knitr::opts_chunk$set(fig.align = "center")
 ```
@@ -36,7 +42,7 @@ data(zeller14)
 zeller14
 ```
 
-Within the `ExpressionSet` data set the GROUP column to contain class 0 or class 1, (e.g. *control* and *CRC*). First we remove adenoma samples, because lefser supports only two-group contrasts (**Asya is this true?**):
+Within the `ExpressionSet` data set the GROUP column to contain class 0 or class 1, (e.g. *control* and *CRC*). First we remove adenoma samples, because lefser supports only two-group contrasts (**Asya is this true?**) **Yes**:
 
 ```{r}
 table(zeller14$study_condition)
@@ -46,7 +52,7 @@ table(zeller14$GROUP)
 ```
 
 
-Now set BLOCK to be a sublass of each class as 0 or 1 (e.g. *adult* or *non-adult*):
+Now set BLOCK to be a sublass of each class as 0 or 1 (e.g. *adult* or *senior*):
 
 ```{r, eval = TRUE}
 table(zeller14$age_category)
