@@ -1,55 +1,3 @@
-#' Title
-#' Perform a LEfSe analysis
-#'
-#' @param expr
-#' The expr is an \code{\linkS4class{ExpressionSet}} or a \code{\linkS4class{SummarizedExperiment}}.
-#' GROUP column should be assigned to meta-data of
-#' ExpressionSet/SummarizedExperiment
-#' as a class in pData/colData before using lefserAnalysis function.
-#' Use '0' and '1' for unaffected (controls) and
-#' affected (cases) samples, respectively. Optionally, any number of subclasses can
-#' be defined by adding BLOCK column to meta-data of ExpressionSet/SummarizedExperiment.
-#' @param kw.threshold
-#' The p-value threshold for Kruskal-Wallis Rank Sum Test.
-#' The default is at <= 0.05.
-#' @param wilcoxon.threshold
-#' The p-value for Wilcoxon Rank-Sum Test.
-#' The default is at <= 0.05.
-#' @param lda.threshold
-#' The effect size threshold.
-#' The default is at 2.0.
-#' @return
-#' The function returns a dataframe with two columns, which are
-#' names of microorganisms and their LDA scores.
-#'
-#' @export
-#' @importFrom stats kruskal.test reorder rnorm
-#' @importFrom coin pvalue statistic wilcox_test
-#' @importFrom MASS lda
-#' @importFrom methods as is
-#' @import SummarizedExperiment
-#'
-#' @examples
-#'     # (1) Using classes only
-#'     data(zeller14)
-#'     # exclude 'adenoma'
-#'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-#'     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
-#'     zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
-#'     results <- lefserAnalysis(zeller14)
-#'     head(results)
-#'
-#'     # (2) Using classes and sublasses
-#'     data(zeller14)
-#'     # exclude 'adenoma'
-#'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-#'     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
-#'     zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
-#'     # assign '0' class to 'adult' and '1' to 'senior'
-#'     zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
-#'     results <- lefserAnalysis(zeller14)
-#'     head(results)
-
 createGroupBlockMatrixGroups <- function(expr){
 
   if (is(expr, "ExpressionSet")){
@@ -182,7 +130,7 @@ createUniqueValues <- function(expr_sub_t_df, groups){
 }
 
 contastWithinClassesOrFewPerClass <-
-  function(expr_sub_t_df, rand_s, min_cl, ncl) {
+  function(expr_sub_t_df, rand_s, min_cl, ncl, groups) {
     cols <- expr_sub_t_df[rand_s, ]
     cls <- expr_sub_t_df$class[rand_s]
     # if the number of classes is less than the actual number (typically two)
@@ -263,14 +211,72 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl) {
   (lda.means.diff + coeff) / 2
 }
 
+#' R implementation of the LEfSe method
+#'
+#' Perform a LEfSe analysis: the function carries out differential analysis
+#' between two sample groups for multiple microorganisms and uses linear discirminant analysis
+#' to establish their effect sizes. Subclass information for each class can be incorporated
+#' into the analysis (see examples). Microorganisms with large differences between two sample groups
+#' are identified as biomarkers.
+#'
+#' @param expr
+#' The expr is an \code{\linkS4class{ExpressionSet}} or a \code{\linkS4class{SummarizedExperiment}}.
+#' GROUP column should be assigned to meta-data of
+#' ExpressionSet/SummarizedExperiment
+#' as a class in pData/colData before using lefserAnalysis function.
+#' Use '0' and '1' for unaffected (controls) and
+#' affected (cases) samples, respectively. Optionally, any number of subclasses can
+#' be defined by adding BLOCK column to meta-data of ExpressionSet/SummarizedExperiment.
+#' @param kw.threshold
+#' The p-value threshold for Kruskal-Wallis Rank Sum Test.
+#' The default is at <= 0.05.
+#' @param wilcoxon.threshold
+#' The p-value for Wilcoxon Rank-Sum Test.
+#' The default is at <= 0.05.
+#' @param lda.threshold
+#' The effect size threshold.
+#' The default is at 2.0.
+#' @return
+#' The function returns a dataframe with two columns, which are
+#' names of microorganisms and their LDA scores.
+#'
+#' @export
+#' @importFrom stats kruskal.test reorder rnorm
+#' @importFrom coin pvalue statistic wilcox_test
+#' @importFrom MASS lda
+#' @importFrom methods as is
+#' @import SummarizedExperiment
+#'
+#' @examples
+#'     # (1) Using classes only
+#'     data(zeller14)
+#'     # exclude 'adenoma'
+#'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
+#'     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
+#'     zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
+#'     results <- lefserAnalysis(zeller14)
+#'     head(results)
+#'
+#'     # (2) Using classes and sublasses
+#'     data(zeller14)
+#'     # exclude 'adenoma'
+#'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
+#'     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
+#'     zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
+#'     # assign '0' class to 'adult' and '1' to 'senior'
+#'     zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
+#'     results <- lefserAnalysis(zeller14)
+#'     head(results)
+
+
 lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05, lda.threshold = 2.0)
 
 {
-  groupBlockMatrixGroup <- createGroupBlockMatrixGroups(expr)
-  group <- groupBlockMatrixGroup$group
-  block <- groupBlockMatrixGroup$block
-  expr <- groupBlockMatrixGroup$expr
-  groups <- groupBlockMatrixGroup$groups
+  groupBlockMatrixGroups <- createGroupBlockMatrixGroups(expr)
+  group <- groupBlockMatrixGroups$group
+  block <- groupBlockMatrixGroups$block
+  expr <- groupBlockMatrixGroups$expr
+  groups <- groupBlockMatrixGroups$groups
 
   # extracts p-values from Kruskal-Wallis Rank Sum Test
   kruskal.test.alt <- function(x, group) {

@@ -1,10 +1,22 @@
-#' Title add title
+utils::globalVariables(c("Names", "scores"))
+#' Plots results from `lefserAnalysis` function
 #'
-#' @param scores_df
-#' explain scores_df
+#' `lefserPlot` function displays effect sizes for differentially expressed microorganisms
+#' and whether they are more abundant in '0' or '1' sample group.
+#'
+#' @param df
+#' Data frame produced by `lefserAnalysis`.
+#'
+#' @param class0
+#' Input prefered color for class '0'.
+#'
+#' @param class1
+#' Input prefered color for class '1'.
 #'
 #' @return
-#' explain the return value
+#' Function returns plot of effect size scores produed by `lefserAnalysis`.
+#' Positive scores represent microorganisms with that are more abundant in class '1'.
+#' Negative scores represent microorganisms with that are more abundant in class '0'.
 #'
 #' @export
 #' @importFrom ggplot2 ggplot aes ylab theme element_blank element_text
@@ -13,13 +25,11 @@
 #' @examples
 #' example("lefserAnalysis")
 #' lefserPlot(results)
-utils::globalVariables(c("Names", "scores"))
-lefserPlot <- function(scores_df) {
-  requireNamespace("ggplot2")
-  group <- ifelse(scores_df$scores > 0, 1, 0)
-  scores_df$group <- as.factor(group)
-  p <-
-    ggplot(scores_df, aes(reorder(Names, scores), scores)) + ylab("LDA SCORE (log 10)") +
+lefserPlot <- function(df, class0 = "red", class1 = "forestgreen") {
+  group <- ifelse(df$scores > 0, 1, 0)
+  df$group <- as.factor(group)
+  plt <-
+    ggplot(df, aes(reorder(Names, scores), scores)) + ylab("LDA SCORE (log 10)") +
     theme(
       axis.title.y = element_blank(),
       axis.title.x = element_text(size = 11, face = "bold"),
@@ -40,7 +50,7 @@ lefserPlot <- function(scores_df) {
       )
     ) +
     geom_bar(stat = "identity", aes(fill = group)) +
-    scale_fill_manual(values = c("red", "forestgreen")) +
+    scale_fill_manual(values = c(class0, class1)) +
     coord_flip()
-  return(p)
+  return(plt)
 }

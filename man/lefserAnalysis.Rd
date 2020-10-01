@@ -5,25 +5,57 @@
 \title{Title
 Perform a LEfSe analysis}
 \usage{
-lefserAnalysis(expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05)
+lefserAnalysis(
+  expr,
+  kw.threshold = 0.05,
+  wilcoxon.threshold = 0.05,
+  lda.threshold = 2
+)
 }
 \arguments{
-\item{expr}{Explain expr}
+\item{expr}{The expr is an \code{\linkS4class{ExpressionSet}} or a \code{\linkS4class{SummarizedExperiment}}.
+GROUP column should be assigned to meta-data of
+ExpressionSet/SummarizedExperiment
+as a class in pData/colData before using lefserAnalysis function.
+Use '0' and '1' for unaffected (controls) and
+affected (cases) samples, respectively. Optionally, any number of subclasses can
+be defined by adding BLOCK column to meta-data of ExpressionSet/SummarizedExperiment.}
 
-\item{wilcoxon.threshold}{}
+\item{kw.threshold}{The p-value threshold for Kruskal-Wallis Rank Sum Test.
+The default is at <= 0.05.}
+
+\item{wilcoxon.threshold}{The p-value for Wilcoxon Rank-Sum Test.
+The default is at <= 0.05.}
+
+\item{lda.threshold}{The effect size threshold.
+The default is at 2.0.}
 }
 \value{
-Explain what the function returns
+The function returns a dataframe with two columns, which are
+names of microorganisms and their LDA scores.
 }
 \description{
 Title
 Perform a LEfSe analysis
 }
 \examples{
-data(zeller14)
-zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
-# keep only taxa with non-zero counts in at least 10 specimens:
-results <- lefserAnalysis(zeller14)
-head(results)
+    # (1) Using classes only
+    data(zeller14)
+    # exclude 'adenoma'
+    zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
+    # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
+    zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
+    results <- lefserAnalysis(zeller14)
+    head(results)
+
+    # (2) Using classes and sublasses
+    data(zeller14)
+    # exclude 'adenoma'
+    zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
+    # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
+    zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
+    # assign '0' class to 'adult' and '1' to 'senior'
+    zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
+    results <- lefserAnalysis(zeller14)
+    head(results)
 }
