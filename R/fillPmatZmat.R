@@ -46,8 +46,8 @@ fillPmatZmat <- function(group, block, expr_sub, wilcoxon.threshold)
       )))
       pval_mat[, c + 1] <-
         apply(mat, 1, wilcox_test_pvalue, group = group_for_mat)
-      #z_mat[, c + 1] <-
-        #apply(mat, 1, wilcox_test_z, group = group_for_mat)
+      z_mat[, c + 1] <-
+        apply(mat, 1, wilcox_test_z, group = group_for_mat)
       c = c + 1
     }
   }
