@@ -39,10 +39,10 @@ fillPmatZmat <- function(group, block, expr_sub, wilcoxon.threshold)
       mat = cbind(expr_sub[, logical.list.of.subclasses[[i]]],
                   expr_sub[, logical.list.of.subclasses[[j]]])
       group_for_mat = factor(c(rep(
-        0, count(logical.list.of.subclasses[[i]] == TRUE)
+        0, sum(logical.list.of.subclasses[[i]] == TRUE)
       ),
       rep(
-        1, count(logical.list.of.subclasses[[j]] == TRUE)
+        1, sum(logical.list.of.subclasses[[j]] == TRUE)
       )))
       pval_mat[, c + 1] <-
         suppressWarnings(apply(mat, 1, wilcox_test_pvalue, group = group_for_mat))

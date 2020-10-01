@@ -53,10 +53,11 @@
 lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05, lda.threshold = 2.0)
 
 {
-  groupBlockMatrix <- createGroupBlock(expr)
-  group <- groupBlockMatrix$group
-  block <- groupBlockMatrix$block
-  expr <- groupBlockMatrix$expr
+  groupBlockMatrixGroup <- createGroupBlockMatrixGroups(expr)
+  group <- groupBlockMatrixGroup$group
+  block <- groupBlockMatrixGroup$block
+  expr <- groupBlockMatrixGroup$expr
+  groups <- groupBlockMatrixGroup$groups
 
   # extracts p-values from Kruskal-Wallis Rank Sum Test
   kruskal.test.alt <- function(x, group) {

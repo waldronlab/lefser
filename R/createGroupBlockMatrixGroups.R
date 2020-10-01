@@ -1,4 +1,4 @@
-createGroupBlock <- function(expr){
+createGroupBlockGroups <- function(expr){
   
   if (is(expr, "ExpressionSet")){
     expr <- as(expr, "SummarizedExperiment")
@@ -30,5 +30,5 @@ createGroupBlock <- function(expr){
       )
     )
   list(group = factor(grp),
-         block = factor(blk), expr = expr)
+         block = factor(blk), expr = expr, groups=groups)
 }
