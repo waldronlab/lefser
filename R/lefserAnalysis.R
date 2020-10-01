@@ -50,6 +50,219 @@
 #'     results <- lefserAnalysis(zeller14)
 #'     head(results)
 
+createGroupBlockMatrixGroups <- function(expr){
+
+  if (is(expr, "ExpressionSet")){
+    expr <- as(expr, "SummarizedExperiment")
+  }
+  isSE <- is(expr, "SummarizedExperiment")
+  if (isSE) {
+    se <- expr
+    expr <- assay(se)
+    grp <- colData(se)$GROUP
+    blk <- colData(se)$BLOCK
+  }
+  if (!is.matrix(expr))
+    stop(
+      paste(
+        "Expression data in 'expr' must be either",
+        "a matrix, a SummarizedExperiment, or an ExpressionSet"
+      )
+    )
+  if (is.null(grp))
+    stop("Group assignment 'grp' must be specified")
+  groups <- sort(unique(grp))
+  if (!all(groups == c(0, 1)))
+    stop(
+      paste0(
+        "Group classification is not binary:\n",
+        "Expected (0, 1) but found (",
+        paste(groups, collapse = ", "),
+        ")"
+      )
+    )
+  list(group = factor(grp),
+       block = factor(blk), expr = expr, groups=groups)
+}
+
+fillPmatZmat <- function(group, block, expr_sub, wilcoxon.threshold)
+{
+  # extracts p-values from Wilcoxon rank-sum test
+  wilcox_test_pvalue <- function(x, group) {
+    pvalue(wilcox_test(x ~ group))
+  }
+
+  # extracts z-statistic from Wilcoxon rank-sum test
+  wilcox_test_z <- function(x, group) {
+    statistic(wilcox_test(x ~ group))
+  }
+  # creates a list of boolean vectors, each vector indicates
+  # existance (TRUE) or absence (FALSE) of a class/sub-class combination
+  logical.list.of.subclasses <- list()
+  for (i in seq_along(unique(group))) {
+    for (j in seq_along(unique(block))) {
+      logical.list.of.subclasses <- append(logical.list.of.subclasses,
+                                           list(group == sort(unique(group))[i] &
+                                                  block == sort(unique(block))[j]))
+    }
+  }
+
+  # creates empty matrices that will be filled by p-values and z-statistics from Wilcoxon rank-sum test
+  pval_mat <-
+    matrix(0, nrow(expr_sub), length(unique(block)) ^ length(unique(group)))
+  z_mat <-
+    matrix(0, nrow(expr_sub), length(unique(block)) ^ length(unique(group)))
+
+  rownames(pval_mat) <- rownames(expr_sub)
+  rownames(z_mat) <- rownames(expr_sub)
+
+  # uses Wilcoxon rank-sum test to test for significant differential abundances between
+  # subclasses of one class against subclasses of all othe classes; results are saved in
+  # "pval_mat" and "z_mat" matrices
+  c <- 0
+  for (i in seq_along(unique(block))) {
+    for (j in seq_along(unique(block))) {
+      j <- j + length(unique(block))
+      mat = cbind(expr_sub[, logical.list.of.subclasses[[i]]],
+                  expr_sub[, logical.list.of.subclasses[[j]]])
+      group_for_mat = factor(c(rep(
+        0, sum(logical.list.of.subclasses[[i]] == TRUE)
+      ),
+      rep(
+        1, sum(logical.list.of.subclasses[[j]] == TRUE)
+      )))
+      pval_mat[, c + 1] <-
+        suppressWarnings(apply(mat, 1, wilcox_test_pvalue, group = group_for_mat))
+      z_mat[, c + 1] <-
+        suppressWarnings(apply(mat, 1, wilcox_test_z, group = group_for_mat))
+      c = c + 1
+    }
+  }
+
+  # number of p-values per feature
+  num_comp <- length(unique(block)) ^ length(unique(group))
+
+  # converts "pval_mat" into boolean matrix "logical_pval_mat" where p-values <= wilcoxon.threshold
+  logical_pval_mat <- pval_mat <= wilcoxon.threshold
+
+  # determines which rows (features) have all p-values<=0.05
+  # and selects such rows from the matrix of z-statistics
+  sub <- which(rowSums(logical_pval_mat) == num_comp)
+  z_mat_sub <- z_mat[sub, ]
+
+  # confirms that z-statistics of a row all have the same sign
+  sub <- abs(rowSums(z_mat_sub)) == abs(rowSums(abs(z_mat_sub)))
+  expr_sub <- expr_sub[names(sub[sub == TRUE]),]
+}
+
+# ensures that more than half of the values in each for each feature are unique
+# if that is not the case then a count value is altered by adding it to a small value
+# generated via normal distribution with mean=0 and sd=5% of the count value
+createUniqueValues <- function(expr_sub_t_df, groups){
+  df <- expr_sub_t_df
+  for (i in seq_along(c(1:(ncol(df) - 1)))) {
+    for (j in seq_along(groups)) {
+      equality = df[df[, "class"] == groups[j], i]
+      if (length(unique(equality)) > max(length(equality) * 0.5, 4)) {
+        next
+      } else{
+        for (k in seq_along(equality)) {
+          equality[k] = abs(equality[k] + rnorm(
+            1,
+            mean = 0,
+            sd = max(equality[k] * 0.05, 0.01)
+          ))
+        }
+
+      }
+      df[df[, "class"] == groups[j], i] = equality
+    }
+  }
+  expr_sub_t_df <- df
+}
+
+contastWithinClassesOrFewPerClass <-
+  function(expr_sub_t_df, rand_s, min_cl, ncl) {
+    cols <- expr_sub_t_df[rand_s, ]
+    cls <- expr_sub_t_df$class[rand_s]
+    # if the number of classes is less than the actual number (typically two)
+    # of classes in the dataframe then return TRUE
+    if (length(unique(cls)) < ncl) {
+      return (TRUE)
+    }
+    # detect if for each class there are not fewer than the minimum (min_cl) number of samples
+    if (TRUE %in% c(table(cls) < min_cl)) {
+      return (TRUE)
+    }
+    # separate the randomly selected samples (cols) into a list of the two classes
+    drops <- c("class")
+    by_class <-
+      lapply(seq_along(groups), function(x) {
+        cols[cols[, "class"] == groups[x], !(names(cols) %in% drops)]
+      })
+
+    # makes sure that within each class all features have at least min_cl unique count values
+    for (i in seq_along(groups)) {
+      unique_counts_per_microb = apply(by_class[[i]], 2, function(x) {
+        length(unique(x))
+      })
+      if ((TRUE %in% c(unique_counts_per_microb <= min_cl) &
+           min_cl > 1) |
+          (min_cl == 1 & (TRUE %in% c(unique_counts_per_microb <= 1)))) {
+        return (TRUE)
+      }
+    }
+    return (FALSE)
+
+  }
+
+ldaFunction <- function (data, lfk, rfk, min_cl, ncl) {
+  # test 1000 samples for contrast within classes per feature
+  # and that there is at least a minimum number of samples per class
+  for (j in seq_along(1:1000)) {
+    rand_s <- sample(c(1:lfk), rfk, replace = TRUE)
+    if (!contastWithinClassesOrFewPerClass(data, rand_s, min_cl, ncl)) {
+      break
+    }
+  }
+  # lda with rfk number of samples
+  lda.fit <- lda(class ~ ., data = data, subset = rand_s)
+  # coefficients that transform observations to discriminants
+  w <- lda.fit$scaling[, 1]
+  # scaling of lda coefficients
+  w.unit <- w / sqrt(sum(w ^ 2))
+  sub_d <- data[rand_s, ]
+  ss <- sub_d[, -match("class", colnames(sub_d))]
+  xy.matrix <- as.matrix(ss)
+  # the original matrix is transformed
+  LD <- xy.matrix %*% w.unit
+  # effect size is calculated as difference between averaged disciminants
+  # of two classes
+  effect_size <-
+    abs(mean(LD[sub_d[, "class"] == 0]) - mean(LD[sub_d[, "class"] == 1]))
+  # scaling lda coefficients by the efect size
+  scal <- w.unit * effect_size
+  # mean count values per fclass per feature
+  rres <- lda.fit$means
+  rowns <- rownames(rres)
+  lenc <- length(colnames(rres))
+
+  coeff <- vector("numeric", length(scal))
+  for (v in seq_along(scal)) {
+    if (is.na(scal[v]) != TRUE) {
+      coeff[v] <- abs(scal[v])
+    } else{
+      coeff[v] <- 0
+    }
+
+  }
+  # count value differences between means of two classes for each feature
+  lda.means.diff <- (lda.fit$means[2, ] - lda.fit$means[1, ])
+  # difference between a feature's class means and effect size adjusted lda coefficient
+  # are averaged for each feature
+  (lda.means.diff + coeff) / 2
+}
+
 lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05, lda.threshold = 2.0)
 
 {
