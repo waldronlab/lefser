@@ -1,3 +1,4 @@
+utils::globalVariables(c("Names", "scores"))
 #' Title add title
 #'
 #' @param scores_df
@@ -13,7 +14,6 @@
 #' @examples
 #' example("lefserAnalysis")
 #' lefserPlot(results)
-utils::globalVariables(c("Names", "scores"))
 lefserPlot <- function(scores_df) {
   requireNamespace("ggplot2")
   group <- ifelse(scores_df$scores > 0, 1, 0)
