@@ -15,7 +15,7 @@ lefserAnalysis(
 )
 }
 \arguments{
-\item{expr}{A \code{\linkS4class{SummarizedExperiment}}.}
+\item{expr}{A \code{\linkS4class{SummarizedExperiment}} with expression data.}
 
 \item{kw.threshold}{The p-value threshold for Kruskal-Wallis Rank Sum Test.
 The default is at <= 0.05.}
