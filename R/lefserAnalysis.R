@@ -164,12 +164,12 @@ contastWithinClassesOrFewPerClass <-
 
   }
 
-ldaFunction <- function (data, lfk, rfk, min_cl, ncl) {
+ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   # test 1000 samples for contrast within classes per feature
   # and that there is at least a minimum number of samples per class
   for (j in seq_along(1:1000)) {
     rand_s <- sample(c(1:lfk), rfk, replace = TRUE)
-    if (!contastWithinClassesOrFewPerClass(data, rand_s, min_cl, ncl)) {
+    if (!contastWithinClassesOrFewPerClass(data, rand_s, min_cl, ncl, groups)) {
       break
     }
   }
@@ -210,6 +210,7 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl) {
   # are averaged for each feature
   (lda.means.diff + coeff) / 2
 }
+
 
 #' R implementation of the LEfSe method
 #'
@@ -296,7 +297,8 @@ lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05
   # extracts features with statistically significant differential abundance
   # from "expr" matrix
   expr_sub <- expr[kw.sub, ]
-
+  print("Length of block")
+  print(length(block))
  if (length(block)!=0){
    expr_sub <- fillPmatZmat(group, block, expr_sub, wilcoxon.threshold)
  }
@@ -323,7 +325,7 @@ lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05
   min_cl <- max(min_cl, 1)
 
   # lda_fn repeated 30 times, producing a matrix of 30 scores per feature
-  eff_size_mat <- replicate(30, suppressWarnings(ldaFunction(expr_sub_t_df, lfk, rfk, min_cl, ncl)), simplify = T)
+  eff_size_mat <- replicate(30, suppressWarnings(ldaFunction(expr_sub_t_df, lfk, rfk, min_cl, ncl, groups)), simplify = T)
 
   # mean of 30 scores per feature
   raw_lda_scores <- rowMeans(eff_size_mat)
