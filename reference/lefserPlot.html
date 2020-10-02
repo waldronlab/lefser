@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title add title — lefserPlot • lefser</title>
+<title>Plots results from `lefserAnalysis` function — lefserPlot • lefser</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Title add title — lefserPlot" />
-<meta property="og:description" content="Title add title" />
+<meta property="og:title" content="Plots results from `lefserAnalysis` function — lefserPlot" />
+<meta property="og:description" content="`lefserPlot` function displays effect sizes for differentially expressed microorganisms
+and whether they are more abundant in '0' or '1' sample group." />
 
 
 
@@ -121,48 +122,82 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title add title</h1>
+    <h1>Plots results from `lefserAnalysis` function</h1>
     
     <div class="hidden name"><code>lefserPlot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title add title</p>
+    <p>`lefserPlot` function displays effect sizes for differentially expressed microorganisms
+and whether they are more abundant in '0' or '1' sample group.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>lefserPlot</span>(<span class='no'>scores_df</span>)</pre>
+    <pre class="usage"><span class='fu'>lefserPlot</span><span class='op'>(</span><span class='va'>df</span>, colors <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"red"</span>, <span class='st'>"forestgreen"</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>scores_df</th>
-      <td><p>explain scores_df</p></td>
+      <th>df</th>
+      <td><p>Data frame produced by `lefserAnalysis`.</p></td>
+    </tr>
+    <tr>
+      <th>colors</th>
+      <td><p>character(2) The two colors corresponding to class 0 and 1,
+respectively. Defaults to `c("red", "forestgreen")`.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>explain the return value</p>
+    <p>Function returns plot of effect size scores produed by `lefserAnalysis`.
+Positive scores represent microorganisms with that are more abundant in class '1'.
+Negative scores represent microorganisms with that are more abundant in class '0'.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/example.html'>example</a></span>(<span class='st'>"lefserAnalysis"</span>)</div><div class='output co'>#&gt; 
-#&gt; lfsrAn&gt; data(exampledata)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/example.html'>example</a></span><span class='op'>(</span><span class='st'>"lefserAnalysis"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 
+#&gt; lfsrAn&gt;     # (1) Using classes only
+#&gt; lfsrAn&gt;     data(zeller14)
 #&gt; 
-#&gt; lfsrAn&gt; exampledata &lt;- exampledata[, exampledata$study_condition != "adenoma"]
+#&gt; lfsrAn&gt;     # exclude 'adenoma'
+#&gt; lfsrAn&gt;     zeller14 &lt;- zeller14[, zeller14$study_condition != "adenoma"]
 #&gt; 
-#&gt; lfsrAn&gt; exampledata$GROUP &lt;- ifelse(exampledata$study_condition == "control", 0, 1)
+#&gt; lfsrAn&gt;     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
+#&gt; lfsrAn&gt;     zeller14$GROUP &lt;- ifelse(zeller14$study_condition == "control", 0, 1)
 #&gt; 
-#&gt; lfsrAn&gt; # keep only taxa with non-zero counts in at least 10 specimens:
-#&gt; lfsrAn&gt; results &lt;- lefserAnalysis(exampledata)</div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; 
-#&gt; lfsrAn&gt; head(results)
-#&gt;                  Names    scores
-#&gt; 1        p__Firmicutes -6.486401
-#&gt; 2        c__Clostridia -6.379509
-#&gt; 3     o__Clostridiales -6.379509
-#&gt; 4    p__Actinobacteria -6.238396
-#&gt; 5    c__Actinobacteria -6.238396
-#&gt; 6 o__Bifidobacteriales -6.198509</div><div class='input'><span class='fu'>lefserPlot</span>(<span class='no'>results</span>)</div><div class='img'><img src='lefserPlot-1.png' alt='' width='700' height='433' /></div></pre>
+#&gt; lfsrAn&gt;     results &lt;- lefserAnalysis(zeller14)</div><div class='output co'>#&gt; <span class='message'>Length of block: 0</span></div><div class='output co'>#&gt; 
+#&gt; lfsrAn&gt;     head(results)
+#&gt;               Names    scores
+#&gt; 1     p__Firmicutes -6.574292
+#&gt; 2     c__Clostridia -6.503300
+#&gt; 3  o__Clostridiales -6.503300
+#&gt; 4 p__Actinobacteria -6.221553
+#&gt; 5 c__Actinobacteria -6.221553
+#&gt; 6   g__Ruminococcus -6.207069
+#&gt; 
+#&gt; lfsrAn&gt;     # (2) Using classes and sublasses
+#&gt; lfsrAn&gt;     data(zeller14)
+#&gt; 
+#&gt; lfsrAn&gt;     # exclude 'adenoma'
+#&gt; lfsrAn&gt;     zeller14 &lt;- zeller14[, zeller14$study_condition != "adenoma"]
+#&gt; 
+#&gt; lfsrAn&gt;     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
+#&gt; lfsrAn&gt;     zeller14$GROUP &lt;- ifelse(zeller14$study_condition == "control", 0, 1)
+#&gt; 
+#&gt; lfsrAn&gt;     # assign '0' class to 'adult' and '1' to 'senior'
+#&gt; lfsrAn&gt;     zeller14$BLOCK &lt;- ifelse(zeller14$age_category == "adult", 0, 1)
+#&gt; 
+#&gt; lfsrAn&gt;     results &lt;- lefserAnalysis(zeller14)</div><div class='output co'>#&gt; <span class='message'>Length of block: 157</span></div><div class='output co'>#&gt; 
+#&gt; lfsrAn&gt;     head(results)
+#&gt;                           Names    scores
+#&gt; 1            o__Lactobacillales -5.939724
+#&gt; 2 s__Ruminococcus_sp_5_1_39BFAA -5.590255
+#&gt; 3              t__GCF_000159975 -5.590255
+#&gt; 4         s__Eubacterium_hallii -5.558419
+#&gt; 5              t__GCF_000173975 -5.558419
+#&gt; 6   s__Streptococcus_salivarius -5.372396</div><div class='input'><span class='fu'>lefserPlot</span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
+</div><div class='img'><img src='lefserPlot-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -178,7 +213,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title
-Perform a LEfSe analysis — lefserAnalysis • lefser</title>
+<title>R implementation of the LEfSe method — lefserAnalysis • lefser</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,12 @@ Perform a LEfSe analysis — lefserAnalysis • lefser</title>
 
 
 
-<meta property="og:title" content="Title
-Perform a LEfSe analysis — lefserAnalysis" />
-<meta property="og:description" content="Title
-Perform a LEfSe analysis" />
+<meta property="og:title" content="R implementation of the LEfSe method — lefserAnalysis" />
+<meta property="og:description" content="Perform a LEfSe analysis: the function carries out differential analysis
+between two sample groups for multiple microorganisms and uses linear discirminant analysis
+to establish their effect sizes. Subclass information for each class can be incorporated
+into the analysis (see examples). Microorganisms with large differences between two sample groups
+are identified as biomarkers." />
 
 
 
@@ -124,44 +125,106 @@ Perform a LEfSe analysis" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title
-Perform a LEfSe analysis</h1>
+    <h1>R implementation of the LEfSe method</h1>
     
     <div class="hidden name"><code>lefserAnalysis.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title
-Perform a LEfSe analysis</p>
+    <p>Perform a LEfSe analysis: the function carries out differential analysis
+between two sample groups for multiple microorganisms and uses linear discirminant analysis
+to establish their effect sizes. Subclass information for each class can be incorporated
+into the analysis (see examples). Microorganisms with large differences between two sample groups
+are identified as biomarkers.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>lefserAnalysis</span>(<span class='no'>expr</span>)</pre>
+    <pre class="usage"><span class='fu'>lefserAnalysis</span><span class='op'>(</span>
+  <span class='va'>expr</span>,
+  kw.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
+  wilcoxon.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
+  lda.threshold <span class='op'>=</span> <span class='fl'>2</span>,
+  groupCol <span class='op'>=</span> <span class='st'>"GROUP"</span>,
+  blockCol <span class='op'>=</span> <span class='st'>"BLOCK"</span>,
+  assay <span class='op'>=</span> <span class='fl'>1L</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>expr</th>
-      <td><p>Explain expr</p></td>
+      <td><p>A <code>SummarizedExperiment</code> with expression data.</p></td>
+    </tr>
+    <tr>
+      <th>kw.threshold</th>
+      <td><p>The p-value threshold for Kruskal-Wallis Rank Sum Test.
+The default is at &lt;= 0.05.</p></td>
+    </tr>
+    <tr>
+      <th>wilcoxon.threshold</th>
+      <td><p>The p-value for Wilcoxon Rank-Sum Test.
+The default is at &lt;= 0.05.</p></td>
+    </tr>
+    <tr>
+      <th>lda.threshold</th>
+      <td><p>The effect size threshold.
+The default is at 2.0.</p></td>
+    </tr>
+    <tr>
+      <th>groupCol</th>
+      <td><p>character(1) Column name in `colData(expr)` indicating
+groups, usually a factor with two levels (e.g., `c("cases", "controls")`).</p></td>
+    </tr>
+    <tr>
+      <th>blockCol</th>
+      <td><p>character(1) Column name in `colData(expr)` indicating the
+blocks, usually a factor with two levels (e.g., `c("adult", "senior")`).</p></td>
+    </tr>
+    <tr>
+      <th>assay</th>
+      <td><p>The i-th assay matrix in the `SummarizedExperiment` ('expr').
+Defaults to 1.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Explain what the function returns</p>
+    <p>The function returns a dataframe with two columns, which are
+names of microorganisms and their LDA scores.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>exampledata</span>)
-<span class='no'>exampledata</span> <span class='kw'>&lt;-</span> <span class='no'>exampledata</span>[, <span class='no'>exampledata</span>$<span class='no'>study_condition</span> <span class='kw'>!=</span> <span class='st'>"adenoma"</span>]
-<span class='no'>exampledata</span>$<span class='no'>GROUP</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>exampledata</span>$<span class='no'>study_condition</span> <span class='kw'>==</span> <span class='st'>"control"</span>, <span class='fl'>0</span>, <span class='fl'>1</span>)
-<span class='co'># keep only taxa with non-zero counts in at least 10 specimens:</span>
-<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='fu'>lefserAnalysis</span>(<span class='no'>exampledata</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='output co'>#&gt; <span class='warning'>Warning: variables are collinear</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>results</span>)</div><div class='output co'>#&gt;                  Names    scores
+    <pre class="examples"><div class='input'>    <span class='co'># (1) Using classes only</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
+    <span class='co'># exclude 'adenoma'</span>
+    <span class='va'>zeller14</span> <span class='op'>&lt;-</span> <span class='va'>zeller14</span><span class='op'>[</span>, <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>!=</span> <span class='st'>"adenoma"</span><span class='op'>]</span>
+    <span class='co'># assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)</span>
+    <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>GROUP</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>==</span> <span class='st'>"control"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+    <span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>lefserAnalysis</span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Length of block: 0</span></div><div class='input'>    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                  Names    scores
 #&gt; 1        p__Firmicutes -6.536708
 #&gt; 2        c__Clostridia -6.458054
 #&gt; 3     o__Clostridiales -6.458054
 #&gt; 4    p__Actinobacteria -6.282184
 #&gt; 5    c__Actinobacteria -6.282184
-#&gt; 6 o__Bifidobacteriales -6.237298</div></pre>
+#&gt; 6 o__Bifidobacteriales -6.237298</div><div class='input'>
+    <span class='co'># (2) Using classes and sublasses</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
+    <span class='co'># exclude 'adenoma'</span>
+    <span class='va'>zeller14</span> <span class='op'>&lt;-</span> <span class='va'>zeller14</span><span class='op'>[</span>, <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>!=</span> <span class='st'>"adenoma"</span><span class='op'>]</span>
+    <span class='co'># assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)</span>
+    <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>GROUP</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>==</span> <span class='st'>"control"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+    <span class='co'># assign '0' class to 'adult' and '1' to 'senior'</span>
+    <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>BLOCK</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>$</span><span class='va'>age_category</span> <span class='op'>==</span> <span class='st'>"adult"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+    <span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>lefserAnalysis</span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Length of block: 157</span></div><div class='input'>    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                           Names    scores
+#&gt; 1            o__Lactobacillales -5.894245
+#&gt; 2 s__Ruminococcus_sp_5_1_39BFAA -5.594798
+#&gt; 3              t__GCF_000159975 -5.594798
+#&gt; 4         s__Eubacterium_hallii -5.450848
+#&gt; 5              t__GCF_000173975 -5.450848
+#&gt; 6   s__Streptococcus_salivarius -5.330575</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -177,7 +240,7 @@ Perform a LEfSe analysis</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
