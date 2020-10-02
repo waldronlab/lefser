@@ -7,11 +7,8 @@ utils::globalVariables(c("Names", "scores"))
 #' @param df
 #' Data frame produced by `lefserAnalysis`.
 #'
-#' @param class0
-#' Input prefered color for class '0'.
-#'
-#' @param class1
-#' Input prefered color for class '1'.
+#' @param colors
+#' Input prefered colors for class '0' and '1'.
 #'
 #' @return
 #' Function returns plot of effect size scores produed by `lefserAnalysis`.
@@ -25,7 +22,7 @@ utils::globalVariables(c("Names", "scores"))
 #' @examples
 #' example("lefserAnalysis")
 #' lefserPlot(results)
-lefserPlot <- function(df, class0 = "red", class1 = "forestgreen") {
+lefserPlot <- function(df, colors = c("red", "forestgreen")) {
   group <- ifelse(df$scores > 0, 1, 0)
   df$group <- as.factor(group)
   plt <-
@@ -50,7 +47,7 @@ lefserPlot <- function(df, class0 = "red", class1 = "forestgreen") {
       )
     ) +
     geom_bar(stat = "identity", aes(fill = group)) +
-    scale_fill_manual(values = c(class0, class1)) +
+    scale_fill_manual(values = colors) +
     coord_flip()
   return(plt)
 }
