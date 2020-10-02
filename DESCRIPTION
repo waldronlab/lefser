@@ -33,4 +33,5 @@ Suggests:
     covr
 Encoding: UTF-8
 VignetteBuilder: knitr
+biocViews: Software, Sequencing, DifferentialExpression, Microbiome, StatisticalMethod, Classification
 RoxygenNote: 7.1.1
