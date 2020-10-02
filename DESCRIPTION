@@ -9,6 +9,8 @@ Authors@R: c(
         role = c("cre", "aut")),
     person("Ludwig", "Geistlinger", email = "Ludwig.Geistlinger@sph.cuny.edu",
         role = "ctb"),
+    person("Marcel", "Ramos", email = "marcel.ramos@roswellpark.org",
+        role = "ctb", comment = c(ORCID = "0000-0002-3242-0582")),
     person("Levi", "Waldron", email ="levi.waldron@sph.cuny.edu", role = "ctb")
     )
 License: Artistic-2.0

@@ -2,24 +2,20 @@
 % Please edit documentation in R/lefserAnalysis.R
 \name{lefserAnalysis}
 \alias{lefserAnalysis}
-\title{Title
-Perform a LEfSe analysis}
+\title{R implementation of the LEfSe method}
 \usage{
 lefserAnalysis(
   expr,
   kw.threshold = 0.05,
   wilcoxon.threshold = 0.05,
-  lda.threshold = 2
+  lda.threshold = 2,
+  groupCol = "GROUP",
+  blockCol = "BLOCK",
+  assay = 1L
 )
 }
 \arguments{
-\item{expr}{The expr is an \code{\linkS4class{ExpressionSet}} or a \code{\linkS4class{SummarizedExperiment}}.
-GROUP column should be assigned to meta-data of
-ExpressionSet/SummarizedExperiment
-as a class in pData/colData before using lefserAnalysis function.
-Use '0' and '1' for unaffected (controls) and
-affected (cases) samples, respectively. Optionally, any number of subclasses can
-be defined by adding BLOCK column to meta-data of ExpressionSet/SummarizedExperiment.}
+\item{expr}{A \code{\linkS4class{SummarizedExperiment}}.}
 
 \item{kw.threshold}{The p-value threshold for Kruskal-Wallis Rank Sum Test.
 The default is at <= 0.05.}
@@ -29,14 +25,26 @@ The default is at <= 0.05.}
 
 \item{lda.threshold}{The effect size threshold.
 The default is at 2.0.}
+
+\item{groupCol}{character(1) Column name in `colData(expr)` indicating
+groups, usually a factor with two levels (e.g., `c("cases", "controls")`).}
+
+\item{blockCol}{character(1) Column name in `colData(expr)` indicating the
+blocks, usually a factor with two levels (e.g., `c("adult", "senior")`).}
+
+\item{assay}{The i-th assay matrix in the `SummarizedExperiment` ('expr').
+Defaults to 1.}
 }
 \value{
 The function returns a dataframe with two columns, which are
 names of microorganisms and their LDA scores.
 }
 \description{
-Title
-Perform a LEfSe analysis
+Perform a LEfSe analysis: the function carries out differential analysis
+between two sample groups for multiple microorganisms and uses linear discirminant analysis
+to establish their effect sizes. Subclass information for each class can be incorporated
+into the analysis (see examples). Microorganisms with large differences between two sample groups
+are identified as biomarkers.
 }
 \examples{
     # (1) Using classes only

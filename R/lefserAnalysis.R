@@ -1,4 +1,4 @@
-createGroupBlockMatrixGroups <- function(expr, groupCol, blockCol, assay) {
+createGroupBlockMatrixGroups <- function(se, groupCol, blockCol, assay) {
   expr <- assay(se, i = assay)
   grp <- colData(se)[[groupCol]]
   blk <- colData(se)[[blockCol]]
@@ -7,7 +7,7 @@ createGroupBlockMatrixGroups <- function(expr, groupCol, blockCol, assay) {
     stop("Group assignment 'grp' must be specified")
   grp <- as.factor(grp)
   groups <- levels(grp)
-  if (length(levels) != 2L)
+  if (length(groups) != 2L)
     stop(
         "Group classification is not dichotomous:\n",
         "Found (", paste(groups, collapse = ", "), ")"
@@ -202,7 +202,7 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #' into the analysis (see examples). Microorganisms with large differences between two sample groups
 #' are identified as biomarkers.
 #'
-#' @param expr A \code{\linkS4class{SummarizedExperiment}}.
+#' @param expr A \code{\linkS4class{SummarizedExperiment}} with expression data.
 #' @param groupCol character(1) Column name in `colData(expr)` indicating
 #' groups, usually a factor with two levels (e.g., `c("cases", "controls")`).
 #' @param blockCol character(1) Column name in `colData(expr)` indicating the

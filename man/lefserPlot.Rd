@@ -2,18 +2,24 @@
 % Please edit documentation in R/lefserPlot.R
 \name{lefserPlot}
 \alias{lefserPlot}
-\title{Title add title}
+\title{Plots results from `lefserAnalysis` function}
 \usage{
-lefserPlot(scores_df)
+lefserPlot(df, colors = c("red", "forestgreen"))
 }
 \arguments{
-\item{scores_df}{explain scores_df}
+\item{df}{Data frame produced by `lefserAnalysis`.}
+
+\item{colors}{character(2) The two colors corresponding to class 0 and 1,
+respectively. Defaults to `c("red", "forestgreen")`.}
 }
 \value{
-explain the return value
+Function returns plot of effect size scores produed by `lefserAnalysis`.
+Positive scores represent microorganisms with that are more abundant in class '1'.
+Negative scores represent microorganisms with that are more abundant in class '0'.
 }
 \description{
-Title add title
+`lefserPlot` function displays effect sizes for differentially expressed microorganisms
+and whether they are more abundant in '0' or '1' sample group.
 }
 \examples{
 example("lefserAnalysis")
