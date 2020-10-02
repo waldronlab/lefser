@@ -1,36 +1,18 @@
-createGroupBlockMatrixGroups <- function(expr){
+createGroupBlockMatrixGroups <- function(expr, groupCol, blockCol, assay) {
+  expr <- assay(se, i = assay)
+  grp <- colData(se)[[groupCol]]
+  blk <- colData(se)[[blockCol]]
 
-  if (is(expr, "ExpressionSet")){
-    expr <- as(expr, "SummarizedExperiment")
-  }
-  isSE <- is(expr, "SummarizedExperiment")
-  if (isSE) {
-    se <- expr
-    expr <- assay(se)
-    grp <- colData(se)$GROUP
-    blk <- colData(se)$BLOCK
-  }
-  if (!is.matrix(expr))
-    stop(
-      paste(
-        "Expression data in 'expr' must be either",
-        "a matrix, a SummarizedExperiment, or an ExpressionSet"
-      )
-    )
   if (is.null(grp))
     stop("Group assignment 'grp' must be specified")
-  groups <- sort(unique(grp))
-  if (!all(groups == c(0, 1)))
+  grp <- as.factor(grp)
+  groups <- levels(grp)
+  if (length(levels) != 2L)
     stop(
-      paste0(
-        "Group classification is not binary:\n",
-        "Expected (0, 1) but found (",
-        paste(groups, collapse = ", "),
-        ")"
-      )
+        "Group classification is not dichotomous:\n",
+        "Found (", paste(groups, collapse = ", "), ")"
     )
-  list(group = factor(grp),
-       block = factor(blk), expr = expr, groups=groups)
+  list(group = grp, block = as.factor(blk), expr = expr)
 }
 
 fillPmatZmat <- function(group, block, expr_sub, wilcoxon.threshold)
@@ -74,10 +56,10 @@ fillPmatZmat <- function(group, block, expr_sub, wilcoxon.threshold)
       mat = cbind(expr_sub[, logical.list.of.subclasses[[i]]],
                   expr_sub[, logical.list.of.subclasses[[j]]])
       group_for_mat = factor(c(rep(
-        0, sum(logical.list.of.subclasses[[i]] == TRUE)
+        0, sum(logical.list.of.subclasses[[i]])
       ),
       rep(
-        1, sum(logical.list.of.subclasses[[j]] == TRUE)
+        1, sum(logical.list.of.subclasses[[j]])
       )))
       pval_mat[, c + 1] <-
         suppressWarnings(apply(mat, 1, wilcox_test_pvalue, group = group_for_mat))
@@ -100,7 +82,7 @@ fillPmatZmat <- function(group, block, expr_sub, wilcoxon.threshold)
 
   # confirms that z-statistics of a row all have the same sign
   sub <- abs(rowSums(z_mat_sub)) == abs(rowSums(abs(z_mat_sub)))
-  expr_sub <- expr_sub[names(sub[sub == TRUE]),]
+  expr_sub <- expr_sub[names(sub[sub]),]
 }
 
 # ensures that more than half of the values in each for each feature are unique
@@ -139,7 +121,7 @@ contastWithinClassesOrFewPerClass <-
       return (TRUE)
     }
     # detect if for each class there are not fewer than the minimum (min_cl) number of samples
-    if (TRUE %in% c(table(cls) < min_cl)) {
+    if (any(table(cls) < min_cl)) {
       return (TRUE)
     }
     # separate the randomly selected samples (cols) into a list of the two classes
@@ -154,9 +136,9 @@ contastWithinClassesOrFewPerClass <-
       unique_counts_per_microb = apply(by_class[[i]], 2, function(x) {
         length(unique(x))
       })
-      if ((TRUE %in% c(unique_counts_per_microb <= min_cl) &
+      if ((any(unique_counts_per_microb <= min_cl) &
            min_cl > 1) |
-          (min_cl == 1 & (TRUE %in% c(unique_counts_per_microb <= 1)))) {
+          (min_cl == 1 & any(unique_counts_per_microb <= 1))) {
         return (TRUE)
       }
     }
@@ -167,8 +149,8 @@ contastWithinClassesOrFewPerClass <-
 ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   # test 1000 samples for contrast within classes per feature
   # and that there is at least a minimum number of samples per class
-  for (j in seq_along(1:1000)) {
-    rand_s <- sample(c(1:lfk), rfk, replace = TRUE)
+  for (j in 1:1000) {
+    rand_s <- sample(seq_len(lfk), rfk, replace = TRUE)
     if (!contastWithinClassesOrFewPerClass(data, rand_s, min_cl, ncl, groups)) {
       break
     }
@@ -197,7 +179,7 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 
   coeff <- vector("numeric", length(scal))
   for (v in seq_along(scal)) {
-    if (is.na(scal[v]) != TRUE) {
+    if (!is.na(scal[v])) {
       coeff[v] <- abs(scal[v])
     } else{
       coeff[v] <- 0
@@ -220,14 +202,13 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #' into the analysis (see examples). Microorganisms with large differences between two sample groups
 #' are identified as biomarkers.
 #'
-#' @param expr
-#' The expr is an \code{\linkS4class{ExpressionSet}} or a \code{\linkS4class{SummarizedExperiment}}.
-#' GROUP column should be assigned to meta-data of
-#' ExpressionSet/SummarizedExperiment
-#' as a class in pData/colData before using lefserAnalysis function.
-#' Use '0' and '1' for unaffected (controls) and
-#' affected (cases) samples, respectively. Optionally, any number of subclasses can
-#' be defined by adding BLOCK column to meta-data of ExpressionSet/SummarizedExperiment.
+#' @param expr A \code{\linkS4class{SummarizedExperiment}}.
+#' @param groupCol character(1) Column name in `colData(expr)` indicating
+#' groups, usually a factor with two levels (e.g., `c("cases", "controls")`).
+#' @param blockCol character(1) Column name in `colData(expr)` indicating the
+#' blocks, usually a factor with two levels (e.g., `c("adult", "senior")`).
+#' @param assay The i-th assay matrix in the `SummarizedExperiment` ('expr').
+#' Defaults to 1.
 #' @param kw.threshold
 #' The p-value threshold for Kruskal-Wallis Rank Sum Test.
 #' The default is at <= 0.05.
@@ -241,7 +222,6 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #' The function returns a dataframe with two columns, which are
 #' names of microorganisms and their LDA scores.
 #'
-#' @export
 #' @importFrom stats kruskal.test reorder rnorm
 #' @importFrom coin pvalue statistic wilcox_test
 #' @importFrom MASS lda
@@ -268,16 +248,17 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #'     zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
 #'     results <- lefserAnalysis(zeller14)
 #'     head(results)
-
-
-lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05, lda.threshold = 2.0)
-
+#' @export
+lefserAnalysis <-
+    function(expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05,
+        lda.threshold = 2.0, groupCol = "GROUP", blockCol = "BLOCK", assay = 1L)
 {
-  groupBlockMatrixGroups <- createGroupBlockMatrixGroups(expr)
+  groupBlockMatrixGroups <-
+    createGroupBlockMatrixGroups(expr, groupCol, blockCol, assay)
   group <- groupBlockMatrixGroups$group
   block <- groupBlockMatrixGroups$block
   expr <- groupBlockMatrixGroups$expr
-  groups <- groupBlockMatrixGroups$groups
+  groups <- levels(group)
 
   # extracts p-values from Kruskal-Wallis Rank Sum Test
   kruskal.test.alt <- function(x, group) {
@@ -297,8 +278,7 @@ lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05
   # extracts features with statistically significant differential abundance
   # from "expr" matrix
   expr_sub <- expr[kw.sub, ]
-  print("Length of block")
-  print(length(block))
+  message("Length of block: ", length(block))
  if (length(block)!=0){
    expr_sub <- fillPmatZmat(group, block, expr_sub, wilcoxon.threshold)
  }
@@ -349,6 +329,6 @@ lefserAnalysis <- function (expr, kw.threshold = 0.05, wilcoxon.threshold = 0.05
   scores_df <- data.frame(Names, scores)
   threshold_scores <- abs(scores_df$scores)>=lda.threshold
   scores_df <- scores_df[threshold_scores,]
-  rownames(scores_df) <- c(1:nrow(scores_df))
+  rownames(scores_df) <- seq_len(nrow(scores_df))
   return(scores_df)
 }

@@ -1,7 +1,8 @@
 #' Example dataset for lefser
 #'
-#' The ZellerG_2014 dataset contains microbiome count data for CRC patients and controls.
-#' It was for curatedMetagenomicData using the script in the package directory "data/raw".
+#' The ZellerG_2014 dataset contains microbiome count data for CRC patients and
+#' controls. It was for curatedMetagenomicData using the script in the package
+#' directory "data-raw".
 #'
 #' @format A SummarizedExperiment with 1585 features, 199 samples
 #' \describe{
