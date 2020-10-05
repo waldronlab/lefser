@@ -3,7 +3,7 @@ Type: Package
 Title: R implementation of the LEfSE method for microbiome biomarker discovery
 Description: lefser uses Kruskal-Wallis test, Wilcoxon-Rank Sum test, and LDA
   to find biomarkers of groups and sub-groups.
-Version: 0.99.0
+Version: 0.99.1
 Authors@R: c(
     person("Asya", "Khleborodova", email = "asya.bioconductor@gmail.com",
         role = c("cre", "aut")),
