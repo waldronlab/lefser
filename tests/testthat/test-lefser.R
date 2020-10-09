@@ -1,13 +1,13 @@
-test_that("lefserAnalysis and lefserPlot work", {
+test_that("lefser and lefserPlot work", {
   data("zeller14")
   zellersub <- zeller14[1:200, zeller14$study_condition != "adenoma"]
-  expect_error(lefserAnalysis(zellersub),
+  expect_error(lefser(zellersub),
                "Group assignment 'grp' must be specified")
   # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
   zellersub$GROUP <-
     ifelse(zellersub$study_condition == "control", 0, 1)
   set.seed(1)
-  expect_message(results <- lefserAnalysis(zellersub), "Length of block: 0")
+  expect_message(results <- lefser(zellersub), "Length of block: 0")
   expect_equal(colnames(results), c("Names", "scores"))
   expect_equal(results[1, "Names"], "p__Firmicutes")
   expect_equal(results[nrow(results), "Names"], "o__Bacteroidales")
@@ -15,7 +15,7 @@ test_that("lefserAnalysis and lefserPlot work", {
   expect_equal(results[nrow(results), "scores"], 6.402655, tolerance = 1e-4)
   # test with blocks: assign '0' class to 'adult' and '1' to 'senior'
   zellersub$BLOCK <- ifelse(zellersub$age_category == "adult", 0, 1)
-  expect_message(results2 <- lefserAnalysis(zellersub), "Length of block: 157")
+  expect_message(results2 <- lefser(zellersub), "Length of block: 157")
   expect_equal(nrow(results2), 4)
   expect_equal(
     results2$Names,
