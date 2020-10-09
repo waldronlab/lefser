@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>R implementation of the LEfSe method — lefserAnalysis • lefser</title>
+<title>R implementation of the LEfSe method — lefser • lefser</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="R implementation of the LEfSe method — lefserAnalysis" />
+<meta property="og:title" content="R implementation of the LEfSe method — lefser" />
 <meta property="og:description" content="Perform a LEfSe analysis: the function carries out differential analysis
 between two sample groups for multiple microorganisms and uses linear discirminant analysis
 to establish their effect sizes. Subclass information for each class can be incorporated
@@ -127,7 +127,7 @@ are identified as biomarkers." />
     <div class="page-header">
     <h1>R implementation of the LEfSe method</h1>
     
-    <div class="hidden name"><code>lefserAnalysis.Rd</code></div>
+    <div class="hidden name"><code>lefser.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -138,7 +138,7 @@ into the analysis (see examples). Microorganisms with large differences between 
 are identified as biomarkers.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>lefserAnalysis</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>lefser</span><span class='op'>(</span>
   <span class='va'>expr</span>,
   kw.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
   wilcoxon.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
@@ -199,7 +199,7 @@ names of microorganisms and their LDA scores.</p>
     <span class='va'>zeller14</span> <span class='op'>&lt;-</span> <span class='va'>zeller14</span><span class='op'>[</span>, <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>!=</span> <span class='st'>"adenoma"</span><span class='op'>]</span>
     <span class='co'># assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)</span>
     <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>GROUP</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>==</span> <span class='st'>"control"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-    <span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>lefserAnalysis</span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
+    <span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>lefser</span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Length of block: 0</span></div><div class='input'>    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;                  Names    scores
 #&gt; 1        p__Firmicutes -6.536708
@@ -216,7 +216,7 @@ names of microorganisms and their LDA scores.</p>
     <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>GROUP</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>==</span> <span class='st'>"control"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
     <span class='co'># assign '0' class to 'adult' and '1' to 'senior'</span>
     <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>BLOCK</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>$</span><span class='va'>age_category</span> <span class='op'>==</span> <span class='st'>"adult"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-    <span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>lefserAnalysis</span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
+    <span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>lefser</span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Length of block: 157</span></div><div class='input'>    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;                           Names    scores
 #&gt; 1            o__Lactobacillales -5.894245
