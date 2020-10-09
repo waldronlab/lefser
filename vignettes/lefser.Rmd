@@ -60,13 +60,13 @@ zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
 table(zeller14$BLOCK, zeller14$GROUP)
 ```
 
-The dataset can now be used with lefser functions. There is the `lefserAnalysis` function for extracting
+The dataset can now be used with lefser functions. There is the `lefser` function for extracting
 results in the form of dataframe, names of selected microorganisms and their effect size.
 
 **NOTE** the following code blocks are temporarily unevaluated to allow checks to pass, but need to be fixed.
 
 ```{r, eval = FALSE}
-results <- lefserAnalysis(zeller14)
+results <- lefser(zeller14)
 ##  Error in UseMethod("group_vars") :
 ##  no applicable method for 'group_vars' applied to an object of class ##  "logical"
 
