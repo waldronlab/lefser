@@ -325,7 +325,7 @@ lefserAnalysis <-
     eff_size_mat <-
       replicate(30, suppressWarnings(ldaFunction(
         expr_sub_t_df, lfk, rfk, min_cl, ncl, groups
-      )), simplify = T)
+      )), simplify = TRUE)
     
     # mean of 30 scores per feature
     raw_lda_scores <- rowMeans(eff_size_mat)
