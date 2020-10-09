@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   lefser: lefser.html
-last_built: 2020-10-09T19:44Z
+last_built: 2020-10-09T19:45Z
 urls:
   reference: https://waldronlab.io/lefser//reference
   article: https://waldronlab.io/lefser//articles
