@@ -1,18 +1,18 @@
 utils::globalVariables(c("Names", "scores"))
 
-#' Plots results from `lefserAnalysis` function
+#' Plots results from `lefser` function
 #'
 #' `lefserPlot` function displays effect sizes for differentially expressed microorganisms
 #' and whether they are more abundant in '0' or '1' sample group.
 #'
 #' @param df
-#' Data frame produced by `lefserAnalysis`.
+#' Data frame produced by `lefser`.
 #'
 #' @param colors character(2) The two colors corresponding to class 0 and 1,
 #' respectively. Defaults to `c("red", "forestgreen")`.
 #'
 #' @return
-#' Function returns plot of effect size scores produed by `lefserAnalysis`.
+#' Function returns plot of effect size scores produed by `lefser`.
 #' Positive scores represent microorganisms with that are more abundant in class '1'.
 #' Negative scores represent microorganisms with that are more abundant in class '0'.
 #'
@@ -21,7 +21,7 @@ utils::globalVariables(c("Names", "scores"))
 #' @importFrom ggplot2 geom_bar coord_flip scale_fill_manual
 #'
 #' @examples
-#' example("lefserAnalysis")
+#' example("lefser")
 #' lefserPlot(results)
 lefserPlot <- function(df, colors = c("red", "forestgreen")) {
   group <- ifelse(df$scores > 0, 1, 0)

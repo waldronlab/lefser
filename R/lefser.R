@@ -246,7 +246,7 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
 #'     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
 #'     zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
-#'     results <- lefserAnalysis(zeller14)
+#'     results <- lefser(zeller14)
 #'     head(results)
 #'
 #'     # (2) Using classes and sublasses
@@ -257,10 +257,10 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #'     zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
 #'     # assign '0' class to 'adult' and '1' to 'senior'
 #'     zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
-#'     results <- lefserAnalysis(zeller14)
+#'     results <- lefser(zeller14)
 #'     head(results)
 #' @export
-lefserAnalysis <-
+lefser <-
   function(expr,
            kw.threshold = 0.05,
            wilcoxon.threshold = 0.05,
