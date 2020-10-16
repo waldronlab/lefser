@@ -168,13 +168,13 @@ Negative scores represent microorganisms with that are more abundant in class '0
 #&gt; 
 #&gt; lefser&gt;     results &lt;- lefser(zeller14)</div><div class='output co'>#&gt; <span class='message'>Length of block: 0</span></div><div class='output co'>#&gt; 
 #&gt; lefser&gt;     head(results)
-#&gt;               Names    scores
-#&gt; 1     p__Firmicutes -6.574292
-#&gt; 2     c__Clostridia -6.503300
-#&gt; 3  o__Clostridiales -6.503300
-#&gt; 4 p__Actinobacteria -6.221553
-#&gt; 5 c__Actinobacteria -6.221553
-#&gt; 6   g__Ruminococcus -6.207069
+#&gt;                  Names    scores
+#&gt; 1        p__Firmicutes -6.560873
+#&gt; 2        c__Clostridia -6.481874
+#&gt; 3     o__Clostridiales -6.481874
+#&gt; 4    p__Actinobacteria -6.267828
+#&gt; 5    c__Actinobacteria -6.267828
+#&gt; 6 o__Bifidobacteriales -6.229754
 #&gt; 
 #&gt; lefser&gt;     # (2) Using classes and sublasses
 #&gt; lefser&gt;     data(zeller14)
@@ -188,15 +188,15 @@ Negative scores represent microorganisms with that are more abundant in class '0
 #&gt; lefser&gt;     # assign '0' class to 'adult' and '1' to 'senior'
 #&gt; lefser&gt;     zeller14$BLOCK &lt;- ifelse(zeller14$age_category == "adult", 0, 1)
 #&gt; 
-#&gt; lefser&gt;     results &lt;- lefser(zeller14)</div><div class='output co'>#&gt; <span class='message'>Length of block: 157</span></div><div class='output co'>#&gt; 
+#&gt; lefser&gt;     results &lt;- lefser(zeller14)</div><div class='output co'>#&gt; <span class='message'>Length of block: 157</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; 
 #&gt; lefser&gt;     head(results)
 #&gt;                           Names    scores
-#&gt; 1            o__Lactobacillales -5.939724
-#&gt; 2 s__Ruminococcus_sp_5_1_39BFAA -5.590255
-#&gt; 3              t__GCF_000159975 -5.590255
-#&gt; 4         s__Eubacterium_hallii -5.558419
-#&gt; 5              t__GCF_000173975 -5.558419
-#&gt; 6   s__Streptococcus_salivarius -5.372396</div><div class='input'><span class='fu'>lefserPlot</span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
+#&gt; 1            o__Lactobacillales -5.925304
+#&gt; 2 s__Ruminococcus_sp_5_1_39BFAA -5.604295
+#&gt; 3              t__GCF_000159975 -5.604295
+#&gt; 4         s__Eubacterium_hallii -5.511598
+#&gt; 5              t__GCF_000173975 -5.511598
+#&gt; 6   s__Streptococcus_salivarius -5.399300</div><div class='input'><span class='fu'>lefserPlot</span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
 </div><div class='img'><img src='lefserPlot-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
