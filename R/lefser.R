@@ -67,7 +67,7 @@ fillPmatZmat <- function(group,
   z_mat_sub <- z_mat[sub,]
 
   # confirms that z-statistics of a row all have the same sign
-  sub <- rowSums(z_mat_sub) == rowSums(abs(z_mat_sub))
+  sub <- abs(rowSums(z_mat_sub)) == rowSums(abs(z_mat_sub))
   expr_sub[names(sub[sub]), ]
 }
 
