@@ -18,64 +18,84 @@ vignette: >
 
 # Introduction
 
-Lefser is metagenomic biomarker discovery tool that is based on [LEfSe](https://huttenhower.sph.harvard.edu/galaxy/) tool and is published by [Huttenhower et al. 2011](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/). `Lefser` is the R implementation of the `LEfSe` method.
+Lefser is metagenomic biomarker discovery tool that is based on
+[LEfSe](https://huttenhower.sph.harvard.edu/galaxy/) tool and is published by
+[Huttenhower et al.  2011](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/).
+`Lefser` is the R implementation of the `LEfSe` method.
 
-Using statistical analyses, `lefser` compares microbial populations of healthy and diseased subjects to discover differencially expressed microorganisms. `Lefser` than computes effect size, which estimates magnitude of differential expression between the populations for each differentially expressed microorganism. Subclasses of classes can also be assigned and used within the analysis.
+Using statistical analyses, `lefser` compares microbial populations of healthy
+and diseased subjects to discover differencially expressed microorganisms.
+`Lefser` than computes effect size, which estimates magnitude of differential
+expression between the populations for each differentially expressed
+microorganism. Subclasses of classes can also be assigned and used within the
+analysis.
 
 ```{r style, echo = FALSE, results = 'asis'}
 knitr::opts_chunk$set(fig.align = "center")
 ```
 
-```{r, loadpackage}
-suppressPackageStartupMessages(library(lefser))
+```{r,include=TRUE,results="hide",message=FALSE,warning=FALSE}
+library(lefser)
 ```
 
 # Overview and example use of `lefser`
 
-The `lefser` function can be used with either `SummarizedExperiment`
-or `ExpressionSet` data.
+The `lefser` function can be used with a `SummarizedExperiment`.
 
-Load the ZellerG_2014 example dataset:
+Load the `zeller14` example dataset and exclude 'adenoma' conditions.
 
-```{r, eval = TRUE}
+
+```{r}
 data(zeller14)
-zeller14
+zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
 ```
 
-Within the `ExpressionSet` data set the GROUP column to contain class 0 or class 1, (e.g. *control* and *CRC*). First we remove adenoma samples, because lefser supports only two-group contrasts (**Asya is this true?**) **Yes**:
+Note. `lefser` supports only two-group contrasts.
+
+The `colData` in the `SummarizedExperiment` dataset contains the grouping
+column `study_condition` which includes the 'control' and 'CRC' groups.
 
 ```{r}
 table(zeller14$study_condition)
-zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
-table(zeller14$GROUP)
 ```
 
+There can be subclasses in each group condition. In the example dataset
+we include `age_category` as a subclass of `study_condition` which includes
+'adults' and 'seniors'. This variable will correspond to the `blockCol`
+input argument.
 
-Now set BLOCK to be a sublass of each class as 0 or 1 (e.g. *adult* or *senior*):
-
-```{r, eval = TRUE}
+```{r}
 table(zeller14$age_category)
-zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
-table(zeller14$BLOCK, zeller14$GROUP)
 ```
 
-The dataset can now be used with lefser functions. There is the `lefser` function for extracting
-results in the form of dataframe, names of selected microorganisms and their effect size.
+We can create a contingency table for the two categorical variables.
 
-**NOTE** the following code blocks are temporarily unevaluated to allow checks to pass, but need to be fixed.
-
-```{r, eval = FALSE}
-results <- lefser(zeller14)
-##  Error in UseMethod("group_vars") :
-##  no applicable method for 'group_vars' applied to an object of class ##  "logical"
-
-warnings() ##variables are collinear, conditional covariance matrix has zero diagonal elements - maybe need a different example, or to explain what the collinear variables are and the consequences
-head(results)
+```{r}
+table(zeller14$age_category, zeller14$study_condition)
 ```
 
-The other function is `lefserPlot` should be used to generate a plot of the results.
+We can now use the `lefser` function. It provides results as a `data.frame`
+with the names of selected microorganisms and their effect size.
 
-```{r, eval = FALSE}
-lefserPlot(results)
+
+```{r}
+res <- lefser(zeller14, groupCol = "study_condition", blockCol = "age_category")
+head(res)
 ```
+
+# Visualizing results with `lefserPlot`
+
+
+```{r}
+lefserPlot(res)
+```
+
+## sessionInfo
+
+<details>
+
+```{r}
+sessionInfo()
+```
+
+</details>
