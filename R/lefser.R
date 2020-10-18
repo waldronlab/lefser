@@ -1,11 +1,17 @@
 createGroupBlockMatrixGroups <-
   function(se, groupCol, blockCol, assay) {
     expr <- assay(se, i = assay)
-    grp <- colData(se)[[groupCol]]
-    blk <- colData(se)[[blockCol]]
+    if (is.null(groupCol)){
+      stop("Group assignment 'groupCol' must be specified")
+    }else{
+      grp <- colData(se)[[groupCol]]
+    }
+    if(!is.null(blockCol)){
+      blk <- colData(se)[[blockCol]]
+    }else{
+      blk <- NULL
+    }
     
-    if (is.null(grp))
-      stop("Group assignment 'grp' must be specified")
     grp <- as.factor(grp)
     groups <- levels(grp)
     if (length(groups) != 2L)
