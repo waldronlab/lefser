@@ -44,7 +44,7 @@ fillPmatZmat <- function(group,
   group_formats <- apply(iters, 1L, function(x) {
     ind <- unlist(whichlist[x])
     apply(texp_sub, 2L, function(g) {
-      wx <- wilcox_test(g ~ group, subset = ind)
+      wx <- suppressWarnings(wilcox_test(g ~ group, subset = ind))
         cbind.data.frame(p.value = pvalue(wx), statistic = statistic(wx))
     })
   })
@@ -74,28 +74,33 @@ fillPmatZmat <- function(group,
 ## ensures that more than half of the values in each for each feature are unique
 ## if that is not the case then a count value is altered by adding it to a small value
 ## generated via normal distribution with mean=0 and sd=5% of the count value
-createUniqueValues <- function(expr_sub_t_df, groups) {
-  df <- expr_sub_t_df
-  for (i in seq_along(c(1:(ncol(df) - 1)))) {
-    for (j in seq_along(groups)) {
-      equality = df[df[, "class"] == groups[j], i]
-      if (length(unique(equality)) > max(length(equality) * 0.5, 4)) {
-        next
-      } else{
-        for (k in seq_along(equality)) {
-          equality[k] = abs(equality[k] + rnorm(
-            1,
-            mean = 0,
-            sd = max(equality[k] * 0.05, 0.01)
-          ))
+createUniqueValues <- function(expr_sub_t_df, groups, group){
+  sgroup <- lapply(groups, function(x){which(group==x)})
+  expr_sub_t_df =do.call(rbind, lapply(sgroup, function(m){
+    sub <- expr_sub_t_df[m,]
+    apply(sub, 2L, function(x){
+      if((length(unique(x)) > max(length(x)*0.5,4))){
+        x=x}else{
+          sapply(x, function(y){
+            y <- abs(y + rnorm(
+              1,
+              mean = 0,
+              sd = max(y * 0.05, 0.01)
+            ))
+          })
         }
-        
-      }
-      df[df[, "class"] == groups[j], i] = equality
-    }
-  }
-  expr_sub_t_df <- df
+      
+    })
+    
+  }))
+  
+  expr_sub_t_df[order(as.integer(row.names(expr_sub_t_df))),]
+  
 }
+
+  
+     
+
 
 contastWithinClassesOrFewPerClass <-
   function(expr_sub_t_df, rand_s, min_cl, ncl, groups) {
@@ -269,7 +274,6 @@ lefser <-
     # extracts features with statistically significant differential abundance
     # from "expr" matrix
     expr_sub <- expr[kw.sub,]
-    message("Length of block: ", length(block))
     if (length(block) != 0) {
       expr_sub <- fillPmatZmat(group, block, expr_sub, wilcoxon.threshold)
     }
@@ -277,10 +281,11 @@ lefser <-
     # transposes matrix and add a "class" (i.e., group) column
     # matrix converted to dataframe
     expr_sub_t <- t(expr_sub)
-    expr_sub_t <- cbind(expr_sub_t, class = (as.numeric(group) - 1))
+
     expr_sub_t_df <- data.frame(expr_sub_t)
     
     expr_sub_t_df <- createUniqueValues(expr_sub_t_df, groups)
+    expr_sub_t <- cbind(expr_sub_t, class = (as.numeric(group) - 1))
     
     # number of samples (i.e., subjects) in the dataframe
     lfk <- nrow(expr_sub_t_df)
