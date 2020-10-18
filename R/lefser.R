@@ -74,10 +74,11 @@ fillPmatZmat <- function(group,
 ## ensures that more than half of the values in each for each feature are unique
 ## if that is not the case then a count value is altered by adding it to a small value
 ## generated via normal distribution with mean=0 and sd=5% of the count value
-createUniqueValues <- function(expr_sub_t_df, groups, group){
+createUniqueValues <- function(df, groups, group){
   sgroup <- lapply(groups, function(x){which(group==x)})
-  expr_sub_t_df =do.call(rbind, lapply(sgroup, function(m){
-    sub <- expr_sub_t_df[m,]
+  target <- row.names(df)
+  df =do.call(rbind, lapply(sgroup, function(m){
+    sub <- df[m,]
     apply(sub, 2L, function(x){
       if((length(unique(x)) > max(length(x)*0.5,4))){
         x=x}else{
@@ -93,8 +94,8 @@ createUniqueValues <- function(expr_sub_t_df, groups, group){
     })
     
   }))
-  
-  expr_sub_t_df[order(as.integer(row.names(expr_sub_t_df))),]
+  df = data.frame(df)
+  df <- df[match(target, row.names(df)),]
   
 }
 
@@ -284,8 +285,8 @@ lefser <-
 
     expr_sub_t_df <- data.frame(expr_sub_t)
     
-    expr_sub_t_df <- createUniqueValues(expr_sub_t_df, groups)
-    expr_sub_t <- cbind(expr_sub_t, class = (as.numeric(group) - 1))
+    expr_sub_t_df <- createUniqueValues(expr_sub_t_df, groups, group)
+    expr_sub_t_df <- cbind(expr_sub_t_df, class = (as.numeric(group) - 1))
     
     # number of samples (i.e., subjects) in the dataframe
     lfk <- nrow(expr_sub_t_df)
