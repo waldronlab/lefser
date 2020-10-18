@@ -80,7 +80,7 @@
                         <h4 class="author"><div class="line-block">Asya Khleborodova, Ludwig Geistlinger, and Levi Waldron<br><small>School of Public Health, City University of New York</small>
 </div></h4>
             
-            <h4 class="date">2020-10-16</h4>
+            <h4 class="date">2020-10-18</h4>
       
       
       <div class="hidden name"><code>lefser.Rmd</code></div>
@@ -95,66 +95,144 @@
 <p>Lefser is metagenomic biomarker discovery tool that is based on <a href="https://huttenhower.sph.harvard.edu/galaxy/">LEfSe</a> tool and is published by <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/">Huttenhower et al. 2011</a>. <code>Lefser</code> is the R implementation of the <code>LEfSe</code> method.</p>
 <p>Using statistical analyses, <code>lefser</code> compares microbial populations of healthy and diseased subjects to discover differencially expressed microorganisms. <code>Lefser</code> than computes effect size, which estimates magnitude of differential expression between the populations for each differentially expressed microorganism. Subclasses of classes can also be assigned and used within the analysis.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">lefser</span><span class="op">)</span><span class="op">)</span></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">lefser</span><span class="op">)</span></pre></div>
 </div>
 <div id="overview-and-example-use-of-lefser" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview-and-example-use-of-lefser" class="anchor"></a>Overview and example use of <code>lefser</code>
 </h1>
-<p>The <code>lefser</code> function can be used with either <code>SummarizedExperiment</code> or <code>ExpressionSet</code> data.</p>
-<p>Load the ZellerG_2014 example dataset:</p>
+<p>The <code>lefser</code> function can be used with a <code>SummarizedExperiment</code>.</p>
+<p>Load the <code>zeller14</code> example dataset and exclude ‘adenoma’ conditions.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">)</span>
-<span class="va">zeller14</span></pre></div>
-<pre><code>## class: SummarizedExperiment 
-## dim: 1585 199 
-## metadata(3): experimentData annotation protocolData
-## assays(1): exprs
-## rownames(1585): k__Bacteria k__Viruses ...
-##   k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Comamonadaceae|g__Variovorax
-##   k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Comamonadaceae|g__Variovorax|s__Variovorax_unclassified
-## rowData names(0):
-## colnames(199): CCIS00146684ST-4-0 CCIS00281083ST-3-0 ... MMPU84450604ST
-##   MMPU99077057ST
-## colData names(22): subjectID body_site ... curator NCBI_accession</code></pre>
-<p>Within the <code>ExpressionSet</code> data set the GROUP column to contain class 0 or class 1, (e.g. <em>control</em> and <em>CRC</em>). First we remove adenoma samples, because lefser supports only two-group contrasts (<strong>Asya is this true?</strong>) <strong>Yes</strong>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="va">zeller14</span> <span class="op">&lt;-</span> <span class="va">zeller14</span><span class="op">[</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span> <span class="op">!=</span> <span class="st">"adenoma"</span><span class="op">]</span></pre></div>
+<p>Note. <code>lefser</code> supports only two-group contrasts.</p>
+<p>The <code>colData</code> in the <code>SummarizedExperiment</code> dataset contains the grouping column <code>study_condition</code> which includes the ‘control’ and ‘CRC’ groups.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span><span class="op">)</span></pre></div>
 <pre><code>## 
-## adenoma control     CRC 
-##      42      66      91</code></pre>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">zeller14</span> <span class="op">&lt;-</span> <span class="va">zeller14</span><span class="op">[</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span> <span class="op">!=</span> <span class="st">"adenoma"</span><span class="op">]</span>
-<span class="va">zeller14</span><span class="op">$</span><span class="va">GROUP</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span> <span class="op">==</span> <span class="st">"control"</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">GROUP</span><span class="op">)</span></pre></div>
-<pre><code>## 
-##  0  1 
-## 66 91</code></pre>
-<p>Now set BLOCK to be a sublass of each class as 0 or 1 (e.g. <em>adult</em> or <em>senior</em>):</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
+## control     CRC 
+##      66      91</code></pre>
+<p>There can be subclasses in each group condition. In the example dataset we include <code>age_category</code> as a subclass of <code>study_condition</code> which includes ‘adults’ and ‘seniors’. This variable will correspond to the <code>blockCol</code> input argument.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">age_category</span><span class="op">)</span></pre></div>
 <pre><code>## 
 ##  adult senior 
 ##     91     66</code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">zeller14</span><span class="op">$</span><span class="va">BLOCK</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">age_category</span> <span class="op">==</span> <span class="st">"adult"</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">BLOCK</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">GROUP</span><span class="op">)</span></pre></div>
-<pre><code>##    
-##      0  1
-##   0 46 45
-##   1 20 46</code></pre>
-<p>The dataset can now be used with lefser functions. There is the <code>lefser</code> function for extracting results in the form of dataframe, names of selected microorganisms and their effect size.</p>
-<p><strong>NOTE</strong> the following code blocks are temporarily unevaluated to allow checks to pass, but need to be fixed.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lefser.html">lefser</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">)</span>
-<span class="co">##  Error in UseMethod("group_vars") :</span>
-<span class="co">##  no applicable method for 'group_vars' applied to an object of class ##  "logical"</span>
+<p>We can create a contingency table for the two categorical variables.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">age_category</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span><span class="op">)</span></pre></div>
+<pre><code>##         
+##          control CRC
+##   adult       46  45
+##   senior      20  46</code></pre>
+<p>We can now use the <code>lefser</code> function. It provides results as a <code>data.frame</code> with the names of selected microorganisms and their effect size.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lefser.html">lefser</a></span><span class="op">(</span><span class="va">zeller14</span>, groupCol <span class="op">=</span> <span class="st">"study_condition"</span>, blockCol <span class="op">=</span> <span class="st">"age_category"</span><span class="op">)</span></pre></div>
+<pre><code>## Length of block: 157</code></pre>
+<pre><code>## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements
 
-<span class="fu"><a href="https://rdrr.io/r/base/warnings.html">warnings</a></span><span class="op">(</span><span class="op">)</span> <span class="co">##variables are collinear, conditional covariance matrix has zero diagonal elements - maybe need a different example, or to explain what the collinear variables are and the consequences</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></pre></div>
-<p>The other function is <code>lefserPlot</code> should be used to generate a plot of the results.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="fu"><a href="../reference/lefserPlot.html">lefserPlot</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></pre></div>
+## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements
+
+## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements
+
+## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements
+
+## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements
+
+## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements
+
+## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements
+
+## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements
+
+## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements
+
+## Warning in .local(.Object, ...): The conditional covariance matrix has zero
+## diagonal elements</code></pre>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></pre></div>
+<pre><code>##                           Names    scores
+## 1            o__Lactobacillales -5.930165
+## 2 s__Ruminococcus_sp_5_1_39BFAA -5.559759
+## 3              t__GCF_000159975 -5.559759
+## 4         s__Eubacterium_hallii -5.547586
+## 5              t__GCF_000173975 -5.547586
+## 6   s__Streptococcus_salivarius -5.411354</code></pre>
+</div>
+<div id="visualizing-results-with-lefserplot" class="section level1">
+<h1 class="hasAnchor">
+<a href="#visualizing-results-with-lefserplot" class="anchor"></a>Visualizing results with <code>lefserPlot</code>
+</h1>
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="fu"><a href="../reference/lefserPlot.html">lefserPlot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></pre></div>
+<p><img src="lefser_files/figure-html/unnamed-chunk-7-1.png" width="700" style="display: block; margin: auto;"></p>
+<div id="sessioninfo" class="section level2">
+<h2 class="hasAnchor">
+<a href="#sessioninfo" class="anchor"></a>sessionInfo</h2>
+<details><div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<pre><code>## R version 4.0.3 Patched (2020-10-13 r79342)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 20.04.1 LTS
+## 
+## Matrix products: default
+## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] lefser_0.99.4               SummarizedExperiment_1.19.9
+##  [3] Biobase_2.49.1              GenomicRanges_1.41.6       
+##  [5] GenomeInfoDb_1.25.11        IRanges_2.23.10            
+##  [7] S4Vectors_0.27.13           BiocGenerics_0.35.4        
+##  [9] MatrixGenerics_1.1.3        matrixStats_0.57.0         
+## [11] BiocStyle_2.17.1           
+## 
+## loaded via a namespace (and not attached):
+##  [1] mvtnorm_1.1-1          lattice_0.20-41        zoo_1.8-8             
+##  [4] assertthat_0.2.1       rprojroot_1.3-2        digest_0.6.25         
+##  [7] R6_2.4.1               backports_1.1.10       evaluate_0.14         
+## [10] ggplot2_3.3.2          pillar_1.4.6           zlibbioc_1.35.0       
+## [13] rlang_0.4.7            multcomp_1.4-14        Matrix_1.2-18         
+## [16] rmarkdown_2.4          pkgdown_1.6.1          labeling_0.3          
+## [19] desc_1.2.0             splines_4.0.3          stringr_1.4.0         
+## [22] RCurl_1.98-1.2         munsell_0.5.0          DelayedArray_0.15.12  
+## [25] compiler_4.0.3         xfun_0.17              pkgconfig_2.0.3       
+## [28] systemfonts_0.3.2      libcoin_1.0-6          htmltools_0.5.0       
+## [31] tidyselect_1.1.0       tibble_3.0.3           GenomeInfoDbData_1.2.3
+## [34] bookdown_0.20          coin_1.3-1             codetools_0.2-16      
+## [37] crayon_1.3.4           dplyr_1.0.2            MASS_7.3-53           
+## [40] bitops_1.0-6           grid_4.0.3             gtable_0.3.0          
+## [43] lifecycle_0.2.0        magrittr_1.5           scales_1.1.1          
+## [46] stringi_1.5.3          farver_2.0.3           XVector_0.29.3        
+## [49] fs_1.5.0               ellipsis_0.3.1         ragg_0.3.1            
+## [52] vctrs_0.3.4            generics_0.0.2         sandwich_2.5-1        
+## [55] TH.data_1.0-10         tools_4.0.3            glue_1.4.2            
+## [58] purrr_0.3.4            survival_3.2-7         yaml_2.2.1            
+## [61] colorspace_1.4-1       BiocManager_1.30.10    memoise_1.1.0         
+## [64] knitr_1.30             modeltools_0.2-23</code></pre>
+</details>
+</div>
 </div>
   </div>
 
