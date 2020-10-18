@@ -166,7 +166,8 @@ Negative scores represent microorganisms with that are more abundant in class '0
 #&gt; lefser&gt;     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
 #&gt; lefser&gt;     zeller14$GROUP &lt;- ifelse(zeller14$study_condition == "control", 0, 1)
 #&gt; 
-#&gt; lefser&gt;     results &lt;- lefser(zeller14)</div><div class='output co'>#&gt; <span class='message'>Length of block: 0</span></div><div class='output co'>#&gt; 
+#&gt; lefser&gt;     results &lt;- lefser(zeller14)
+#&gt; 
 #&gt; lefser&gt;     head(results)
 #&gt;               Names    scores
 #&gt; 1     p__Firmicutes -6.574292
@@ -188,7 +189,8 @@ Negative scores represent microorganisms with that are more abundant in class '0
 #&gt; lefser&gt;     # assign '0' class to 'adult' and '1' to 'senior'
 #&gt; lefser&gt;     zeller14$BLOCK &lt;- ifelse(zeller14$age_category == "adult", 0, 1)
 #&gt; 
-#&gt; lefser&gt;     results &lt;- lefser(zeller14)</div><div class='output co'>#&gt; <span class='message'>Length of block: 157</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The conditional covariance matrix has zero diagonal elements</span></div><div class='output co'>#&gt; 
+#&gt; lefser&gt;     results &lt;- lefser(zeller14)
+#&gt; 
 #&gt; lefser&gt;     head(results)
 #&gt;                           Names    scores
 #&gt; 1            o__Lactobacillales -5.939724
