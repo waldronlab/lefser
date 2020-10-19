@@ -8,7 +8,6 @@
 #' \describe{
 #'   \item{study_condition}{adenoma, control, CRC}
 #'   \item{age_category}{adult, senoir}
-#'   ...
 #' }
 #' @source \url{https://pubmed.ncbi.nlm.nih.gov/25432777/}
 "zeller14"
