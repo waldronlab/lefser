@@ -9,7 +9,6 @@ A SummarizedExperiment with 1585 features, 199 samples
 \describe{
   \item{study_condition}{adenoma, control, CRC}
   \item{age_category}{adult, senoir}
-  ...
 }
 }
 \source{
