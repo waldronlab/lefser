@@ -224,6 +224,7 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #' @importFrom coin pvalue statistic wilcox_test
 #' @importFrom MASS lda
 #' @importFrom methods as is
+#' @importFrom stats setNames
 #' @import SummarizedExperiment
 #'
 #' @examples
