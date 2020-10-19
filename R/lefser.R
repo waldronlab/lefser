@@ -56,33 +56,23 @@ fillPmatZmat <- function(fun,
 ## if that is not the case then a count value is altered by adding it to a small value
 ## generated via normal distribution with mean=0 and sd=5% of the count value
 createUniqueValues <- function(df, groups, group){
-  sgroup <- lapply(groups, function(x){which(group==x)})
-  target <- row.names(df)
-  df =do.call(rbind, lapply(sgroup, function(m){
-    sub <- df[m,]
-    apply(sub, 2L, function(x){
-      if((length(unique(x)) > max(length(x)*0.5,4))){
-        x=x}else{
-          sapply(x, function(y){
-            y <- abs(y + rnorm(
-              1,
-              mean = 0,
-              sd = max(y * 0.05, 0.01)
-            ))
-          })
-        }
-
+  orderedrows <- rownames(df)
+  splitdf <- split(df, group)
+  maxim <- vapply(table(group), function(x) max(x * 0.5, 4), numeric(1L))
+  for (i in seq_along(splitdf)) {
+    sdat <- splitdf[[i]]
+    splitdf[[i]][] <- lapply(sdat, function(cols) {
+        if (length(unique(cols)) > maxim[i])
+            cols
+        else
+            abs(cols + rnorm(
+                length(cols), mean = 0, sd = max(cols * 0.05, 0.01))
+            )
     })
-
-  }))
-  df = data.frame(df)
-  df <- df[match(target, row.names(df)),]
-
+  }
+  df <- do.call(rbind, unname(splitdf))
+  df[match(orderedrows, rownames(df)),]
 }
-
-
-
-
 
 contastWithinClassesOrFewPerClass <-
   function(expr_sub_t_df, rand_s, min_cl, ncl, groups) {
@@ -244,7 +234,7 @@ lefser <-
     block <- factor(rep(1L, length(group)))
     fun <- stats::kruskal.test
     if (!is.null(blockCol)) {
-        block <- as.factor(colData(se)[[blockCol]])
+        block <- as.factor(colData(expr)[[blockCol]])
         fun <- coin::wilcox_test
     }
 
