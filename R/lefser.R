@@ -1,36 +1,10 @@
-createGroupBlockMatrixGroups <-
-  function(se, groupCol, blockCol, assay) {
-    expr <- assay(se, i = assay)
-    if (is.null(groupCol)){
-      stop("Group assignment 'groupCol' must be specified")
-    }else{
-      grp <- colData(se)[[groupCol]]
-    }
-    if(!is.null(blockCol)){
-      blk <- colData(se)[[blockCol]]
-    }else{
-      blk <- NULL
-    }
-    
-    grp <- as.factor(grp)
-    groups <- levels(grp)
-    if (length(groups) != 2L)
-      stop(
-        "Group classification is not dichotomous:\n",
-        "Found (",
-        paste(groups, collapse = ", "),
-        ")"
-      )
-    list(group = grp,
-         block = as.factor(blk),
-         expr = expr)
-  }
-
-fillPmatZmat <- function(group,
+fillPmatZmat <- function(fun,
+                         group,
                          block,
                          expr_sub,
-                         wilcoxon.threshold)
+                         p.threshold)
 {
+  hasBlocks <- length(levels(block)) > 1L
   # creates a list of boolean vectors, each vector indicates
   # existance (TRUE) or absence (FALSE) of a class/sub-class combination
   combos <- apply(
@@ -38,7 +12,8 @@ fillPmatZmat <- function(group,
   combined <- paste0(as.character(group), as.character(block))
   logilist <- lapply(setNames(nm = sort(combos)), `==`, combined)
 
-
+  pv <- if (hasBlocks) { coin::pvalue } else function(x) { x$p.value }
+  stat <- if (hasBlocks) { coin::statistic } else function(x) { x$statistic }
   ## uses Wilcoxon rank-sum test to test for significant differential abundances between
   ## subclasses of one class against subclasses of all othe classes; results are saved in
   ## "pval_mat" and "z_mat" matrices
@@ -46,12 +21,11 @@ fillPmatZmat <- function(group,
   sblock <- seq_along(levels(block))
   texp_sub <- t(expr_sub)
   iters <- expand.grid(sblock, sblock + length(sblock))
-  # mats <- apply(iters, 1L, function(x) expr_sub[, unlist(whichlist[x]), drop = FALSE])
   group_formats <- apply(iters, 1L, function(x) {
     ind <- unlist(whichlist[x])
     apply(texp_sub, 2L, function(g) {
-      wx <- suppressWarnings(wilcox_test(g ~ group, subset = ind))
-        cbind.data.frame(p.value = pvalue(wx), statistic = statistic(wx))
+      wx <- suppressWarnings(fun(g ~ group, subset = ind))
+      cbind.data.frame(p.value = pv(wx), statistic = stat(wx))
     })
   })
 
@@ -64,16 +38,17 @@ fillPmatZmat <- function(group,
 
   ## converts "pval_mat" into boolean matrix "logical_pval_mat" where
   ## p-values <= wilcoxon.threshold
-  logical_pval_mat <- pval_mat <= wilcoxon.threshold
+  logical_pval_mat <- pval_mat <= p.threshold
   logical_pval_mat[is.na(logical_pval_mat)] <- FALSE
 
   ## determines which rows (features) have all p-values<=0.05
   ## and selects such rows from the matrix of z-statistics
   sub <- apply(logical_pval_mat, 1L, all)
-  z_mat_sub <- z_mat[sub,]
-
-  # confirms that z-statistics of a row all have the same sign
-  sub <- abs(rowSums(z_mat_sub)) == rowSums(abs(z_mat_sub))
+  if (hasBlocks) {
+    z_mat_sub <- z_mat[sub,]
+    # confirms that z-statistics of a row all have the same sign
+    sub <- abs(rowSums(z_mat_sub)) == rowSums(abs(z_mat_sub))
+  }
   expr_sub[names(sub[sub]), ]
 }
 
@@ -96,17 +71,17 @@ createUniqueValues <- function(df, groups, group){
             ))
           })
         }
-      
+
     })
-    
+
   }))
   df = data.frame(df)
   df <- df[match(target, row.names(df)),]
-  
+
 }
 
-  
-     
+
+
 
 
 contastWithinClassesOrFewPerClass <-
@@ -128,7 +103,7 @@ contastWithinClassesOrFewPerClass <-
       lapply(seq_along(groups), function(x) {
         cols[cols[, "class"] == groups[x],!(names(cols) %in% drops)]
       })
-    
+
     # makes sure that within each class all features have at least min_cl unique count values
     for (i in seq_along(groups)) {
       unique_counts_per_microb = apply(by_class[[i]], 2, function(x) {
@@ -141,7 +116,7 @@ contastWithinClassesOrFewPerClass <-
       }
     }
     return (FALSE)
-    
+
   }
 
 ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
@@ -174,7 +149,7 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   rres <- lda.fit$means
   rowns <- rownames(rres)
   lenc <- length(colnames(rres))
-  
+
   coeff <- vector("numeric", length(scal))
   for (v in seq_along(scal)) {
     if (!is.na(scal[v])) {
@@ -182,7 +157,7 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
     } else{
       coeff[v] <- 0
     }
-    
+
   }
   # count value differences between means of two classes for each feature
   lda.means.diff <- (lda.fit$means[2,] - lda.fit$means[1,])
@@ -202,17 +177,16 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #'
 #' @param expr A \code{\linkS4class{SummarizedExperiment}} with expression data.
 #' @param groupCol character(1) Column name in `colData(expr)` indicating
-#' groups, usually a factor with two levels (e.g., `c("cases", "controls")`).
+#' groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
+#' default "GROUP").
 #' @param blockCol character(1) Column name in `colData(expr)` indicating the
-#' blocks, usually a factor with two levels (e.g., `c("adult", "senior")`).
+#' blocks, usually a factor with two levels (e.g., `c("adult", "senior")`;
+#' default NULL).
 #' @param assay The i-th assay matrix in the `SummarizedExperiment` ('expr').
 #' Defaults to 1.
-#' @param kw.threshold
-#' The p-value threshold for Kruskal-Wallis Rank Sum Test.
-#' The default is at <= 0.05.
-#' @param wilcoxon.threshold
-#' The p-value for Wilcoxon Rank-Sum Test.
-#' The default is at <= 0.05.
+#' @param p.threshold numeric(1) The p-value for the Kruskal-Wallis Rank Sum
+#' Test. If 'blockCol' is provided, it indicates the p-value for the Wilcoxon
+#' Rank-Sum Test (default 0.05).
 #' @param lda.threshold
 #' The effect size threshold.
 #' The default is at 2.0.
@@ -250,51 +224,43 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #' @export
 lefser <-
   function(expr,
-           kw.threshold = 0.05,
-           wilcoxon.threshold = 0.05,
+           p.threshold = 0.05,
            lda.threshold = 2.0,
            groupCol = "GROUP",
-           blockCol = "BLOCK",
+           blockCol = NULL,
            assay = 1L)
   {
-    groupBlockMatrixGroups <-
-      createGroupBlockMatrixGroups(expr, groupCol, blockCol, assay)
-    group <- groupBlockMatrixGroups$group
-    block <- groupBlockMatrixGroups$block
-    expr <- groupBlockMatrixGroups$expr
+    group <- colData(expr)[[groupCol]]
+    if (is.null(group))
+        stop("A valid group assignment 'groupCol' must be provided")
+    group <- as.factor(group)
     groups <- levels(group)
-    
-    # extracts p-values from Kruskal-Wallis Rank Sum Test
-    kruskal.test.alt <- function(x, group) {
-      kruskal.test(x ~ group)$p.value
+    if (length(groups) != 2L)
+      stop(
+        "Group classification is not dichotomous:\n",
+        "Found (", paste(groups, collapse = ", "), ")"
+      )
+
+    block <- factor(rep(1L, length(group)))
+    fun <- stats::kruskal.test
+    if (!is.null(blockCol)) {
+        block <- as.factor(colData(se)[[blockCol]])
+        fun <- coin::wilcox_test
     }
-    
-    # applies "kruskal.test.alt" function to each row (feature) of expr
-    # to detect differential abundance between classes, 0 and 1
-    kw.res <- apply(expr, 1, kruskal.test.alt, group = group)
-    
-    # selects p-values less than or equal to kw.threshold
-    kw.sub <- kw.res <= kw.threshold
-    
-    # eliminates NAs
-    kw.sub[is.na(kw.sub)] <- FALSE
-    
-    # extracts features with statistically significant differential abundance
-    # from "expr" matrix
-    expr_sub <- expr[kw.sub,]
-    if (length(block) != 0) {
-      expr_sub <- fillPmatZmat(group, block, expr_sub, wilcoxon.threshold)
-    }
-    
+
+    expr <- assay(expr, i = assay)
+
+    expr_sub <- fillPmatZmat(fun, group, block, expr, p.threshold)
+
     # transposes matrix and add a "class" (i.e., group) column
     # matrix converted to dataframe
     expr_sub_t <- t(expr_sub)
 
     expr_sub_t_df <- data.frame(expr_sub_t)
-    
+
     expr_sub_t_df <- createUniqueValues(expr_sub_t_df, groups, group)
     expr_sub_t_df <- cbind(expr_sub_t_df, class = (as.numeric(group) - 1))
-    
+
     # number of samples (i.e., subjects) in the dataframe
     lfk <- nrow(expr_sub_t_df)
     # rfk is the number of subject that will be used in linear discriminant analysis
@@ -308,30 +274,30 @@ lefser <-
                    0.5)
     # if min_cl is less than 1, then make it equal to 1
     min_cl <- max(min_cl, 1)
-    
+
     # lda_fn repeated 30 times, producing a matrix of 30 scores per feature
     eff_size_mat <-
       replicate(30, suppressWarnings(ldaFunction(
         expr_sub_t_df, lfk, rfk, min_cl, ncl, groups
       )), simplify = TRUE)
-    
+
     # mean of 30 scores per feature
     raw_lda_scores <- rowMeans(eff_size_mat)
-    
+
     # processing of score
     processed_scores <-
       sign(raw_lda_scores) * log((1 + abs(raw_lda_scores)), 10)
-    
+
     # sorting of scores
     processed_sorted_scores <- sort(processed_scores)
-    
+
     # extracting the most specific taxonomic rank of an organism
     Names <- vector("character", length(processed_sorted_scores))
     for (i in seq_along(processed_sorted_scores)) {
       vec_of_strings = unlist(strsplit(names(processed_sorted_scores)[i], "[.]"))
       Names[i] = vec_of_strings[length(vec_of_strings)]
     }
-    
+
     # return a dataframe of taxon name and effect size score
     scores <- as.vector(processed_sorted_scores)
     scores_df <- data.frame(Names, scores)

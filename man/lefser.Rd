@@ -6,31 +6,30 @@
 \usage{
 lefser(
   expr,
-  kw.threshold = 0.05,
-  wilcoxon.threshold = 0.05,
+  p.threshold = 0.05,
   lda.threshold = 2,
   groupCol = "GROUP",
-  blockCol = "BLOCK",
+  blockCol = NULL,
   assay = 1L
 )
 }
 \arguments{
 \item{expr}{A \code{\linkS4class{SummarizedExperiment}} with expression data.}
 
-\item{kw.threshold}{The p-value threshold for Kruskal-Wallis Rank Sum Test.
-The default is at <= 0.05.}
-
-\item{wilcoxon.threshold}{The p-value for Wilcoxon Rank-Sum Test.
-The default is at <= 0.05.}
+\item{p.threshold}{numeric(1) The p-value for the Kruskal-Wallis Rank Sum
+Test. If 'blockCol' is provided, it indicates the p-value for the Wilcoxon
+Rank-Sum Test (default 0.05).}
 
 \item{lda.threshold}{The effect size threshold.
 The default is at 2.0.}
 
 \item{groupCol}{character(1) Column name in `colData(expr)` indicating
-groups, usually a factor with two levels (e.g., `c("cases", "controls")`).}
+groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
+default "GROUP").}
 
 \item{blockCol}{character(1) Column name in `colData(expr)` indicating the
-blocks, usually a factor with two levels (e.g., `c("adult", "senior")`).}
+blocks, usually a factor with two levels (e.g., `c("adult", "senior")`;
+default NULL).}
 
 \item{assay}{The i-th assay matrix in the `SummarizedExperiment` ('expr').
 Defaults to 1.}
