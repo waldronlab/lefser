@@ -8,4 +8,5 @@ exampledata <-
                          counts = TRUE,
                          dryrun = FALSE)[[1]]
 zeller14 <- as(exampledata, "SummarizedExperiment")
+colData(zeller14)=colData(zeller14)[,c(4,8)]
 usethis::use_data(zeller14, overwrite = TRUE)
