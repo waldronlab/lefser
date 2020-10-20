@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lefser</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
       </span>
     </div>
 
@@ -97,7 +97,17 @@
 <a href="#introduction" class="anchor"></a>Introduction</h1>
 <p>Lefser is metagenomic biomarker discovery tool that is based on <a href="https://huttenhower.sph.harvard.edu/galaxy/">LEfSe</a> tool and is published by <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/">Huttenhower et al. 2011</a>. <code>Lefser</code> is the R implementation of the <code>LEfSe</code> method.</p>
 <p>Using statistical analyses, <code>lefser</code> compares microbial populations of healthy and diseased subjects to discover differencially expressed microorganisms. <code>Lefser</code> than computes effect size, which estimates magnitude of differential expression between the populations for each differentially expressed microorganism. Subclasses of classes can also be assigned and used within the analysis.</p>
+</div>
+<div id="installation" class="section level1">
+<h1 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h1>
+<p>To install Bioconductor and the <code>lefser</code> package, run the following commands.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
+<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"lefser"</span><span class="op">)</span></pre></div>
+<p>Then load the <code>lefser</code> package.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/waldronlab/lefser">lefser</a></span><span class="op">)</span></pre></div>
 </div>
 <div id="overview-and-example-use-of-lefser" class="section level1">
@@ -106,59 +116,59 @@
 </h1>
 <p>The <code>lefser</code> function can be used with a <code>SummarizedExperiment</code>.</p>
 <p>Load the <code>zeller14</code> example dataset and exclude ‘adenoma’ conditions.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
+<div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">)</span>
 <span class="va">zeller14</span> <span class="op">&lt;-</span> <span class="va">zeller14</span><span class="op">[</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span> <span class="op">!=</span> <span class="st">"adenoma"</span><span class="op">]</span></pre></div>
 <p>Note. <code>lefser</code> supports only two-group contrasts.</p>
 <p>The <code>colData</code> in the <code>SummarizedExperiment</code> dataset contains the grouping column <code>study_condition</code> which includes the ‘control’ and ‘CRC’ groups.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
+<div class="sourceCode" id="cb4"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span><span class="op">)</span></pre></div>
 <pre><code>## 
 ## control     CRC 
 ##      66      91</code></pre>
 <p>There can be subclasses in each group condition. In the example dataset we include <code>age_category</code> as a subclass of <code>study_condition</code> which includes ‘adults’ and ‘seniors’. This variable will correspond to the <code>blockCol</code> input argument.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
+<div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">age_category</span><span class="op">)</span></pre></div>
 <pre><code>## 
 ##  adult senior 
 ##     91     66</code></pre>
 <p>We can create a contingency table for the two categorical variables.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
+<div class="sourceCode" id="cb8"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">age_category</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span><span class="op">)</span></pre></div>
 <pre><code>##         
 ##          control CRC
 ##   adult       46  45
 ##   senior      20  46</code></pre>
 <p>We can now use the <code>lefser</code> function. It provides results as a <code>data.frame</code> with the names of selected microorganisms and their effect size.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
+<div class="sourceCode" id="cb10"><pre class="downlit">
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lefser.html">lefser</a></span><span class="op">(</span><span class="va">zeller14</span>, groupCol <span class="op">=</span> <span class="st">"study_condition"</span>, blockCol <span class="op">=</span> <span class="st">"age_category"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></pre></div>
-<pre><code>##                                                                                                                                          Names
-## 1                                                                                    `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales`
-## 2                  `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA`
-## 3 `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975`
-## 4                            `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii`
-## 5           `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii|t__GCF_000173975`
-## 6                   `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae|g__Streptococcus|s__Streptococcus_salivarius`
+<pre><code>##                                                                                                                                                           Names
+## 1                                                                                                     `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales`
+## 2                                             `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii`
+## 3                            `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii|t__GCF_000173975`
+## 4                                   `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA`
+## 5                  `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975`
+## 6 `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Lactobacillaceae|g__Lactobacillus|s__Lactobacillus_ruminis|t__Lactobacillus_ruminis_unclassified`
 ##      scores
-## 1 -5.914843
-## 2 -5.506609
-## 3 -5.506609
-## 4 -5.468576
-## 5 -5.468576
-## 6 -5.425220</code></pre>
+## 1 -5.896724
+## 2 -5.554790
+## 3 -5.554790
+## 4 -5.546273
+## 5 -5.546273
+## 6 -5.370926</code></pre>
 </div>
 <div id="visualizing-results-with-lefserplot" class="section level1">
 <h1 class="hasAnchor">
 <a href="#visualizing-results-with-lefserplot" class="anchor"></a>Visualizing results with <code>lefserPlot</code>
 </h1>
-<div class="sourceCode" id="cb11"><pre class="downlit">
+<div class="sourceCode" id="cb12"><pre class="downlit">
 <span class="fu"><a href="../reference/lefserPlot.html">lefserPlot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></pre></div>
-<p><img src="lefser_files/figure-html/unnamed-chunk-7-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="lefser_files/figure-html/unnamed-chunk-8-1.png" width="700" style="display: block; margin: auto;"></p>
 <div id="sessioninfo" class="section level2">
 <h2 class="hasAnchor">
 <a href="#sessioninfo" class="anchor"></a>sessionInfo</h2>
-<details><div class="sourceCode" id="cb12"><pre class="downlit">
+<details><div class="sourceCode" id="cb13"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <pre><code>## R version 4.0.3 Patched (2020-10-13 r79342)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
@@ -180,7 +190,7 @@
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] lefser_0.99.6               SummarizedExperiment_1.19.9
+##  [1] lefser_0.99.7               SummarizedExperiment_1.19.9
 ##  [3] Biobase_2.49.1              GenomicRanges_1.41.6       
 ##  [5] GenomeInfoDb_1.25.11        IRanges_2.23.10            
 ##  [7] S4Vectors_0.27.13           BiocGenerics_0.35.4        
