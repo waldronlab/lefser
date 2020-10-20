@@ -34,6 +34,19 @@ analysis.
 knitr::opts_chunk$set(fig.align = "center")
 ```
 
+# Installation
+
+To install Bioconductor and the `lefser` package, run the following
+commands.
+
+```{r, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("lefser")
+```
+
+Then load the `lefser` package.
+
 ```{r,include=TRUE,results="hide",message=FALSE,warning=FALSE}
 library(lefser)
 ```
@@ -43,7 +56,6 @@ library(lefser)
 The `lefser` function can be used with a `SummarizedExperiment`.
 
 Load the `zeller14` example dataset and exclude 'adenoma' conditions.
-
 
 ```{r}
 data(zeller14)
