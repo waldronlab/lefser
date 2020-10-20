@@ -83,9 +83,9 @@
                         <h4 class="author"><div class="line-block">Asya Khleborodova, Ludwig Geistlinger, and Levi Waldron<br><small>School of Public Health, City University of New York</small>
 </div></h4>
             
-            <h4 class="date">2020-10-19</h4>
+            <h4 class="date">2020-10-20</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/waldronlab/lefser/blob/master/vignettes/lefser.Rmd"><code>vignettes/lefser.Rmd</code></a></small>
       <div class="hidden name"><code>lefser.Rmd</code></div>
 
     </div>
@@ -98,7 +98,7 @@
 <p>Lefser is metagenomic biomarker discovery tool that is based on <a href="https://huttenhower.sph.harvard.edu/galaxy/">LEfSe</a> tool and is published by <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/">Huttenhower et al. 2011</a>. <code>Lefser</code> is the R implementation of the <code>LEfSe</code> method.</p>
 <p>Using statistical analyses, <code>lefser</code> compares microbial populations of healthy and diseased subjects to discover differencially expressed microorganisms. <code>Lefser</code> than computes effect size, which estimates magnitude of differential expression between the populations for each differentially expressed microorganism. Subclasses of classes can also be assigned and used within the analysis.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">lefser</span><span class="op">)</span></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/waldronlab/lefser">lefser</a></span><span class="op">)</span></pre></div>
 </div>
 <div id="overview-and-example-use-of-lefser" class="section level1">
 <h1 class="hasAnchor">
@@ -133,13 +133,20 @@
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lefser.html">lefser</a></span><span class="op">(</span><span class="va">zeller14</span>, groupCol <span class="op">=</span> <span class="st">"study_condition"</span>, blockCol <span class="op">=</span> <span class="st">"age_category"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></pre></div>
-<pre><code>##                           Names    scores
-## 1            o__Lactobacillales -5.998889
-## 2 s__Ruminococcus_sp_5_1_39BFAA -5.564655
-## 3              t__GCF_000159975 -5.564655
-## 4         s__Eubacterium_hallii -5.513613
-## 5              t__GCF_000173975 -5.513613
-## 6   s__Streptococcus_salivarius -5.481317</code></pre>
+<pre><code>##                                                                                                                                          Names
+## 1                                                                                    `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales`
+## 2                  `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA`
+## 3 `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975`
+## 4                            `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii`
+## 5           `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii|t__GCF_000173975`
+## 6                   `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae|g__Streptococcus|s__Streptococcus_salivarius`
+##      scores
+## 1 -5.894014
+## 2 -5.593430
+## 3 -5.593430
+## 4 -5.535963
+## 5 -5.535963
+## 6 -5.354692</code></pre>
 </div>
 <div id="visualizing-results-with-lefserplot" class="section level1">
 <h1 class="hasAnchor">

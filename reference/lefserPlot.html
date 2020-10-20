@@ -126,7 +126,7 @@ and whether they are more abundant in '0' or '1' sample group." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plots results from `lefser` function</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/waldronlab/lefser/blob/master/R/lefserPlot.R'><code>R/lefserPlot.R</code></a></small>
     <div class="hidden name"><code>lefserPlot.Rd</code></div>
     </div>
 
@@ -166,19 +166,23 @@ Negative scores represent microorganisms with that are more abundant in class '0
 #&gt; lefser&gt;     # exclude 'adenoma'
 #&gt; lefser&gt;     zeller14 &lt;- zeller14[, zeller14$study_condition != "adenoma"]
 #&gt; 
-#&gt; lefser&gt;     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
-#&gt; lefser&gt;     zeller14$GROUP &lt;- ifelse(zeller14$study_condition == "control", 0, 1)
+#&gt; lefser&gt;     res_group &lt;- lefser(zeller14, groupCol = "study_condition")
 #&gt; 
-#&gt; lefser&gt;     results &lt;- lefser(zeller14)
-#&gt; 
-#&gt; lefser&gt;     head(results)
-#&gt;               Names    scores
-#&gt; 1     p__Firmicutes -6.574292
-#&gt; 2     c__Clostridia -6.503300
-#&gt; 3  o__Clostridiales -6.503300
-#&gt; 4 p__Actinobacteria -6.221553
-#&gt; 5 c__Actinobacteria -6.221553
-#&gt; 6   g__Ruminococcus -6.207069
+#&gt; lefser&gt;     head(res_group)
+#&gt;                                                                                           Names
+#&gt; 1                                                                   `k__Bacteria|p__Firmicutes`
+#&gt; 2                                                     `k__Bacteria|p__Firmicutes|c__Clostridia`
+#&gt; 3                                    `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales`
+#&gt; 4                                                               `k__Bacteria|p__Actinobacteria`
+#&gt; 5                                             `k__Bacteria|p__Actinobacteria|c__Actinobacteria`
+#&gt; 6 `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus`
+#&gt;      scores
+#&gt; 1 -6.574292
+#&gt; 2 -6.503300
+#&gt; 3 -6.503300
+#&gt; 4 -6.221553
+#&gt; 5 -6.221553
+#&gt; 6 -6.207069
 #&gt; 
 #&gt; lefser&gt;     # (2) Using classes and sublasses
 #&gt; lefser&gt;     data(zeller14)
@@ -186,22 +190,25 @@ Negative scores represent microorganisms with that are more abundant in class '0
 #&gt; lefser&gt;     # exclude 'adenoma'
 #&gt; lefser&gt;     zeller14 &lt;- zeller14[, zeller14$study_condition != "adenoma"]
 #&gt; 
-#&gt; lefser&gt;     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
-#&gt; lefser&gt;     zeller14$GROUP &lt;- ifelse(zeller14$study_condition == "control", 0, 1)
+#&gt; lefser&gt;     res_block &lt;- lefser(
+#&gt; lefser+          zeller14, groupCol = "study_condition", blockCol = "age_category"
+#&gt; lefser+     )
 #&gt; 
-#&gt; lefser&gt;     # assign '0' class to 'adult' and '1' to 'senior'
-#&gt; lefser&gt;     zeller14$BLOCK &lt;- ifelse(zeller14$age_category == "adult", 0, 1)
-#&gt; 
-#&gt; lefser&gt;     results &lt;- lefser(zeller14)
-#&gt; 
-#&gt; lefser&gt;     head(results)
-#&gt;                           Names    scores
-#&gt; 1            o__Lactobacillales -5.939724
-#&gt; 2 s__Ruminococcus_sp_5_1_39BFAA -5.590255
-#&gt; 3              t__GCF_000159975 -5.590255
-#&gt; 4         s__Eubacterium_hallii -5.558419
-#&gt; 5              t__GCF_000173975 -5.558419
-#&gt; 6   s__Streptococcus_salivarius -5.372396</div><div class='input'><span class='fu'>lefserPlot</span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
+#&gt; lefser&gt;     head(res_block)
+#&gt;                                                                                                                                          Names
+#&gt; 1                                                                                    `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales`
+#&gt; 2                  `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA`
+#&gt; 3 `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975`
+#&gt; 4                            `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii`
+#&gt; 5           `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii|t__GCF_000173975`
+#&gt; 6                   `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae|g__Streptococcus|s__Streptococcus_salivarius`
+#&gt;      scores
+#&gt; 1 -5.939688
+#&gt; 2 -5.590205
+#&gt; 3 -5.590205
+#&gt; 4 -5.558340
+#&gt; 5 -5.558340
+#&gt; 6 -5.372295</div><div class='input'><span class='fu'>lefserPlot</span><span class='op'>(</span><span class='va'>res_group</span><span class='op'>)</span>
 </div><div class='img'><img src='lefserPlot-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

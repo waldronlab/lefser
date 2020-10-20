@@ -129,7 +129,7 @@ are identified as biomarkers." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>R implementation of the LEfSe method</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/waldronlab/lefser/blob/master/R/lefser.R'><code>R/lefser.R</code></a></small>
     <div class="hidden name"><code>lefser.Rd</code></div>
     </div>
 
@@ -143,11 +143,10 @@ are identified as biomarkers.</p>
 
     <pre class="usage"><span class='fu'>lefser</span><span class='op'>(</span>
   <span class='va'>expr</span>,
-  kw.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
-  wilcoxon.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
+  p.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
   lda.threshold <span class='op'>=</span> <span class='fl'>2</span>,
   groupCol <span class='op'>=</span> <span class='st'>"GROUP"</span>,
-  blockCol <span class='op'>=</span> <span class='st'>"BLOCK"</span>,
+  blockCol <span class='op'>=</span> <span class='cn'>NULL</span>,
   assay <span class='op'>=</span> <span class='fl'>1L</span>
 <span class='op'>)</span></pre>
 
@@ -159,14 +158,10 @@ are identified as biomarkers.</p>
       <td><p>A <code>SummarizedExperiment</code> with expression data.</p></td>
     </tr>
     <tr>
-      <th>kw.threshold</th>
-      <td><p>The p-value threshold for Kruskal-Wallis Rank Sum Test.
-The default is at &lt;= 0.05.</p></td>
-    </tr>
-    <tr>
-      <th>wilcoxon.threshold</th>
-      <td><p>The p-value for Wilcoxon Rank-Sum Test.
-The default is at &lt;= 0.05.</p></td>
+      <th>p.threshold</th>
+      <td><p>numeric(1) The p-value for the Kruskal-Wallis Rank Sum
+Test. If 'blockCol' is provided, it indicates the p-value for the Wilcoxon
+Rank-Sum Test (default 0.05).</p></td>
     </tr>
     <tr>
       <th>lda.threshold</th>
@@ -176,12 +171,14 @@ The default is at 2.0.</p></td>
     <tr>
       <th>groupCol</th>
       <td><p>character(1) Column name in `colData(expr)` indicating
-groups, usually a factor with two levels (e.g., `c("cases", "controls")`).</p></td>
+groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
+default "GROUP").</p></td>
     </tr>
     <tr>
       <th>blockCol</th>
       <td><p>character(1) Column name in `colData(expr)` indicating the
-blocks, usually a factor with two levels (e.g., `c("adult", "senior")`).</p></td>
+blocks, usually a factor with two levels (e.g., `c("adult", "senior")`;
+default NULL).</p></td>
     </tr>
     <tr>
       <th>assay</th>
@@ -200,34 +197,44 @@ names of microorganisms and their LDA scores.</p>
     <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
     <span class='co'># exclude 'adenoma'</span>
     <span class='va'>zeller14</span> <span class='op'>&lt;-</span> <span class='va'>zeller14</span><span class='op'>[</span>, <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>!=</span> <span class='st'>"adenoma"</span><span class='op'>]</span>
-    <span class='co'># assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)</span>
-    <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>GROUP</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>==</span> <span class='st'>"control"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-    <span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>lefser</span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
-    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                  Names    scores
-#&gt; 1        p__Firmicutes -6.536708
-#&gt; 2        c__Clostridia -6.458054
-#&gt; 3     o__Clostridiales -6.458054
-#&gt; 4    p__Actinobacteria -6.282184
-#&gt; 5    c__Actinobacteria -6.282184
-#&gt; 6 o__Bifidobacteriales -6.237298</div><div class='input'>
+    <span class='va'>res_group</span> <span class='op'>&lt;-</span> <span class='fu'>lefser</span><span class='op'>(</span><span class='va'>zeller14</span>, groupCol <span class='op'>=</span> <span class='st'>"study_condition"</span><span class='op'>)</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>res_group</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                                                                    Names
+#&gt; 1                                            `k__Bacteria|p__Firmicutes`
+#&gt; 2                              `k__Bacteria|p__Firmicutes|c__Clostridia`
+#&gt; 3             `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales`
+#&gt; 4                                        `k__Bacteria|p__Actinobacteria`
+#&gt; 5                      `k__Bacteria|p__Actinobacteria|c__Actinobacteria`
+#&gt; 6 `k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales`
+#&gt;      scores
+#&gt; 1 -6.536708
+#&gt; 2 -6.458054
+#&gt; 3 -6.458054
+#&gt; 4 -6.282184
+#&gt; 5 -6.282184
+#&gt; 6 -6.237298</div><div class='input'>
     <span class='co'># (2) Using classes and sublasses</span>
     <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
     <span class='co'># exclude 'adenoma'</span>
     <span class='va'>zeller14</span> <span class='op'>&lt;-</span> <span class='va'>zeller14</span><span class='op'>[</span>, <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>!=</span> <span class='st'>"adenoma"</span><span class='op'>]</span>
-    <span class='co'># assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)</span>
-    <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>GROUP</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>$</span><span class='va'>study_condition</span> <span class='op'>==</span> <span class='st'>"control"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-    <span class='co'># assign '0' class to 'adult' and '1' to 'senior'</span>
-    <span class='va'>zeller14</span><span class='op'>$</span><span class='va'>BLOCK</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>$</span><span class='va'>age_category</span> <span class='op'>==</span> <span class='st'>"adult"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-    <span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'>lefser</span><span class='op'>(</span><span class='va'>zeller14</span><span class='op'>)</span>
-    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>results</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                           Names    scores
-#&gt; 1            o__Lactobacillales -5.894245
-#&gt; 2 s__Ruminococcus_sp_5_1_39BFAA -5.594798
-#&gt; 3              t__GCF_000159975 -5.594798
-#&gt; 4         s__Eubacterium_hallii -5.450848
-#&gt; 5              t__GCF_000173975 -5.450848
-#&gt; 6   s__Streptococcus_salivarius -5.330575</div></pre>
+    <span class='va'>res_block</span> <span class='op'>&lt;-</span> <span class='fu'>lefser</span><span class='op'>(</span>
+         <span class='va'>zeller14</span>, groupCol <span class='op'>=</span> <span class='st'>"study_condition"</span>, blockCol <span class='op'>=</span> <span class='st'>"age_category"</span>
+    <span class='op'>)</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>res_block</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                                                                                                                                                           Names
+#&gt; 1                                                                                                     `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales`
+#&gt; 2                                   `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA`
+#&gt; 3                  `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975`
+#&gt; 4                                             `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii`
+#&gt; 5                            `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii|t__GCF_000173975`
+#&gt; 6 `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Lactobacillaceae|g__Lactobacillus|s__Lactobacillus_ruminis|t__Lactobacillus_ruminis_unclassified`
+#&gt;      scores
+#&gt; 1 -5.894200
+#&gt; 2 -5.594736
+#&gt; 3 -5.594736
+#&gt; 4 -5.450732
+#&gt; 5 -5.450732
+#&gt; 6 -5.345886</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
