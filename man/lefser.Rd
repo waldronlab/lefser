@@ -50,19 +50,15 @@ are identified as biomarkers.
     data(zeller14)
     # exclude 'adenoma'
     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-    # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
-    zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
-    results <- lefser(zeller14)
-    head(results)
+    res_group <- lefser(zeller14, groupCol = "study_condition")
+    head(res_group)
 
     # (2) Using classes and sublasses
     data(zeller14)
     # exclude 'adenoma'
     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-    # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
-    zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
-    # assign '0' class to 'adult' and '1' to 'senior'
-    zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
-    results <- lefser(zeller14)
-    head(results)
+    res_block <- lefser(
+         zeller14, groupCol = "study_condition", blockCol = "age_category"
+    )
+    head(res_block)
 }

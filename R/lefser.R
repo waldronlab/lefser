@@ -55,7 +55,7 @@ fillPmatZmat <- function(fun,
 ## ensures that more than half of the values in each for each feature are unique
 ## if that is not the case then a count value is altered by adding it to a small value
 ## generated via normal distribution with mean=0 and sd=5% of the count value
-createUniqueValues <- function(df, groups, group){
+createUniqueValues <- function(df, group){
   orderedrows <- rownames(df)
   splitdf <- split(df, group)
   maxim <- vapply(table(group), function(x) max(x * 0.5, 4), numeric(1L))
@@ -156,6 +156,11 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   (lda.means.diff + coeff) / 2
 }
 
+.numeric01 <- function(x) {
+    x <- as.factor(x)
+    uvals <- levels(x)
+    ifelse(x == uvals[1L], 0L, 1L)
+}
 
 #' R implementation of the LEfSe method
 #'
@@ -196,21 +201,17 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #'     data(zeller14)
 #'     # exclude 'adenoma'
 #'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-#'     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
-#'     zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
-#'     results <- lefser(zeller14)
-#'     head(results)
+#'     res_group <- lefser(zeller14, groupCol = "study_condition")
+#'     head(res_group)
 #'
 #'     # (2) Using classes and sublasses
 #'     data(zeller14)
 #'     # exclude 'adenoma'
 #'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-#'     # assign '0' class to 'conrol' and '1' to 'CRC' (i.e., colorectal cancer)
-#'     zeller14$GROUP <- ifelse(zeller14$study_condition == "control", 0, 1)
-#'     # assign '0' class to 'adult' and '1' to 'senior'
-#'     zeller14$BLOCK <- ifelse(zeller14$age_category == "adult", 0, 1)
-#'     results <- lefser(zeller14)
-#'     head(results)
+#'     res_block <- lefser(
+#'          zeller14, groupCol = "study_condition", blockCol = "age_category"
+#'     )
+#'     head(res_block)
 #' @export
 lefser <-
   function(expr,
@@ -220,16 +221,18 @@ lefser <-
            blockCol = NULL,
            assay = 1L)
   {
-    group <- colData(expr)[[groupCol]]
-    if (is.null(group))
+    groupf <- colData(expr)[[groupCol]]
+    if (is.null(groupf))
         stop("A valid group assignment 'groupCol' must be provided")
-    group <- as.factor(group)
-    groups <- levels(group)
-    if (length(groups) != 2L)
+    groupf <- as.factor(groupf)
+    groupsf <- levels(groupf)
+    if (length(groupsf) != 2L)
       stop(
         "Group classification is not dichotomous:\n",
-        "Found (", paste(groups, collapse = ", "), ")"
+        "Found (", paste(groupsf, collapse = ", "), ")"
       )
+    group <- .numeric01(groupf)
+    groups <- 0:1
 
     block <- factor(rep(1L, length(group)))
     fun <- stats::kruskal.test
@@ -240,22 +243,20 @@ lefser <-
 
     expr <- assay(expr, i = assay)
 
-    expr_sub <- fillPmatZmat(fun, group, block, expr, p.threshold)
+    expr_sub <- fillPmatZmat(fun, groupf, block, expr, p.threshold)
 
     # transposes matrix and add a "class" (i.e., group) column
     # matrix converted to dataframe
     expr_sub_t <- t(expr_sub)
-
-    expr_sub_t_df <- data.frame(expr_sub_t)
-
-    expr_sub_t_df <- createUniqueValues(expr_sub_t_df, groups, group)
-    expr_sub_t_df <- cbind(expr_sub_t_df, class = (as.numeric(group) - 1))
+    expr_sub_t_df <- as.data.frame(expr_sub_t)
+    expr_sub_t_df <- createUniqueValues(expr_sub_t_df, groupf)
+    expr_sub_t_df <- cbind(expr_sub_t_df, class = group)
 
     # number of samples (i.e., subjects) in the dataframe
     lfk <- nrow(expr_sub_t_df)
     # rfk is the number of subject that will be used in linear discriminant analysis
     rfk <- floor(lfk * 2 / 3)
-    # number of classes (typically two)
+    # number of classes (two)
     ncl <- length(groups)
     # count samples in each class of the dataframe, select the number from the class with a smaller
     # count of samples and multiply that number by 2/*2/3*0.5
