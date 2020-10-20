@@ -22,7 +22,7 @@ utils::globalVariables(c("Names", "scores"))
 #'
 #' @examples
 #' example("lefser")
-#' lefserPlot(results)
+#' lefserPlot(res_group)
 lefserPlot <- function(df, colors = c("red", "forestgreen")) {
   group <- ifelse(df$scores > 0, 1, 0)
   df$group <- as.factor(group)

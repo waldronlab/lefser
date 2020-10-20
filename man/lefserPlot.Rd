@@ -23,5 +23,5 @@ and whether they are more abundant in '0' or '1' sample group.
 }
 \examples{
 example("lefser")
-lefserPlot(results)
+lefserPlot(res_group)
 }
