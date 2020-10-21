@@ -45,11 +45,11 @@ fillPmatZmat <- function(fun,
   ## and selects such rows from the matrix of z-statistics
   sub <- apply(logical_pval_mat, 1L, all)
   if (hasBlocks) {
-    z_mat_sub <- z_mat[sub,]
+    z_mat_sub <- z_mat[sub, , drop = FALSE]
     # confirms that z-statistics of a row all have the same sign
     sub <- abs(rowSums(z_mat_sub)) == rowSums(abs(z_mat_sub))
   }
-  expr_sub[names(sub[sub]), ]
+  expr_sub[names(sub[sub]), , drop = FALSE]
 }
 
 ## ensures that more than half of the values in each for each feature are unique
@@ -71,12 +71,12 @@ createUniqueValues <- function(df, group){
     })
   }
   df <- do.call(rbind, unname(splitdf))
-  df[match(orderedrows, rownames(df)),]
+  df[match(orderedrows, rownames(df)),, drop = FALSE]
 }
 
 contastWithinClassesOrFewPerClass <-
   function(expr_sub_t_df, rand_s, min_cl, ncl, groups) {
-    cols <- expr_sub_t_df[rand_s,]
+    cols <- expr_sub_t_df[rand_s, , drop = FALSE]
     cls <- expr_sub_t_df$class[rand_s]
     # if the number of classes is less than the actual number (typically two)
     # of classes in the dataframe then return TRUE
