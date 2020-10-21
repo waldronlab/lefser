@@ -27,9 +27,9 @@ test_that("lefser and lefserPlot work", {
     )
   )
   expect_equal(colnames(results2), c("Names", "scores"))
-  expect_true(endsWith(results2[1, "Names"], "o__Lactobacillales`"))
-  expect_true(endsWith(
-    results2[nrow(results2), "Names"], "s__Eubacterium_hallii`"
+  expect_true(checkEnding(results2, 1, "Names", "o__Lactobacillales`"))
+  expect_true(checkEnding(
+    results2, nrow(results2), "Names", "s__Eubacterium_hallii`"
   ))
   expect_equal(results2[1, "scores"],-5.792313, tolerance = 0.2)
   expect_equal(results2[nrow(results2), "scores"], 5.20564, tolerance = 0.2)
