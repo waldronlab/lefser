@@ -6,7 +6,8 @@
 \usage{
 lefser(
   expr,
-  p.threshold = 0.05,
+  kruskal.threshold = 0.05,
+  wilcox.threshold = 0.05,
   lda.threshold = 2,
   groupCol = "GROUP",
   blockCol = NULL,
@@ -16,23 +17,24 @@ lefser(
 \arguments{
 \item{expr}{A \code{\linkS4class{SummarizedExperiment}} with expression data.}
 
-\item{p.threshold}{numeric(1) The p-value for the Kruskal-Wallis Rank Sum
-Test. If 'blockCol' is provided, it indicates the p-value for the Wilcoxon
-Rank-Sum Test (default 0.05).}
+\item{kruskal.threshold}{numeric(1) The p-value for the Kruskal-Wallis Rank
+Sum Test (default 0.05).}
 
-\item{lda.threshold}{The effect size threshold.
-The default is at 2.0.}
+\item{wilcox.threshold}{numeric(1) The p-value for the Wilcoxon Rank-Sum Test
+when 'blockCol' is present (default 0.05).}
+
+\item{lda.threshold}{numeric(1) The effect size threshold (default 2.0).}
 
 \item{groupCol}{character(1) Column name in `colData(expr)` indicating
 groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
 default "GROUP").}
 
-\item{blockCol}{character(1) Column name in `colData(expr)` indicating the
-blocks, usually a factor with two levels (e.g., `c("adult", "senior")`;
-default NULL).}
+\item{blockCol}{character(1) Optional column name in `colData(expr)`
+indicating the blocks, usually a factor with two levels (e.g.,
+`c("adult", "senior")`; default NULL).}
 
-\item{assay}{The i-th assay matrix in the `SummarizedExperiment` ('expr').
-Defaults to 1.}
+\item{assay}{The i-th assay matrix in the `SummarizedExperiment` ('expr';
+default 1).}
 }
 \value{
 The function returns a dataframe with two columns, which are

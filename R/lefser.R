@@ -1,10 +1,8 @@
-fillPmatZmat <- function(fun,
-                         group,
+fillPmatZmat <- function(group,
                          block,
                          expr_sub,
                          p.threshold)
 {
-  hasBlocks <- length(levels(block)) > 1L
   # creates a list of boolean vectors, each vector indicates
   # existance (TRUE) or absence (FALSE) of a class/sub-class combination
   combos <- apply(
@@ -12,8 +10,6 @@ fillPmatZmat <- function(fun,
   combined <- paste0(as.character(group), as.character(block))
   logilist <- lapply(setNames(nm = sort(combos)), `==`, combined)
 
-  pv <- if (hasBlocks) { coin::pvalue } else function(x) { x$p.value }
-  stat <- if (hasBlocks) { coin::statistic } else function(x) { x$statistic }
   ## uses Wilcoxon rank-sum test to test for significant differential abundances between
   ## subclasses of one class against subclasses of all othe classes; results are saved in
   ## "pval_mat" and "z_mat" matrices
@@ -24,8 +20,10 @@ fillPmatZmat <- function(fun,
   group_formats <- apply(iters, 1L, function(x) {
     ind <- unlist(whichlist[x])
     apply(texp_sub, 2L, function(g) {
-      wx <- suppressWarnings(fun(g ~ group, subset = ind))
-      cbind.data.frame(p.value = pv(wx), statistic = stat(wx))
+      wx <- suppressWarnings(coin::wilcox_test(g ~ group, subset = ind))
+      cbind.data.frame(
+          p.value = coin::pvalue(wx), statistic = coin::statistic(wx)
+      )
     })
   })
 
@@ -44,11 +42,9 @@ fillPmatZmat <- function(fun,
   ## determines which rows (features) have all p-values<=0.05
   ## and selects such rows from the matrix of z-statistics
   sub <- apply(logical_pval_mat, 1L, all)
-  if (hasBlocks) {
-    z_mat_sub <- z_mat[sub, , drop = FALSE]
+  z_mat_sub <- z_mat[sub, , drop = FALSE]
     # confirms that z-statistics of a row all have the same sign
-    sub <- abs(rowSums(z_mat_sub)) == rowSums(abs(z_mat_sub))
-  }
+  sub <- abs(rowSums(z_mat_sub)) == rowSums(abs(z_mat_sub))
   expr_sub[names(sub[sub]), , drop = FALSE]
 }
 
@@ -162,6 +158,23 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
     ifelse(x == uvals[1L], 0L, 1L)
 }
 
+filterKruskal <- function(expr, group, p.value) {
+  # applies "kruskal.test.alt" function to each row (feature) of expr
+  # to detect differential abundance between classes, 0 and 1
+  kw.res <- apply(expr, 1L, function(x) {
+    kruskal.test(x ~ group)[["p.value"]]
+  })
+  # selects p-values less than or equal to kw.threshold
+  kw.sub <- kw.res <= p.value
+  
+  # eliminates NAs
+  kw.sub[is.na(kw.sub)] <- FALSE
+  
+  # extracts features with statistically significant differential abundance
+  # from "expr" matrix
+  expr[kw.sub,]
+}
+
 #' R implementation of the LEfSe method
 #'
 #' Perform a LEfSe analysis: the function carries out differential analysis
@@ -171,20 +184,19 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #' are identified as biomarkers.
 #'
 #' @param expr A \code{\linkS4class{SummarizedExperiment}} with expression data.
+#' @param kruskal.threshold numeric(1) The p-value for the Kruskal-Wallis Rank
+#' Sum Test (default 0.05).
+#' @param wilcox.threshold numeric(1) The p-value for the Wilcoxon Rank-Sum Test
+#' when 'blockCol' is present (default 0.05).
+#' @param lda.threshold numeric(1) The effect size threshold (default 2.0).
 #' @param groupCol character(1) Column name in `colData(expr)` indicating
 #' groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
 #' default "GROUP").
-#' @param blockCol character(1) Column name in `colData(expr)` indicating the
-#' blocks, usually a factor with two levels (e.g., `c("adult", "senior")`;
-#' default NULL).
-#' @param assay The i-th assay matrix in the `SummarizedExperiment` ('expr').
-#' Defaults to 1.
-#' @param p.threshold numeric(1) The p-value for the Kruskal-Wallis Rank Sum
-#' Test. If 'blockCol' is provided, it indicates the p-value for the Wilcoxon
-#' Rank-Sum Test (default 0.05).
-#' @param lda.threshold
-#' The effect size threshold.
-#' The default is at 2.0.
+#' @param blockCol character(1) Optional column name in `colData(expr)`
+#' indicating the blocks, usually a factor with two levels (e.g.,
+#' `c("adult", "senior")`; default NULL).
+#' @param assay The i-th assay matrix in the `SummarizedExperiment` ('expr';
+#' default 1).
 #' @return
 #' The function returns a dataframe with two columns, which are
 #' names of microorganisms and their LDA scores.
@@ -215,7 +227,8 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
 #' @export
 lefser <-
   function(expr,
-           p.threshold = 0.05,
+           kruskal.threshold = 0.05,
+           wilcox.threshold = 0.05,
            lda.threshold = 2.0,
            groupCol = "GROUP",
            blockCol = NULL,
@@ -233,17 +246,13 @@ lefser <-
       )
     group <- .numeric01(groupf)
     groups <- 0:1
-
-    block <- factor(rep(1L, length(group)))
-    fun <- stats::kruskal.test
+    expr_data <- assay(expr, i = assay)
+    expr_sub <- filterKruskal(expr_data, group, kruskal.threshold)
+    
     if (!is.null(blockCol)) {
         block <- as.factor(colData(expr)[[blockCol]])
-        fun <- coin::wilcox_test
+        expr_sub <- fillPmatZmat(groupf, block, expr_sub, wilcox.threshold)
     }
-
-    expr <- assay(expr, i = assay)
-
-    expr_sub <- fillPmatZmat(fun, groupf, block, expr, p.threshold)
 
     # transposes matrix and add a "class" (i.e., group) column
     # matrix converted to dataframe
