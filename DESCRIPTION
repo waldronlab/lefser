@@ -33,7 +33,8 @@ Suggests:
   BiocStyle,
   testthat,
   pkgdown,
-  covr
+  covr,
+  withr
 Encoding: UTF-8
 BugReports: https://github.com/waldronlab/lefser/issues
 URL: https://github.com/waldronlab/lefser

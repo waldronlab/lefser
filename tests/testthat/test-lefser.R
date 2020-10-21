@@ -10,18 +10,21 @@ test_that("lefser and lefserPlot work", {
   zellersub <- zeller14[1:150, zeller14$study_condition != "adenoma"]
   ## subsetting a DataFrame with NULL
   expect_error(lefser(zellersub, groupCol = NULL, blockCol = NULL))
-  set.seed(1)
-  results <- lefser(zellersub, groupCol = "study_condition", blockCol = NULL)
+  results <- withr::with_seed(1,
+    lefser(zellersub, groupCol = "study_condition", blockCol = NULL)
+  )
   expect_equal(colnames(results), c("Names", "scores"))
   expect_true(checkEnding(results, 1, "Names", "p__Firmicutes`"))
   expect_true(
     checkEnding(results, nrow(results), "Names", "o__Bacteroidales`")
   )
+# TODO: compare results between LEfSe and lefser
   expect_equal(results[1, "scores"],-6.431365, tolerance = 0.2)
   expect_equal(results[nrow(results), "scores"], 6.402655, tolerance = 0.2)
-  set.seed(1)
-  results2 <- lefser(
-    zellersub, groupCol = "study_condition", blockCol = "age_category"
+  results2 <- withr::with_seed(1,
+    lefser(
+        zellersub, groupCol = "study_condition", blockCol = "age_category"
+    )
   )
   expect_equal(colnames(results2), c("Names", "scores"))
   expect_true(endsWith(results2[1, "Names"], "o__Lactobacillales`"))
