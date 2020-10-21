@@ -143,7 +143,8 @@ are identified as biomarkers.</p>
 
     <pre class="usage"><span class='fu'>lefser</span><span class='op'>(</span>
   <span class='va'>expr</span>,
-  p.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
+  kruskal.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
+  wilcox.threshold <span class='op'>=</span> <span class='fl'>0.05</span>,
   lda.threshold <span class='op'>=</span> <span class='fl'>2</span>,
   groupCol <span class='op'>=</span> <span class='st'>"GROUP"</span>,
   blockCol <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -158,15 +159,18 @@ are identified as biomarkers.</p>
       <td><p>A <code>SummarizedExperiment</code> with expression data.</p></td>
     </tr>
     <tr>
-      <th>p.threshold</th>
-      <td><p>numeric(1) The p-value for the Kruskal-Wallis Rank Sum
-Test. If 'blockCol' is provided, it indicates the p-value for the Wilcoxon
-Rank-Sum Test (default 0.05).</p></td>
+      <th>kruskal.threshold</th>
+      <td><p>numeric(1) The p-value for the Kruskal-Wallis Rank
+Sum Test (default 0.05).</p></td>
+    </tr>
+    <tr>
+      <th>wilcox.threshold</th>
+      <td><p>numeric(1) The p-value for the Wilcoxon Rank-Sum Test
+when 'blockCol' is present (default 0.05).</p></td>
     </tr>
     <tr>
       <th>lda.threshold</th>
-      <td><p>The effect size threshold.
-The default is at 2.0.</p></td>
+      <td><p>numeric(1) The effect size threshold (default 2.0).</p></td>
     </tr>
     <tr>
       <th>groupCol</th>
@@ -176,14 +180,14 @@ default "GROUP").</p></td>
     </tr>
     <tr>
       <th>blockCol</th>
-      <td><p>character(1) Column name in `colData(expr)` indicating the
-blocks, usually a factor with two levels (e.g., `c("adult", "senior")`;
-default NULL).</p></td>
+      <td><p>character(1) Optional column name in `colData(expr)`
+indicating the blocks, usually a factor with two levels (e.g.,
+`c("adult", "senior")`; default NULL).</p></td>
     </tr>
     <tr>
       <th>assay</th>
-      <td><p>The i-th assay matrix in the `SummarizedExperiment` ('expr').
-Defaults to 1.</p></td>
+      <td><p>The i-th assay matrix in the `SummarizedExperiment` ('expr';
+default 1).</p></td>
     </tr>
     </table>
 
