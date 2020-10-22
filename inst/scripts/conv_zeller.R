@@ -5,7 +5,7 @@ exprs <- assay(zell, i = 1L)
 datas <- data.frame(
     condition = lefser:::.numeric01(zell$study_condition),
     age = lefser:::.numeric01(zell$age_category),
-    ID = colnames(exprs),
+    subjectID = zell$subjectID,
     t(exprs)
 )
 
