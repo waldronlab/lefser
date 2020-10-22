@@ -7,6 +7,7 @@ test_that("lefser and lefserPlot work", {
   data("zeller14", package = "lefser", envir = dataenv)
   zeller14 <- dataenv[["zeller14"]]
 
+  tol <- 0.2
   zellersub <- zeller14[1:150, zeller14$study_condition != "adenoma"]
   ## subsetting a DataFrame with NULL
   expect_error(lefser(zellersub, groupCol = NULL, blockCol = NULL))
@@ -19,8 +20,8 @@ test_that("lefser and lefserPlot work", {
     checkEnding(results, nrow(results), "Names", "o__Bacteroidales`")
   )
 # TODO: compare results between LEfSe and lefser
-  expect_equal(results[1, "scores"],-6.431365, tolerance = 0.2)
-  expect_equal(results[nrow(results), "scores"], 6.402655, tolerance = 0.2)
+  expect_equal(results[1, "scores"], -6.431365, tolerance = tol)
+  expect_equal(results[nrow(results), "scores"], 6.402655, tolerance = tol)
   results2 <- withr::with_seed(1,
     lefser(
         zellersub, groupCol = "study_condition", blockCol = "age_category"
@@ -31,8 +32,8 @@ test_that("lefser and lefserPlot work", {
   expect_true(checkEnding(
     results2, nrow(results2), "Names", "s__Eubacterium_hallii`"
   ))
-  expect_equal(results2[1, "scores"],-5.792313, tolerance = 0.2)
-  expect_equal(results2[nrow(results2), "scores"], 5.20564, tolerance = 0.2)
+  expect_equal(results2[1, "scores"], -5.792313, tolerance = tol)
+  expect_equal(results2[nrow(results2), "scores"], 5.20564, tolerance = tol)
 
   expect_equal(nrow(results2), 3)
   expect_true(all(
@@ -44,7 +45,7 @@ test_that("lefser and lefserPlot work", {
   ))
   expect_equal(results2$scores,
                c(-5.792313,-5.079186, 5.205640),
-               tolerance = 0.2)
+               tolerance = tol)
   plt <- lefserPlot(results2)
   expect_s3_class(plt, "ggplot")
 })
