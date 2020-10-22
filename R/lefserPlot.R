@@ -24,8 +24,8 @@ utils::globalVariables(c("Names", "scores"))
 #' example("lefser")
 #' lefserPlot(res_group)
 lefserPlot <- function(df, colors = c("red", "forestgreen"), 
-                       trunc_value = TRUE) {
-  df <- trunc(df, trunc_value)
+                       trim.names = TRUE) {
+  df <- trunc(df, trim.names)
   group <- ifelse(df$scores > 0, 1, 0)
   df$group <- as.factor(group)
   plt <-

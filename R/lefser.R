@@ -175,9 +175,9 @@ filterKruskal <- function(expr, group, p.value) {
   expr[kw.sub,]
 }
 
-trunc <- function(scores_df, trunc_value){
+trunc <- function(scores_df, trim.names){
   Names <- droplevels(scores_df)$Names
-  if(trunc_value){
+  if(trim.names){
     listNames <- strsplit(Names, "\\||\\.")
     Names <- vapply(listNames, tail, character(1L), 1L)
     
@@ -244,7 +244,7 @@ lefser <-
            groupCol = "GROUP",
            blockCol = NULL,
            assay = 1L,
-           trunc_value = TRUE)
+           trim.names = FALSE)
   {
     groupf <- colData(expr)[[groupCol]]
     if (is.null(groupf))
@@ -306,7 +306,7 @@ lefser <-
                             scores = as.vector(processed_sorted_scores),
                             stringsAsFactors = FALSE)
 
-    scores_df <- trunc(scores_df, trunc_value)
+    scores_df <- trunc(scores_df, trim.names)
     
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
     scores_df <- scores_df[threshold_scores, ]
