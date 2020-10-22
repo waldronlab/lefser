@@ -29,24 +29,29 @@ test_that("lefser and lefserPlot work", {
     )
   )
   expect_equal(colnames(results2), c("Names", "scores"))
-  expect_true(checkEnding(results2, 1, "Names", "o__Lactobacillales`"))
+  expect_true(checkEnding(results2, 1, "Names", "g__Ruminococcus`"))
   expect_true(checkEnding(
-    results2, nrow(results2), "Names", "s__Eubacterium_hallii`"
+    results2, nrow(results2), "Names", "f__Clostridiales_noname`"
   ))
   expect_equal(results2[1, "scores"], -5.792313, tolerance = tol)
   expect_equal(results2[nrow(results2), "scores"], 5.20564, tolerance = tol)
 
-  expect_equal(nrow(results2), 3)
+  expect_equal(nrow(results2), 6)
   expect_true(all(
     mapply(endsWith, results2$Names, c(
+      "g__Ruminococcus`",
       "o__Lactobacillales`",
+      "c__Bacilli`",
       "s__Ruminococcus_sp_5_1_39BFAA`",
-      "s__Eubacterium_hallii`"
+      "s__Eubacterium_hallii`",
+      "f__Clostridiales_noname`"
     ))
   ))
+
   expect_equal(results2$scores,
-               c(-5.792313,-5.079186, 5.205640),
-               tolerance = tol)
+    c(-6.1384025872238, -5.90688120617861, -5.89755502841847,
+    -5.57735644006024, -5.42866570267924, 4.64159299932332),
+    tolerance = tol)
   plt <- lefserPlot(results2)
   expect_s3_class(plt, "ggplot")
 })
