@@ -178,7 +178,7 @@ filterKruskal <- function(expr, group, p.value) {
 trunc <- function(scores_df, trunc_value){
   Names <- droplevels(scores_df)$Names
   if(trunc_value){
-    listNames <- strsplit(Names, "[.,|,-, , %,$,#,@,&,*,~,^,?,!,/]")
+    listNames <- strsplit(Names, "\\||\\.")
     Names <- vapply(listNames, tail, character(1L), 1L)
     
     scores_df$Names <- Names
