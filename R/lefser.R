@@ -36,7 +36,7 @@ fillPmatZmat <- function(group,
 
   ## converts "pval_mat" into boolean matrix "logical_pval_mat" where
   ## p-values <= wilcoxon.threshold
-  logical_pval_mat <- pval_mat <= p.threshold
+  logical_pval_mat <- pval_mat <= p.threshold * 2.0
   logical_pval_mat[is.na(logical_pval_mat)] <- FALSE
 
   ## determines which rows (features) have all p-values<=0.05
