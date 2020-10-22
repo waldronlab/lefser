@@ -4,7 +4,7 @@
 \alias{lefserPlot}
 \title{Plots results from `lefser` function}
 \usage{
-lefserPlot(df, colors = c("red", "forestgreen"))
+lefserPlot(df, colors = c("red", "forestgreen"), trim.names = TRUE)
 }
 \arguments{
 \item{df}{Data frame produced by `lefser`.}

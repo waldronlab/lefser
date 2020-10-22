@@ -11,7 +11,8 @@ lefser(
   lda.threshold = 2,
   groupCol = "GROUP",
   blockCol = NULL,
-  assay = 1L
+  assay = 1L,
+  trim.names = FALSE
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ indicating the blocks, usually a factor with two levels (e.g.,
 
 \item{assay}{The i-th assay matrix in the `SummarizedExperiment` ('expr';
 default 1).}
+
+\item{trim.names}{If `TRUE` extracts the most specific taxonomic rank of organism.}
 }
 \value{
 The function returns a dataframe with two columns, which are

@@ -208,6 +208,7 @@ trunc <- function(scores_df, trim.names){
 #' `c("adult", "senior")`; default NULL).
 #' @param assay The i-th assay matrix in the `SummarizedExperiment` ('expr';
 #' default 1).
+#' @param trim.names If `TRUE` extracts the most specific taxonomic rank of organism.
 #' @return
 #' The function returns a dataframe with two columns, which are
 #' names of microorganisms and their LDA scores.
