@@ -175,6 +175,17 @@ filterKruskal <- function(expr, group, p.value) {
   expr[kw.sub,]
 }
 
+trunc <- function(scores_df, trunc_value){
+  Names <- droplevels(scores_df)$Names
+  if(trunc_value){
+    listNames <- strsplit(Names, "[.,|,-, , %,$,#,@,&,*,~,^,?,!,/]")
+    Names <- vapply(listNames, tail, character(1L), 1L)
+    
+    scores_df$Names <- Names
+    return(scores_df)
+  }
+}
+
 #' R implementation of the LEfSe method
 #'
 #' Perform a LEfSe analysis: the function carries out differential analysis
@@ -232,7 +243,8 @@ lefser <-
            lda.threshold = 2.0,
            groupCol = "GROUP",
            blockCol = NULL,
-           assay = 1L)
+           assay = 1L,
+           trunc_value = TRUE)
   {
     groupf <- colData(expr)[[groupCol]]
     if (is.null(groupf))
@@ -290,19 +302,13 @@ lefser <-
 
     # sorting of scores
     processed_sorted_scores <- sort(processed_scores)
+    scores_df <- data.frame(Names = names(processed_sorted_scores), 
+                            scores = as.vector(processed_sorted_scores),
+                            stringsAsFactors = FALSE)
 
-    # extracting the most specific taxonomic rank of an organism
-    Names <- vector("character", length(processed_sorted_scores))
-    for (i in seq_along(processed_sorted_scores)) {
-      vec_of_strings = unlist(strsplit(names(processed_sorted_scores)[i], "[.]"))
-      Names[i] = vec_of_strings[length(vec_of_strings)]
-    }
-
-    # return a dataframe of taxon name and effect size score
-    scores <- as.vector(processed_sorted_scores)
-    scores_df <- data.frame(Names, scores)
+    scores_df <- trunc(scores_df, trunc_value)
+    
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
     scores_df <- scores_df[threshold_scores, ]
-    rownames(scores_df) <- seq_len(nrow(scores_df))
     return(scores_df)
   }
