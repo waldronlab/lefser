@@ -3,6 +3,7 @@ checkEnding <- function(resObj, index, column, value) {
 }
 
 test_that("lefser and lefserPlot work", {
+  skip_if_not(identical(Sys.getlocale("LC_COLLATE"), "en_US.UTF-8"))
   dataenv <- new.env(parent = emptyenv())
   data("zeller14", package = "lefser", envir = dataenv)
   zeller14 <- dataenv[["zeller14"]]
