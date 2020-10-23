@@ -180,10 +180,11 @@ trunc <- function(scores_df, trim.names){
   if(trim.names){
     listNames <- strsplit(Names, "\\||\\.")
     Names <- vapply(listNames, tail, character(1L), 1L)
-    
-    scores_df$Names <- Names
-    return(scores_df)
   }
+    
+  scores_df$Names <- Names
+  return(scores_df)
+  
 }
 
 #' R implementation of the LEfSe method
