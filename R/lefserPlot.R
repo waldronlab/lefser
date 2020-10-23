@@ -10,7 +10,9 @@ utils::globalVariables(c("Names", "scores"))
 #'
 #' @param colors character(2) The two colors corresponding to class 0 and 1,
 #' respectively. Defaults to `c("red", "forestgreen")`.
-#'
+#' 
+#' @param trim.names If `TRUE` extracts the most specific taxonomic rank of organism.
+#' 
 #' @return
 #' Function returns plot of effect size scores produed by `lefser`.
 #' Positive scores represent microorganisms with that are more abundant in class '1'.
