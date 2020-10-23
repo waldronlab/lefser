@@ -219,6 +219,7 @@ trunc <- function(scores_df, trim.names){
 #' @importFrom MASS lda
 #' @importFrom methods as is
 #' @importFrom stats setNames
+#' @importFrom utils tail
 #' @import SummarizedExperiment
 #'
 #' @examples
