@@ -11,6 +11,8 @@ lefserPlot(df, colors = c("red", "forestgreen"), trim.names = TRUE)
 
 \item{colors}{character(2) The two colors corresponding to class 0 and 1,
 respectively. Defaults to `c("red", "forestgreen")`.}
+
+\item{trim.names}{If `TRUE` extracts the most specific taxonomic rank of organism.}
 }
 \value{
 Function returns plot of effect size scores produed by `lefser`.
