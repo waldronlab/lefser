@@ -48,7 +48,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -65,7 +65,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/waldronlab/lefser/">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -86,6 +86,8 @@
 <div id="lefser-run-lefse-in-r" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#lefser-run-lefse-in-r" class="anchor"></a>lefser: Run LEfSE in R</h1></div>
+<p><code>lefser</code> is the R implementation of the <em>LEfSe</em> method for microbiome biomarker discovery[1]. The original software is likely the most widely-used method for biomarker discovery and plotting in microbiome studies, with ~5,000 citations as of the end of 2020. However, the original software is implemented in Python as a command-line tool and Galaxy module, and is not straightforward to implement in R. The method involves Kruskal-Wallis test, Wilcoxon-Rank Sum test, and Linear Discriminant Analysis to find biomarkers in groups and sub-group blocks. <code>lefser</code> closely reproduces the original statistical method and the associated barplot of results.</p>
+<p>[1] Segata N, Izard J, Waldron L, Gevers D, Miropolsky L, Garrett WS, Huttenhower C: Metagenomic biomarker discovery and explanation. Genome Biol. 2011, 12:R60. <a href="https://doi.org/10.1186/gb-2011-12-6-r60" class="uri">https://doi.org/10.1186/gb-2011-12-6-r60</a></p>
 </div>
 
   </div>
@@ -94,6 +96,8 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from BIOC at <br><a href="https://www.bioconductor.org/packages/lefser">https://​www.bioconductor.org/​packages/​lefser</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/waldronlab/lefser/">https://​github.com/​waldronlab/​lefser/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/waldronlab/lefser/issues">https://​github.com/​waldronlab/​lefser/​issues</a>
