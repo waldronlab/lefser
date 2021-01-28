@@ -166,25 +166,23 @@ filterKruskal <- function(expr, group, p.value) {
   })
   # selects p-values less than or equal to kw.threshold
   kw.sub <- kw.res <= p.value
-  
+
   # eliminates NAs
   kw.sub[is.na(kw.sub)] <- FALSE
-  
+
   # extracts features with statistically significant differential abundance
   # from "expr" matrix
   expr[kw.sub,]
 }
 
-trunc <- function(scores_df, trim.names){
-  Names <- droplevels(scores_df)$Names
-  if(trim.names){
+.trunc <- function(scores_df, trim.names){
+  Names <- gsub("`", "", scores_df[["Names"]])
+  if (trim.names) {
     listNames <- strsplit(Names, "\\||\\.")
     Names <- vapply(listNames, tail, character(1L), 1L)
   }
-    
-  scores_df$Names <- Names
+  scores_df[["Names"]] <- Names
   return(scores_df)
-  
 }
 
 #' R implementation of the LEfSe method
@@ -263,7 +261,7 @@ lefser <-
     groups <- 0:1
     expr_data <- assay(expr, i = assay)
     expr_sub <- filterKruskal(expr_data, group, kruskal.threshold)
-    
+
     if (!is.null(blockCol)) {
         block <- as.factor(colData(expr)[[blockCol]])
         expr_sub <- fillPmatZmat(groupf, block, expr_sub, wilcox.threshold)
@@ -305,13 +303,12 @@ lefser <-
 
     # sorting of scores
     processed_sorted_scores <- sort(processed_scores)
-    scores_df <- data.frame(Names = names(processed_sorted_scores), 
+    scores_df <- data.frame(Names = names(processed_sorted_scores),
                             scores = as.vector(processed_sorted_scores),
                             stringsAsFactors = FALSE)
 
-    scores_df <- trunc(scores_df, trim.names)
-    
+    scores_df <- .trunc(scores_df, trim.names)
+
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
-    scores_df <- scores_df[threshold_scores, ]
-    return(scores_df)
+    scores_df[threshold_scores, ]
   }
