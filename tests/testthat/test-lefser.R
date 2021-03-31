@@ -16,9 +16,9 @@ test_that("lefser and lefserPlot work", {
     lefser(zellersub, groupCol = "study_condition", blockCol = NULL)
   )
   expect_equal(colnames(results), c("Names", "scores"))
-  expect_true(checkEnding(results, 1, "Names", "p__Firmicutes`"))
+  expect_true(checkEnding(results, 1, "Names", "p__Firmicutes"))
   expect_true(
-    checkEnding(results, nrow(results), "Names", "o__Bacteroidales`")
+    checkEnding(results, nrow(results), "Names", "o__Bacteroidales")
   )
 # TODO: compare results between LEfSe and lefser
   expect_equal(results[1, "scores"], -6.431365, tolerance = tol)
@@ -29,9 +29,9 @@ test_that("lefser and lefserPlot work", {
     )
   )
   expect_equal(colnames(results2), c("Names", "scores"))
-  expect_true(checkEnding(results2, 1, "Names", "g__Ruminococcus`"))
+  expect_true(checkEnding(results2, 1, "Names", "g__Ruminococcus"))
   expect_true(checkEnding(
-    results2, nrow(results2), "Names", "f__Clostridiales_noname`"
+    results2, nrow(results2), "Names", "f__Clostridiales_noname"
   ))
   expect_equal(results2[1, "scores"], -5.792313, tolerance = tol)
   expect_equal(results2[nrow(results2), "scores"], 5.20564, tolerance = tol)
@@ -39,12 +39,12 @@ test_that("lefser and lefserPlot work", {
   expect_equal(nrow(results2), 6)
   expect_true(all(
     mapply(endsWith, results2$Names, c(
-      "g__Ruminococcus`",
-      "o__Lactobacillales`",
-      "c__Bacilli`",
-      "s__Ruminococcus_sp_5_1_39BFAA`",
-      "s__Eubacterium_hallii`",
-      "f__Clostridiales_noname`"
+      "g__Ruminococcus",
+      "o__Lactobacillales",
+      "c__Bacilli",
+      "s__Ruminococcus_sp_5_1_39BFAA",
+      "s__Eubacterium_hallii",
+      "f__Clostridiales_noname"
     ))
   ))
 
