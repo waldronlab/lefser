@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lefser</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -76,14 +76,14 @@
 
       
 
-      </header><script src="lefser_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="lefser_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Lefser finds features that have greatest differences between classes.</h1>
                         <h4 class="author"><div class="line-block">Asya Khleborodova, Ludwig Geistlinger, and Levi Waldron<br><small>School of Public Health, City University of New York</small>
 </div></h4>
             
-            <h4 class="date">2021-01-28</h4>
+            <h4 class="date">2021-03-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/waldronlab/lefser/blob/master/vignettes/lefser.Rmd"><code>vignettes/lefser.Rmd</code></a></small>
       <div class="hidden name"><code>lefser.Rmd</code></div>
@@ -143,20 +143,20 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lefser.html">lefser</a></span><span class="op">(</span><span class="va">zeller14</span>, groupCol <span class="op">=</span> <span class="st">"study_condition"</span>, blockCol <span class="op">=</span> <span class="st">"age_category"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
-<pre><code>##                                                                                                                                          Names
-## 1                                                `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus`
-## 2                                                                                    `k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales`
-## 3                                                                                                       `k__Bacteria|p__Firmicutes|c__Bacilli`
-## 4                  `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA`
-## 5 `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975`
-## 6                            `k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii`
+<pre><code>##                                                                                                                                        Names
+## 1                                                k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus
+## 2                                                                                    k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales
+## 3                                                                                                       k__Bacteria|p__Firmicutes|c__Bacilli
+## 4                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA
+## 5 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975
+## 6                            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii
 ##      scores
-## 1 -6.191221
-## 2 -5.966664
-## 3 -5.957563
-## 4 -5.592728
-## 5 -5.592728
-## 6 -5.494593</code></pre>
+## 1 -6.184072
+## 2 -5.949831
+## 3 -5.941181
+## 4 -5.553244
+## 5 -5.553244
+## 6 -5.484374</code></pre>
 </div>
 <div id="visualizing-results-with-lefserplot" class="section level1">
 <h1 class="hasAnchor">
@@ -170,9 +170,9 @@
 <a href="#sessioninfo" class="anchor"></a>sessionInfo</h2>
 <details><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R Under development (unstable) (2021-01-21 r79854)
+<pre><code>## R Under development (unstable) (2021-03-18 r80099)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 20.04.1 LTS
+## Running under: Ubuntu 20.04.2 LTS
 ## 
 ## Matrix products: default
 ## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
@@ -190,37 +190,40 @@
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] lefser_1.1.0                SummarizedExperiment_1.21.1
+##  [1] lefser_1.1.2                SummarizedExperiment_1.21.1
 ##  [3] Biobase_2.51.0              GenomicRanges_1.43.3       
-##  [5] GenomeInfoDb_1.27.5         IRanges_2.25.6             
-##  [7] S4Vectors_0.29.6            BiocGenerics_0.37.0        
-##  [9] MatrixGenerics_1.3.0        matrixStats_0.57.0         
-## [11] BiocStyle_2.19.1           
+##  [5] GenomeInfoDb_1.27.8         IRanges_2.25.6             
+##  [7] S4Vectors_0.29.9            BiocGenerics_0.37.1        
+##  [9] MatrixGenerics_1.3.1        matrixStats_0.58.0         
+## [11] BiocStyle_2.19.2           
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] mvtnorm_1.1-1          lattice_0.20-41        zoo_1.8-8             
-##  [4] assertthat_0.2.1       rprojroot_2.0.2        digest_0.6.27         
-##  [7] R6_2.5.0               evaluate_0.14          highr_0.8             
-## [10] ggplot2_3.3.3          pillar_1.4.7           zlibbioc_1.37.0       
-## [13] rlang_0.4.10           multcomp_1.4-15        Matrix_1.3-2          
-## [16] rmarkdown_2.6          pkgdown_1.6.1          labeling_0.4.2        
-## [19] textshaping_0.2.1      desc_1.2.0             splines_4.1.0         
-## [22] stringr_1.4.0          RCurl_1.98-1.2         munsell_0.5.0         
-## [25] DelayedArray_0.17.7    compiler_4.1.0         xfun_0.20             
-## [28] pkgconfig_2.0.3        systemfonts_0.3.2      libcoin_1.0-7         
-## [31] htmltools_0.5.1        tidyselect_1.1.0       tibble_3.0.5          
-## [34] GenomeInfoDbData_1.2.4 bookdown_0.21          coin_1.4-0            
-## [37] codetools_0.2-18       crayon_1.3.4           dplyr_1.0.3           
-## [40] MASS_7.3-53            bitops_1.0-6           grid_4.1.0            
-## [43] DBI_1.1.1              gtable_0.3.0           lifecycle_0.2.0       
-## [46] magrittr_2.0.1         scales_1.1.1           stringi_1.5.3         
-## [49] farver_2.0.3           XVector_0.31.1         fs_1.5.0              
-## [52] generics_0.1.0         ellipsis_0.3.1         ragg_0.4.1            
-## [55] vctrs_0.3.6            sandwich_3.0-0         TH.data_1.0-10        
-## [58] tools_4.1.0            glue_1.4.2             purrr_0.3.4           
-## [61] survival_3.2-7         yaml_2.2.1             colorspace_2.0-0      
-## [64] BiocManager_1.30.10    memoise_1.1.0          knitr_1.31            
-## [67] modeltools_0.2-23</code></pre>
+##  [1] sass_0.3.1             jsonlite_1.7.2         splines_4.1.0         
+##  [4] bslib_0.2.4            assertthat_0.2.1       highr_0.8             
+##  [7] BiocManager_1.30.10    coin_1.4-1             GenomeInfoDbData_1.2.4
+## [10] yaml_2.2.1             pillar_1.5.1           lattice_0.20-41       
+## [13] glue_1.4.2             digest_0.6.27          XVector_0.31.1        
+## [16] colorspace_2.0-0       sandwich_3.0-0         htmltools_0.5.1.1     
+## [19] Matrix_1.3-2           pkgconfig_2.0.3        bookdown_0.21         
+## [22] zlibbioc_1.37.0        purrr_0.3.4            mvtnorm_1.1-1         
+## [25] scales_1.1.1           tibble_3.1.0           farver_2.1.0          
+## [28] generics_0.1.0         ggplot2_3.3.3          ellipsis_0.3.1        
+## [31] TH.data_1.0-10         cachem_1.0.4           survival_3.2-10       
+## [34] magrittr_2.0.1         crayon_1.4.1           memoise_2.0.0         
+## [37] evaluate_0.14          fs_1.5.0               fansi_0.4.2           
+## [40] MASS_7.3-53.1          textshaping_0.3.3      tools_4.1.0           
+## [43] lifecycle_1.0.0        multcomp_1.4-16        stringr_1.4.0         
+## [46] munsell_0.5.0          DelayedArray_0.17.10   compiler_4.1.0        
+## [49] pkgdown_1.6.1          jquerylib_0.1.3        systemfonts_1.0.1     
+## [52] rlang_0.4.10           debugme_1.1.0          grid_4.1.0            
+## [55] RCurl_1.98-1.3         labeling_0.4.2         bitops_1.0-6          
+## [58] rmarkdown_2.7          gtable_0.3.0           codetools_0.2-18      
+## [61] DBI_1.1.1              R6_2.5.0               zoo_1.8-9             
+## [64] knitr_1.31             dplyr_1.0.5            fastmap_1.1.0         
+## [67] utf8_1.2.1             libcoin_1.0-8          rprojroot_2.0.2       
+## [70] ragg_1.1.2             desc_1.3.0             modeltools_0.2-23     
+## [73] stringi_1.5.3          vctrs_0.3.6            tidyselect_1.1.0      
+## [76] xfun_0.22</code></pre>
 </details>
 </div>
 </div>
