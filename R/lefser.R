@@ -133,8 +133,6 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   scal <- w.unit * effect_size
   # mean count values per fclass per feature
   rres <- lda.fit$means
-  rowns <- rownames(rres) # local variable ‘rowns’ assigned but may not be used, should we delete it? 
-  lenc <- length(colnames(rres)) # local variable ‘lenc’ assigned but may not be used, should we delete it? 
 
   coeff <- vector("numeric", length(scal))
   for (v in seq_along(scal)) {
@@ -164,18 +162,17 @@ filterKruskal <- function(expr, group, p.value) {
   kw.res <- apply(expr, 1L, function(x) {
     kruskal.test(x ~ group)[["p.value"]]
   })
-  # selects p-values less than or equal to kw.threshold
-  kw.sub <- kw.res <= p.value
-  
-  # eliminates NAs
+  # TRUE for p-values less than or equal to kw.threshold
+  kw.sub <- kw.res < p.value
+
+  # NAs are FALSE
   kw.sub[is.na(kw.sub)] <- FALSE
-  
+
   # Solve the “Error in svd(X, nu = 0L) : a dimension is zero”
-  if (sum(as.numeric(kw.sub))==0){
-    message("Under the Kruskal-Wallis test, the intergroup comparison indicates that the significance of all biomarkers are less than 0.05.")
-    stop("Please try other differential abundance methods")
+  if (sum(kw.sub)==0){
+    stop("There are no significant inter-group differences under the Kruskal-Wallis test at p < ", p.value)
   }
-  
+
   # extracts features with statistically significant differential abundance
   # from "expr" matrix
   expr[kw.sub,]
