@@ -4,6 +4,7 @@
 #' controls. It was for curatedMetagenomicData using the script in the package
 #' directory "data-raw".
 #'
+#' @usage data("zeller14")
 #' @format A SummarizedExperiment with 1585 features, 199 samples
 #' \describe{
 #'   \item{study_condition}{adenoma, control, CRC}

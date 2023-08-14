@@ -15,7 +15,7 @@ A SummarizedExperiment with 1585 features, 199 samples
 \url{https://pubmed.ncbi.nlm.nih.gov/25432777/}
 }
 \usage{
-zeller14
+data("zeller14")
 }
 \description{
 The ZellerG_2014 dataset contains microbiome count data for CRC patients and

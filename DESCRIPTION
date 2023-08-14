@@ -16,7 +16,6 @@ Authors@R: c(
   person("Levi", "Waldron", email ="levi.waldron@sph.cuny.edu", role = "ctb")
   )
 License: Artistic-2.0
-LazyData: true
 Depends:
   SummarizedExperiment,
   R (>= 4.0.0)
