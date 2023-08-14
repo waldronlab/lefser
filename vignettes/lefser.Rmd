@@ -102,6 +102,31 @@ head(res)
 lefserPlot(res)
 ```
 
+# Interoperating with phyloseq
+
+When using `phyloseq` objects, we recommend to extract the data and create a
+`SummarizedExperiment` object as follows:
+
+```{r}
+library(phyloseq)
+fp <- system.file(
+    "extdata", "study_1457_split_library_seqs_and_mapping.zip",
+    package = "phyloseq"
+)
+kostic <- suppressWarnings({
+    microbio_me_qiime(fp)
+})
+counts <- unclass(otu_table(kostic))
+colData <- as(sample_data(kostic), "data.frame")
+## create a SummarizedExperiment object
+SummarizedExperiment(
+    assays = list(counts = counts), colData = colData
+)
+```
+
+You may also consider using `makeTreeSummarizedExperimentFromPhyloseq` from the
+`mia` package (example not shown).
+
 ## sessionInfo
 
 <details>
