@@ -28,7 +28,15 @@ utils::globalVariables(c("Names", "scores"))
 lefserPlot <- function(df, colors = c("red", "forestgreen"), 
                        trim.names = TRUE) {
   df <- .trunc(df, trim.names)
-  group <- ifelse(df$scores > 0, "treatment", "control")
+  groups <- attr(df, "groups")
+  if (is.null(groups))
+      group <- ifelse(df$scores > 0, 1, 0)
+  else
+      group <- ifelse(
+          df$scores > 0,
+          names(groups)[groups == 1],
+          names(groups)[groups == 0]
+      )
   df$group <- as.factor(group)
   plt <-
     ggplot(df, aes(reorder(Names, scores), scores)) + ylab("LDA SCORE (log 10)") +

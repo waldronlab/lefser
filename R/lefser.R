@@ -344,5 +344,8 @@ lefser <-
     scores_df <- .trunc(scores_df, trim.names)
 
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
-    scores_df[threshold_scores, ]
+    res_scores <- scores_df[threshold_scores, ]
+    class(res_scores) <- c("lefser_df", class(res_scores))
+    attr(res_scores, "groups") <- groups
+    res_scores
   }
