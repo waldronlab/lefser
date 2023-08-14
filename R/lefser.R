@@ -269,6 +269,7 @@ lefser <-
 
     if (!is.null(blockCol)) {
         block <- as.factor(colData(expr)[[blockCol]])
+        block <- droplevels(block)
         expr_sub <- fillPmatZmat(group = groupf, block = block, expr_sub = expr_sub, p.threshold = wilcox.threshold)
     }
 
