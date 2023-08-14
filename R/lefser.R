@@ -248,8 +248,14 @@ lefser <-
            groupCol = "GROUP",
            blockCol = NULL,
            assay = 1L,
-           trim.names = FALSE)
-  {
+           trim.names = FALSE,
+           checkAbundances = TRUE
+) {
+    expr_data <- assay(expr, i = assay)
+    if (checkAbundances && !identical(length(unique(colSums(expr_data))), 1L))
+        warning(
+            "Convert counts to relative abundances with 'relativeAb()'"
+        )
     groupf <- colData(expr)[[groupCol]]
     if (is.null(groupf)){
       stop("A valid group assignment 'groupCol' must be provided")
@@ -264,7 +270,6 @@ lefser <-
     }
     group <- .numeric01(groupf)
     groups <- 0:1
-    expr_data <- assay(expr, i = assay)
     expr_sub <- filterKruskal(expr = expr_data, group = group, p.value = kruskal.threshold)
 
     if (!is.null(blockCol)) {
