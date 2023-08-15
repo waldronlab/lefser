@@ -211,6 +211,9 @@ filterKruskal <- function(expr, group, p.value) {
 #' @param assay The i-th assay matrix in the `SummarizedExperiment` ('expr';
 #' default 1).
 #' @param trim.names If `TRUE` extracts the most specific taxonomic rank of organism.
+#' @param checkAbundances `logical(1)` Whether to check if the assay data in the
+#'   `expr` input are relative abundances or counts. If counts are found, a
+#'   warning will be emmitted (default `TRUE`).
 #' @return
 #' The function returns a dataframe with two columns, which are
 #' names of microorganisms and their LDA scores.

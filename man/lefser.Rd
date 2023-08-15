@@ -12,7 +12,8 @@ lefser(
   groupCol = "GROUP",
   blockCol = NULL,
   assay = 1L,
-  trim.names = FALSE
+  trim.names = FALSE,
+  checkAbundances = TRUE
 )
 }
 \arguments{
@@ -38,6 +39,10 @@ indicating the blocks, usually a factor with two levels (e.g.,
 default 1).}
 
 \item{trim.names}{If `TRUE` extracts the most specific taxonomic rank of organism.}
+
+\item{checkAbundances}{`logical(1)` Whether to check if the assay data in the
+`expr` input are relative abundances or counts. If counts are found, a
+warning will be emmitted (default `TRUE`).}
 }
 \value{
 The function returns a dataframe with two columns, which are
