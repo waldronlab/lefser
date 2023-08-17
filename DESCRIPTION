@@ -25,6 +25,7 @@ Imports:
   MASS,
   ggplot2,
   stats,
+  S4Vectors,
   methods
 Suggests: 
   knitr,
@@ -41,4 +42,5 @@ URL: https://github.com/waldronlab/lefser
 VignetteBuilder: knitr
 biocViews: Software, Sequencing, DifferentialExpression, Microbiome, 
   StatisticalMethod, Classification
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)

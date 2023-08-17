@@ -12,11 +12,13 @@ lefser(
   groupCol = "GROUP",
   blockCol = NULL,
   assay = 1L,
-  trim.names = FALSE
+  trim.names = FALSE,
+  checkAbundances = TRUE
 )
 }
 \arguments{
-\item{expr}{A \code{\linkS4class{SummarizedExperiment}} with expression data.}
+\item{expr}{A \linkS4class{SummarizedExperiment} with relative
+abundances in the assay}
 
 \item{kruskal.threshold}{numeric(1) The p-value for the Kruskal-Wallis Rank
 Sum Test (default 0.05).}
@@ -38,6 +40,10 @@ indicating the blocks, usually a factor with two levels (e.g.,
 default 1).}
 
 \item{trim.names}{If `TRUE` extracts the most specific taxonomic rank of organism.}
+
+\item{checkAbundances}{\code{logical(1)} Whether to check if the assay data in the
+\code{expr} input are relative abundances or counts. If counts are found, a
+warning will be emmitted (default \code{TRUE}).}
 }
 \value{
 The function returns a dataframe with two columns, which are
@@ -49,6 +55,14 @@ between two sample groups for multiple microorganisms and uses linear discirmina
 to establish their effect sizes. Subclass information for each class can be incorporated
 into the analysis (see examples). Microorganisms with large differences between two sample groups
 are identified as biomarkers.
+}
+\details{
+The LEfSe method expects relative abundances in the \code{expr} input. A warning
+will be emitted if the column sums do not result in 1. Use the \code{relativeAb}
+helper function to convert the data in the \code{SummarizedExperiment} to relative
+abundances. The \code{checkAbundances} argument enables checking the data
+for presence of relative abundances and can be turned off by setting the
+argument to \code{FALSE}.
 }
 \examples{
     # (1) Using classes only

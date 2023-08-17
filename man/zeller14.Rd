@@ -7,8 +7,8 @@
 \format{
 A SummarizedExperiment with 1585 features, 199 samples
 \describe{
-  \item{study_condition}{adenoma, control, CRC}
-  \item{age_category}{adult, senoir}
+\item{study_condition}{adenoma, control, CRC}
+\item{age_category}{adult, senior}
 }
 }
 \source{

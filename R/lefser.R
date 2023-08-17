@@ -133,8 +133,6 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   scal <- w.unit * effect_size
   # mean count values per fclass per feature
   rres <- lda.fit$means
-  rowns <- rownames(rres)
-  lenc <- length(colnames(rres))
 
   coeff <- vector("numeric", length(scal))
   for (v in seq_along(scal)) {
@@ -164,11 +162,16 @@ filterKruskal <- function(expr, group, p.value) {
   kw.res <- apply(expr, 1L, function(x) {
     kruskal.test(x ~ group)[["p.value"]]
   })
-  # selects p-values less than or equal to kw.threshold
-  kw.sub <- kw.res <= p.value
+  # TRUE for p-values less than or equal to kw.threshold
+  kw.sub <- kw.res < p.value
 
-  # eliminates NAs
+  # NAs are FALSE
   kw.sub[is.na(kw.sub)] <- FALSE
+
+  # Solve the “Error in svd(X, nu = 0L) : a dimension is zero”
+  if (sum(kw.sub)==0){
+    stop("There are no significant inter-group differences under the Kruskal-Wallis test at p < ", p.value)
+  }
 
   # extracts features with statistically significant differential abundance
   # from "expr" matrix
@@ -193,7 +196,16 @@ filterKruskal <- function(expr, group, p.value) {
 #' into the analysis (see examples). Microorganisms with large differences between two sample groups
 #' are identified as biomarkers.
 #'
-#' @param expr A \code{\linkS4class{SummarizedExperiment}} with expression data.
+#' @details
+#' The LEfSe method expects relative abundances in the `expr` input. A warning
+#' will be emitted if the column sums do not result in 1. Use the `relativeAb`
+#' helper function to convert the data in the `SummarizedExperiment` to relative
+#' abundances. The `checkAbundances` argument enables checking the data
+#' for presence of relative abundances and can be turned off by setting the
+#' argument to `FALSE`.
+#'
+#' @param expr A [SummarizedExperiment-class] with relative
+#'   abundances in the assay
 #' @param kruskal.threshold numeric(1) The p-value for the Kruskal-Wallis Rank
 #' Sum Test (default 0.05).
 #' @param wilcox.threshold numeric(1) The p-value for the Wilcoxon Rank-Sum Test
@@ -208,6 +220,9 @@ filterKruskal <- function(expr, group, p.value) {
 #' @param assay The i-th assay matrix in the `SummarizedExperiment` ('expr';
 #' default 1).
 #' @param trim.names If `TRUE` extracts the most specific taxonomic rank of organism.
+#' @param checkAbundances `logical(1)` Whether to check if the assay data in the
+#'   `expr` input are relative abundances or counts. If counts are found, a
+#'   warning will be emmitted (default `TRUE`).
 #' @return
 #' The function returns a dataframe with two columns, which are
 #' names of microorganisms and their LDA scores.
@@ -245,33 +260,40 @@ lefser <-
            groupCol = "GROUP",
            blockCol = NULL,
            assay = 1L,
-           trim.names = FALSE)
-  {
+           trim.names = FALSE,
+           checkAbundances = TRUE
+) {
+    expr_data <- assay(expr, i = assay)
+    if (checkAbundances && !identical(length(unique(colSums(expr_data))), 1L))
+        warning(
+            "Convert counts to relative abundances with 'relativeAb()'"
+        )
     groupf <- colData(expr)[[groupCol]]
-    if (is.null(groupf))
-        stop("A valid group assignment 'groupCol' must be provided")
+    if (is.null(groupf)){
+      stop("A valid group assignment 'groupCol' must be provided")
+    }
     groupf <- as.factor(groupf)
     groupsf <- levels(groupf)
-    if (length(groupsf) != 2L)
+    if (length(groupsf) != 2L){
       stop(
         "Group classification is not dichotomous:\n",
         "Found (", paste(groupsf, collapse = ", "), ")"
       )
+    }
     group <- .numeric01(groupf)
     groups <- 0:1
-    expr_data <- assay(expr, i = assay)
-    expr_sub <- filterKruskal(expr_data, group, kruskal.threshold)
+    expr_sub <- filterKruskal(expr = expr_data, group = group, p.value = kruskal.threshold)
 
     if (!is.null(blockCol)) {
         block <- as.factor(colData(expr)[[blockCol]])
-        expr_sub <- fillPmatZmat(groupf, block, expr_sub, wilcox.threshold)
+        expr_sub <- fillPmatZmat(group = groupf, block = block, expr_sub = expr_sub, p.threshold = wilcox.threshold)
     }
 
     # transposes matrix and add a "class" (i.e., group) column
     # matrix converted to dataframe
     expr_sub_t <- t(expr_sub)
     expr_sub_t_df <- as.data.frame(expr_sub_t)
-    expr_sub_t_df <- createUniqueValues(expr_sub_t_df, groupf)
+    expr_sub_t_df <- createUniqueValues(df = expr_sub_t_df, group = groupf)
     expr_sub_t_df <- cbind(expr_sub_t_df, class = group)
 
     # number of samples (i.e., subjects) in the dataframe
