@@ -227,7 +227,7 @@ filterKruskal <- function(relab, group, p.value) {
 #'   warning will be emitted (default `TRUE`).
 #' @param \ldots Additional inputs to lower level functions (not used).
 #' @return
-#' The function returns a dataframe with two columns, which are
+#' The function returns a `data.frame` with two columns, which are
 #' names of microorganisms and their LDA scores.
 #'
 #' @importFrom stats kruskal.test reorder rnorm

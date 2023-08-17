@@ -9,7 +9,7 @@ relativeAb(se, assay = 1L)
 \arguments{
 \item{se}{A SummarizedExperiment object with counts}
 
-\item{assay}{The i-th assay matrix in the `SummarizedExperiment` ('expr';
+\item{assay}{The i-th assay matrix in the \code{SummarizedExperiment} ('relab';
 default 1).}
 }
 \description{

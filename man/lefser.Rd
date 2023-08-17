@@ -36,12 +36,12 @@ default "GROUP").}
 
 \item{blockCol}{character(1) Optional column name in \code{colData(relab)}
 indicating the blocks, usually a factor with two levels (e.g.,
-`c("adult", "senior")`; default NULL).}
+\code{c("adult", "senior")}; default NULL).}
 
 \item{assay}{The i-th assay matrix in the \code{SummarizedExperiment} ('relab';
 default 1).}
 
-\item{trim.names}{If `TRUE` extracts the most specific taxonomic rank of organism.}
+\item{trim.names}{If \code{TRUE} extracts the most specific taxonomic rank of organism.}
 
 \item{checkAbundances}{\code{logical(1)} Whether to check if the assay data in the
 \code{relab} input are relative abundances or counts. If counts are found, a
@@ -53,7 +53,7 @@ with relative abundances in the assay}
 \item{\ldots}{Additional inputs to lower level functions (not used).}
 }
 \value{
-The function returns a dataframe with two columns, which are
+The function returns a \code{data.frame} with two columns, which are
 names of microorganisms and their LDA scores.
 }
 \description{
