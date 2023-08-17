@@ -2,6 +2,7 @@
 
 export(lefser)
 export(lefserPlot)
+export(relativeAb)
 import(SummarizedExperiment)
 importFrom(MASS,lda)
 importFrom(coin,pvalue)
