@@ -196,7 +196,16 @@ filterKruskal <- function(expr, group, p.value) {
 #' into the analysis (see examples). Microorganisms with large differences between two sample groups
 #' are identified as biomarkers.
 #'
-#' @param expr A \code{\linkS4class{SummarizedExperiment}} with expression data.
+#' @details
+#' The LEfSe method expects relative abundances in the `expr` input. A warning
+#' will be emitted if the column sums do not result in 1. Use the `relativeAb`
+#' helper function to convert the data in the `SummarizedExperiment` to relative
+#' abundances. The `checkAbundances` argument enables checking the data
+#' for presence of relative abundances and can be turned off by setting the
+#' argument to `FALSE`.
+#'
+#' @param expr A [SummarizedExperiment-class] with relative
+#'   abundances in the assay
 #' @param kruskal.threshold numeric(1) The p-value for the Kruskal-Wallis Rank
 #' Sum Test (default 0.05).
 #' @param wilcox.threshold numeric(1) The p-value for the Wilcoxon Rank-Sum Test
