@@ -22,10 +22,10 @@
 #'
 #' @export
 relativeAb <- function(se, assay = 1L) {
-    expr_data <- assay(se, i = assay)
-    csums <- colSums(expr_data)
-    div <- matrix(rep(csums, each = nrow(expr_data)), ncol = ncol(expr_data))
-    res <- expr_data / div
+    assay_data <- assay(se, i = assay)
+    csums <- colSums(assay_data)
+    div <- matrix(rep(csums, each = nrow(assay_data)), ncol = ncol(assay_data))
+    res <- assay_data / div
     assaylist <- assays(se)
     newalist <- append(
         assaylist, values = S4Vectors::SimpleList(rel_abs = res), after = 0L
