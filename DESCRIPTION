@@ -23,6 +23,7 @@ Imports:
   coin,
   MASS,
   ggplot2,
+  S4Vectors,
   stats,
   methods
 Suggests: 

@@ -28,7 +28,7 @@ relativeAb <- function(se, assay = 1L) {
     res <- expr_data / div
     assaylist <- assays(se)
     newalist <- append(
-        assaylist, value = S4Vectors::SimpleList(rel_abs = res), after = 0L
+        assaylist, values = S4Vectors::SimpleList(rel_abs = res), after = 0L
     )
     assays(se) <- newalist
     se
