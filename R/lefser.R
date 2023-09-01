@@ -128,7 +128,7 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   # effect size is calculated as difference between averaged disciminants
   # of two classes
   effect_size <-
-    abs(mean(LD[sub_d[, "class"] == 0]) - mean(LD[sub_d[, "class"] == 1]))
+    abs(mean(LD[sub_d[, "class"] == 1]) - mean(LD[sub_d[, "class"] == 0]))
   # scaling lda coefficients by the efect size
   scal <- w.unit * effect_size
   # mean count values per fclass per feature
