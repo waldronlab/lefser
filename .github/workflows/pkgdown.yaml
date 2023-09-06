@@ -2,23 +2,20 @@ name: build
 on:
   push:
     branches:
-      - RELEASE_3_17
+      - devel
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-    container: bioconductor/bioconductor_docker:RELEASE_3_17
+    runs-on: ubuntu-latest
+    container: bioconductor/bioconductor_docker:latest
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      version-name: RELEASE_3_17
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-        with:
-          ref: RELEASE_3_17
 
       - name: Query dependencies
         run: |
