@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://waldronlab.io/lefser//index.html</loc>
+    <loc>https://waldronlab.io/lefser/404.html</loc>
   </url>
   <url>
-    <loc>https://waldronlab.io/lefser//reference/lefser.html</loc>
+    <loc>https://waldronlab.io/lefser/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://waldronlab.io/lefser//reference/lefserPlot.html</loc>
+    <loc>https://waldronlab.io/lefser/articles/lefser.html</loc>
   </url>
   <url>
-    <loc>https://waldronlab.io/lefser//reference/zeller14.html</loc>
+    <loc>https://waldronlab.io/lefser/authors.html</loc>
   </url>
   <url>
-    <loc>https://waldronlab.io/lefser//articles/lefser.html</loc>
+    <loc>https://waldronlab.io/lefser/index.html</loc>
+  </url>
+  <url>
+    <loc>https://waldronlab.io/lefser/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://waldronlab.io/lefser/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://waldronlab.io/lefser/reference/lefser.html</loc>
+  </url>
+  <url>
+    <loc>https://waldronlab.io/lefser/reference/lefserPlot.html</loc>
+  </url>
+  <url>
+    <loc>https://waldronlab.io/lefser/reference/relativeAb.html</loc>
+  </url>
+  <url>
+    <loc>https://waldronlab.io/lefser/reference/zeller14.html</loc>
   </url>
 </urlset>

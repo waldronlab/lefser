@@ -25,6 +25,8 @@
 </script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -37,18 +39,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lefser</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.11.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/lefser.html">Get started</a>
 </li>
@@ -61,8 +57,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/waldronlab/lefser/">
-    <span class="fas fa-github"></span>
+  <a href="https://github.com/waldronlab/lefser/" class="external-link">
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -76,154 +72,182 @@
 
       
 
-      </header><script src="lefser_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Lefser finds features that have greatest differences between classes.</h1>
-                        <h4 class="author"><div class="line-block">Asya Khleborodova, Ludwig Geistlinger, and Levi Waldron<br><small>School of Public Health, City University of New York</small>
+      <h1 data-toc-skip>Lefser finds features that have greatest
+differences between classes.</h1>
+                        <h4 data-toc-skip class="author"><div class="line-block">Asya Khleborodova, Ludwig Geistlinger, and Levi
+Waldron<br><small>School of Public Health, City University of New
+York</small>
 </div></h4>
             
-            <h4 class="date">2021-03-31</h4>
+            <h4 data-toc-skip class="date">2023-09-06</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/waldronlab/lefser/blob/master/vignettes/lefser.Rmd"><code>vignettes/lefser.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/waldronlab/lefser/blob/HEAD/vignettes/lefser.Rmd" class="external-link"><code>vignettes/lefser.Rmd</code></a></small>
       <div class="hidden name"><code>lefser.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Lefser is metagenomic biomarker discovery tool that is based on <a href="https://huttenhower.sph.harvard.edu/galaxy/">LEfSe</a> tool and is published by <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/">Huttenhower et al. 2011</a>. <code>Lefser</code> is the R implementation of the <code>LEfSe</code> method.</p>
-<p>Using statistical analyses, <code>lefser</code> compares microbial populations of healthy and diseased subjects to discover differencially expressed microorganisms. <code>Lefser</code> than computes effect size, which estimates magnitude of differential expression between the populations for each differentially expressed microorganism. Subclasses of classes can also be assigned and used within the analysis.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>Lefser is metagenomic biomarker discovery tool that is based on <a href="https://huttenhower.sph.harvard.edu/galaxy/" class="external-link">LEfSe</a> tool and is
+published by <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/" class="external-link">Huttenhower
+et al. 2011</a>. <code>Lefser</code> is the R implementation of the
+<code>LEfSe</code> method.</p>
+<p>Using statistical analyses, <code>lefser</code> compares microbial
+populations of healthy and diseased subjects to discover differencially
+expressed microorganisms. <code>Lefser</code> than computes effect size,
+which estimates magnitude of differential expression between the
+populations for each differentially expressed microorganism. Subclasses
+of classes can also be assigned and used within the analysis.</p>
 </div>
-<div id="installation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h1>
-<p>To install Bioconductor and the <code>lefser</code> package, run the following commands.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>To install Bioconductor and the <code>lefser</code> package, run the
+following commands.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"lefser"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"lefser"</span><span class="op">)</span></span></code></pre></div>
 <p>Then load the <code>lefser</code> package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/waldronlab/lefser">lefser</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/waldronlab/lefser" class="external-link">lefser</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="overview-and-example-use-of-lefser" class="section level1">
-<h1 class="hasAnchor">
-<a href="#overview-and-example-use-of-lefser" class="anchor"></a>Overview and example use of <code>lefser</code>
-</h1>
-<p>The <code>lefser</code> function can be used with a <code>SummarizedExperiment</code>.</p>
-<p>Load the <code>zeller14</code> example dataset and exclude ‘adenoma’ conditions.</p>
+<div class="section level2">
+<h2 id="overview-and-example-use-of-lefser">Overview and example use of <code>lefser</code><a class="anchor" aria-label="anchor" href="#overview-and-example-use-of-lefser"></a>
+</h2>
+<p>The <code>lefser</code> function can be used with a
+<code>SummarizedExperiment</code>.</p>
+<p>Load the <code>zeller14</code> example dataset and exclude ‘adenoma’
+conditions.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">)</span>
-<span class="va">zeller14</span> <span class="op">&lt;-</span> <span class="va">zeller14</span><span class="op">[</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span> <span class="op">!=</span> <span class="st">"adenoma"</span><span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">)</span></span>
+<span><span class="va">zeller14</span> <span class="op">&lt;-</span> <span class="va">zeller14</span><span class="op">[</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span> <span class="op">!=</span> <span class="st">"adenoma"</span><span class="op">]</span></span></code></pre></div>
 <p>Note. <code>lefser</code> supports only two-group contrasts.</p>
-<p>The <code>colData</code> in the <code>SummarizedExperiment</code> dataset contains the grouping column <code>study_condition</code> which includes the ‘control’ and ‘CRC’ groups.</p>
+<p>The <code>colData</code> in the <code>SummarizedExperiment</code>
+dataset contains the grouping column <code>study_condition</code> which
+includes the ‘control’ and ‘CRC’ groups.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## control     CRC 
-##      66      91</code></pre>
-<p>There can be subclasses in each group condition. In the example dataset we include <code>age_category</code> as a subclass of <code>study_condition</code> which includes ‘adults’ and ‘seniors’. This variable will correspond to the <code>blockCol</code> input argument.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## control     CRC </span></span>
+<span><span class="co">##      66      91</span></span></code></pre>
+<p>There can be subclasses in each group condition. In the example
+dataset we include <code>age_category</code> as a subclass of
+<code>study_condition</code> which includes ‘adults’ and ‘seniors’. This
+variable will correspond to the <code>blockCol</code> input
+argument.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">age_category</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-##  adult senior 
-##     91     66</code></pre>
-<p>We can create a contingency table for the two categorical variables.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">age_category</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">##  adult senior </span></span>
+<span><span class="co">##     91     66</span></span></code></pre>
+<p>We can create a contingency table for the two categorical
+variables.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">age_category</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span><span class="op">)</span></code></pre></div>
-<pre><code>##         
-##          control CRC
-##   adult       46  45
-##   senior      20  46</code></pre>
-<p>We can now use the <code>lefser</code> function. It provides results as a <code>data.frame</code> with the names of selected microorganisms and their effect size.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">$</span><span class="va">age_category</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##         </span></span>
+<span><span class="co">##          control CRC</span></span>
+<span><span class="co">##   adult       46  45</span></span>
+<span><span class="co">##   senior      20  46</span></span></code></pre>
+<p>We can now use the <code>lefser</code> function. It provides results
+as a <code>data.frame</code> with the names of selected microorganisms
+and their effect size.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lefser.html">lefser</a></span><span class="op">(</span><span class="va">zeller14</span>, groupCol <span class="op">=</span> <span class="st">"study_condition"</span>, blockCol <span class="op">=</span> <span class="st">"age_category"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
-<pre><code>##                                                                                                                                        Names
-## 1                                                k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus
-## 2                                                                                    k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales
-## 3                                                                                                       k__Bacteria|p__Firmicutes|c__Bacilli
-## 4                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA
-## 5 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975
-## 6                            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii
-##      scores
-## 1 -6.184072
-## 2 -5.949831
-## 3 -5.941181
-## 4 -5.553244
-## 5 -5.553244
-## 6 -5.484374</code></pre>
-</div>
-<div id="visualizing-results-with-lefserplot" class="section level1">
-<h1 class="hasAnchor">
-<a href="#visualizing-results-with-lefserplot" class="anchor"></a>Visualizing results with <code>lefserPlot</code>
-</h1>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lefser.html">lefser</a></span><span class="op">(</span><span class="va">zeller14</span>, groupCol <span class="op">=</span> <span class="st">"study_condition"</span>, blockCol <span class="op">=</span> <span class="st">"age_category"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in lefser(zeller14, groupCol = "study_condition", blockCol =</span></span>
+<span><span class="co">## "age_category"): Convert counts to relative abundances with 'relativeAb()'</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/lefserPlot.html">lefserPlot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                                                                                                                                        Names</span></span>
+<span><span class="co">## 1                                                k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus</span></span>
+<span><span class="co">## 2                                                                                    k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales</span></span>
+<span><span class="co">## 3                                                                                                       k__Bacteria|p__Firmicutes|c__Bacilli</span></span>
+<span><span class="co">## 4                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA</span></span>
+<span><span class="co">## 5 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975</span></span>
+<span><span class="co">## 6                            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii</span></span>
+<span><span class="co">##      scores</span></span>
+<span><span class="co">## 1 -6.200407</span></span>
+<span><span class="co">## 2 -5.960807</span></span>
+<span><span class="co">## 3 -5.951899</span></span>
+<span><span class="co">## 4 -5.651024</span></span>
+<span><span class="co">## 5 -5.651024</span></span>
+<span><span class="co">## 6 -5.515625</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="visualizing-results-with-lefserplot">Visualizing results with <code>lefserPlot</code><a class="anchor" aria-label="anchor" href="#visualizing-results-with-lefserplot"></a>
+</h2>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/lefserPlot.html">lefserPlot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p><img src="lefser_files/figure-html/unnamed-chunk-8-1.png" width="700" style="display: block; margin: auto;"></p>
-<div id="sessioninfo" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sessioninfo" class="anchor"></a>sessionInfo</h2>
-<details><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R Under development (unstable) (2021-03-18 r80099)
-## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 20.04.2 LTS
-## 
-## Matrix products: default
-## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
-## 
-## locale:
-##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
-##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-## 
-## attached base packages:
-## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
-## [8] methods   base     
-## 
-## other attached packages:
-##  [1] lefser_1.1.2                SummarizedExperiment_1.21.1
-##  [3] Biobase_2.51.0              GenomicRanges_1.43.3       
-##  [5] GenomeInfoDb_1.27.8         IRanges_2.25.6             
-##  [7] S4Vectors_0.29.9            BiocGenerics_0.37.1        
-##  [9] MatrixGenerics_1.3.1        matrixStats_0.58.0         
-## [11] BiocStyle_2.19.2           
-## 
-## loaded via a namespace (and not attached):
-##  [1] sass_0.3.1             jsonlite_1.7.2         splines_4.1.0         
-##  [4] bslib_0.2.4            assertthat_0.2.1       highr_0.8             
-##  [7] BiocManager_1.30.10    coin_1.4-1             GenomeInfoDbData_1.2.4
-## [10] yaml_2.2.1             pillar_1.5.1           lattice_0.20-41       
-## [13] glue_1.4.2             digest_0.6.27          XVector_0.31.1        
-## [16] colorspace_2.0-0       sandwich_3.0-0         htmltools_0.5.1.1     
-## [19] Matrix_1.3-2           pkgconfig_2.0.3        bookdown_0.21         
-## [22] zlibbioc_1.37.0        purrr_0.3.4            mvtnorm_1.1-1         
-## [25] scales_1.1.1           tibble_3.1.0           farver_2.1.0          
-## [28] generics_0.1.0         ggplot2_3.3.3          ellipsis_0.3.1        
-## [31] TH.data_1.0-10         cachem_1.0.4           survival_3.2-10       
-## [34] magrittr_2.0.1         crayon_1.4.1           memoise_2.0.0         
-## [37] evaluate_0.14          fs_1.5.0               fansi_0.4.2           
-## [40] MASS_7.3-53.1          textshaping_0.3.3      tools_4.1.0           
-## [43] lifecycle_1.0.0        multcomp_1.4-16        stringr_1.4.0         
-## [46] munsell_0.5.0          DelayedArray_0.17.10   compiler_4.1.0        
-## [49] pkgdown_1.6.1          jquerylib_0.1.3        systemfonts_1.0.1     
-## [52] rlang_0.4.10           debugme_1.1.0          grid_4.1.0            
-## [55] RCurl_1.98-1.3         labeling_0.4.2         bitops_1.0-6          
-## [58] rmarkdown_2.7          gtable_0.3.0           codetools_0.2-18      
-## [61] DBI_1.1.1              R6_2.5.0               zoo_1.8-9             
-## [64] knitr_1.31             dplyr_1.0.5            fastmap_1.1.0         
-## [67] utf8_1.2.1             libcoin_1.0-8          rprojroot_2.0.2       
-## [70] ragg_1.1.2             desc_1.3.0             modeltools_0.2-23     
-## [73] stringi_1.5.3          vctrs_0.3.6            tidyselect_1.1.0      
-## [76] xfun_0.22</code></pre>
+<div class="section level3">
+<h3 id="sessioninfo">sessionInfo<a class="anchor" aria-label="anchor" href="#sessioninfo"></a>
+</h3>
+<details><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## R version 4.3.0 (2023-04-21)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.2 LTS</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Matrix products: default</span></span>
+<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## locale:</span></span>
+<span><span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## time zone: Etc/UTC</span></span>
+<span><span class="co">## tzcode source: system (glibc)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attached base packages:</span></span>
+<span><span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span><span class="co">## [8] base     </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## other attached packages:</span></span>
+<span><span class="co">##  [1] lefser_1.11.2               SummarizedExperiment_1.30.2</span></span>
+<span><span class="co">##  [3] Biobase_2.60.0              GenomicRanges_1.52.0       </span></span>
+<span><span class="co">##  [5] GenomeInfoDb_1.36.2         IRanges_2.34.1             </span></span>
+<span><span class="co">##  [7] S4Vectors_0.38.1            BiocGenerics_0.46.0        </span></span>
+<span><span class="co">##  [9] MatrixGenerics_1.12.3       matrixStats_1.0.0          </span></span>
+<span><span class="co">## [11] BiocStyle_2.28.0           </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## loaded via a namespace (and not attached):</span></span>
+<span><span class="co">##  [1] gtable_0.3.4            ggplot2_3.4.3           xfun_0.40              </span></span>
+<span><span class="co">##  [4] bslib_0.5.1             coin_1.4-2              lattice_0.21-8         </span></span>
+<span><span class="co">##  [7] generics_0.1.3          vctrs_0.6.3             tools_4.3.0            </span></span>
+<span><span class="co">## [10] bitops_1.0-7            parallel_4.3.0          sandwich_3.0-2         </span></span>
+<span><span class="co">## [13] fansi_1.0.4             tibble_3.2.1            highr_0.10             </span></span>
+<span><span class="co">## [16] pkgconfig_2.0.3         Matrix_1.6-1            desc_1.4.2             </span></span>
+<span><span class="co">## [19] lifecycle_1.0.3         GenomeInfoDbData_1.2.10 farver_2.1.1           </span></span>
+<span><span class="co">## [22] compiler_4.3.0          stringr_1.5.0           textshaping_0.3.6      </span></span>
+<span><span class="co">## [25] munsell_0.5.0           codetools_0.2-19        htmltools_0.5.6        </span></span>
+<span><span class="co">## [28] sass_0.4.7              RCurl_1.98-1.12         yaml_2.3.7             </span></span>
+<span><span class="co">## [31] pillar_1.9.0            pkgdown_2.0.7           crayon_1.5.2           </span></span>
+<span><span class="co">## [34] jquerylib_0.1.4         MASS_7.3-60             DelayedArray_0.26.7    </span></span>
+<span><span class="co">## [37] cachem_1.0.8            abind_1.4-5             multcomp_1.4-25        </span></span>
+<span><span class="co">## [40] tidyselect_1.2.0        digest_0.6.33           mvtnorm_1.2-3          </span></span>
+<span><span class="co">## [43] stringi_1.7.12          dplyr_1.1.3             purrr_1.0.2            </span></span>
+<span><span class="co">## [46] bookdown_0.35           labeling_0.4.3          splines_4.3.0          </span></span>
+<span><span class="co">## [49] rprojroot_2.0.3         fastmap_1.1.1           grid_4.3.0             </span></span>
+<span><span class="co">## [52] colorspace_2.1-0        cli_3.6.1               magrittr_2.0.3         </span></span>
+<span><span class="co">## [55] S4Arrays_1.0.6          utf8_1.2.3              survival_3.5-7         </span></span>
+<span><span class="co">## [58] TH.data_1.1-2           withr_2.5.0             libcoin_1.0-9          </span></span>
+<span><span class="co">## [61] scales_1.2.1            rmarkdown_2.24          XVector_0.40.0         </span></span>
+<span><span class="co">## [64] ragg_1.2.5              zoo_1.8-12              modeltools_0.2-23      </span></span>
+<span><span class="co">## [67] memoise_2.0.1           evaluate_0.21           knitr_1.43             </span></span>
+<span><span class="co">## [70] rlang_1.1.1             glue_1.6.2              BiocManager_1.30.22    </span></span>
+<span><span class="co">## [73] jsonlite_1.8.7          R6_2.5.1                systemfonts_1.0.4      </span></span>
+<span><span class="co">## [76] fs_1.6.3                zlibbioc_1.46.0</span></span></code></pre>
 </details>
 </div>
 </div>
@@ -240,11 +264,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Asya Khleborodova.</p>
+  <p></p>
+<p>Developed by Asya Khleborodova.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -252,6 +278,8 @@
 
   
 
+
+  
 
   </body>
 </html>

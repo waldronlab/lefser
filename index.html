@@ -28,6 +28,8 @@
 </script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,18 +42,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">lefser</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.11.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/lefser.html">Get started</a>
 </li>
@@ -64,8 +60,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/waldronlab/lefser/">
-    <span class="fas fa-github"></span>
+  <a href="https://github.com/waldronlab/lefser/" class="external-link">
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -83,57 +79,67 @@
   <div class="contents col-md-9">
 
 
-<div id="lefser-run-lefse-in-r" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#lefser-run-lefse-in-r" class="anchor"></a>lefser: Run LEfSE in R</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="lefser-run-lefse-in-r">lefser: Run LEfSE in R<a class="anchor" aria-label="anchor" href="#lefser-run-lefse-in-r"></a>
+</h1></div>
 <p><code>lefser</code> is the R implementation of the <em>LEfSe</em> method for microbiome biomarker discovery[1]. The original software is likely the most widely-used method for biomarker discovery and plotting in microbiome studies, with ~5,000 citations as of the end of 2020. However, the original software is implemented in Python as a command-line tool and Galaxy module, and is not straightforward to implement in R. The method involves Kruskal-Wallis test, Wilcoxon-Rank Sum test, and Linear Discriminant Analysis to find biomarkers in groups and sub-group blocks. <code>lefser</code> closely reproduces the original statistical method and the associated barplot of results.</p>
-<p>[1] Segata N, Izard J, Waldron L, Gevers D, Miropolsky L, Garrett WS, Huttenhower C: Metagenomic biomarker discovery and explanation. Genome Biol. 2011, 12:R60. <a href="https://doi.org/10.1186/gb-2011-12-6-r60" class="uri">https://doi.org/10.1186/gb-2011-12-6-r60</a></p>
+<p>[1] Segata N, Izard J, Waldron L, Gevers D, Miropolsky L, Garrett WS, Huttenhower C: Metagenomic biomarker discovery and explanation. Genome Biol. 2011, 12:R60. <a href="https://doi.org/10.1186/gb-2011-12-6-r60" class="external-link uri">https://doi.org/10.1186/gb-2011-12-6-r60</a></p>
 </div>
 
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from BIOC at <br><a href="https://www.bioconductor.org/packages/lefser">https://​www.bioconductor.org/​packages/​lefser</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/waldronlab/lefser/">https://​github.com/​waldronlab/​lefser/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/waldronlab/lefser/issues">https://​github.com/​waldronlab/​lefser/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/Artistic-2.0">Artistic-2.0</a></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Asya Khleborodova <br><small class="roles"> Maintainer, author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="https://www.bioconductor.org/packages/lefser" class="external-link">View on Bioconductor</a></li>
+<li><a href="https://github.com/waldronlab/lefser/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/waldronlab/lefser/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://codecov.io/gh/waldronlab/lefser?branch=master"><img src="https://codecov.io/gh/waldronlab/lefser/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://www.r-project.org/Licenses/Artistic-2.0" class="external-link">Artistic-2.0</a></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing lefser</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Asya Khleborodova <br><small class="roles"> Maintainer, author </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://codecov.io/gh/waldronlab/lefser?branch=devel" class="external-link"><img src="https://codecov.io/gh/waldronlab/lefser/branch/devel/graph/badge.svg" alt="Codecov test coverage"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Asya Khleborodova.</p>
+  <p></p>
+<p>Developed by Asya Khleborodova.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -141,6 +147,8 @@
 
   
 
+
+  
 
   </body>
 </html>
