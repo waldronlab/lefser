@@ -68,10 +68,10 @@ jobs:
       - name: Install deploy dependencies
         run: |
           apt-get update
-          apt-get -y install rsync
+          apt-get -y install rsync git
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
