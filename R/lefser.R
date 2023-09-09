@@ -150,10 +150,9 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   (lda.means.diff + coeff) / 2
 }
 
-.numeric01 <- function(x) {
-    x <- as.factor(x)
-    uvals <- levels(x)
-    ifelse(x == uvals[1L], 0L, 1L)
+.numeric01 <- function(x, refGroup) {
+  x <- as.factor(x)
+  ifelse(x == refGroup, 0L, 1L)
 }
 
 filterKruskal <- function(relab, group, p.value) {
@@ -262,6 +261,8 @@ lefser <-
            lda.threshold = 2.0,
            groupCol = "GROUP",
            blockCol = NULL,
+           referenceGroup,
+           treatmentGroup,
            assay = 1L,
            trim.names = FALSE,
            checkAbundances = TRUE,
@@ -275,6 +276,9 @@ lefser <-
         relab_data <- assay(expr, i = assay)
     } else {
         relab_data <- assay(relab, i = assay)
+    }
+    if (missing(referenceGroup) || missing(treatmentGroup)){
+    stop("Provide both 'referenceGroup' and 'treatmentGroup' arguments")
     }
     if (checkAbundances && !identical(length(unique(colSums(relab_data))), 1L))
         warning(
@@ -292,7 +296,7 @@ lefser <-
         "Found (", paste(groupsf, collapse = ", "), ")"
       )
     }
-    group <- .numeric01(groupf)
+    group <- .numeric01(groupf, referenceGroup)
     groups <- 0:1
     relab_sub <- filterKruskal(relab = relab_data, group = group, p.value = kruskal.threshold)
 
@@ -345,7 +349,8 @@ lefser <-
 
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
     res_scores <- scores_df[threshold_scores, ]
+    labels <- c(referenceGroup,treatmentGroup)
     class(res_scores) <- c("lefser_df", class(res_scores))
-    attr(res_scores, "groups") <- groups
+    attr(res_scores, "labels") <- labels
     res_scores
   }
