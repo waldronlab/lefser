@@ -25,19 +25,17 @@ utils::globalVariables(c("Names", "scores"))
 #' @examples
 #' example("lefser")
 #' lefserPlot(res_group)
-lefserPlot <- function(df, colors = c("red", "forestgreen"), 
+lefserPlot <- function(df, colors = c("red", "forestgreen"),
                        trim.names = TRUE) {
   df <- .trunc(df, trim.names)
   groups <- attr(df, "groups")
-  if (is.null(groups))
+  if (!is.null(groups)) {
+      group <- ifelse(df$scores > 0, tail(groups, 1), head(groups, 1))
+      df$group <- factor(group, levels = groups)
+  } else {
       group <- ifelse(df$scores > 0, 1, 0)
-  else
-      group <- ifelse(
-          df$scores > 0,
-          names(groups)[groups == 1],
-          names(groups)[groups == 0]
-      )
-  df$group <- as.factor(group)
+      df$group <- as.factor(group)
+  }
   plt <-
     ggplot(df, aes(reorder(Names, scores), scores)) + ylab("LDA SCORE (log 10)") +
     theme(

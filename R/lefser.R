@@ -150,12 +150,6 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   (lda.means.diff + coeff) / 2
 }
 
-.numeric01 <- function(x) {
-    x <- as.factor(x)
-    uvals <- levels(x)
-    ifelse(x == uvals[1L], 0L, 1L)
-}
-
 filterKruskal <- function(relab, group, p.value) {
   # applies "kruskal.test.alt" function to each row (feature) of relab
   # to detect differential abundance between classes, 0 and 1
@@ -288,33 +282,31 @@ lefser <-
             "'groupCol' must refer to a valid dichotomous (two-level) variable"
         )
     }
-    group <- .numeric01(groupf)
-    groups <- 0:1
-    relab_sub <- filterKruskal(relab = relab_data, group = group, p.value = kruskal.threshold)
     message(
         "The outcome variable is specified as '", groupCol,
         "' and the reference category is '", lgroupf[1],
         "'.\n See `?factor` or `?relevel` to change the reference category."
     )
+    relab_sub <- filterKruskal(relab = relab_data, group = groupf, p.value = kruskal.threshold)
 
     if (!is.null(blockCol)) {
         block <- as.factor(colData(relab)[[blockCol]])
         relab_sub <- fillPmatZmat(group = groupf, block = block, relab_sub = relab_sub, p.threshold = wilcox.threshold)
     }
 
-    # transposes matrix and add a "class" (i.e., group) column
+    # transposes matrix and add a "class" (i.e., groupf) column
     # matrix converted to dataframe
     relab_sub_t <- t(relab_sub)
     relab_sub_t_df <- as.data.frame(relab_sub_t)
     relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, group = groupf)
-    relab_sub_t_df <- cbind(relab_sub_t_df, class = group)
+    relab_sub_t_df <- cbind(relab_sub_t_df, class = groupf)
 
     # number of samples (i.e., subjects) in the dataframe
     lfk <- nrow(relab_sub_t_df)
     # rfk is the number of subject that will be used in linear discriminant analysis
     rfk <- floor(lfk * 2 / 3)
-    # number of classes (two)
-    ncl <- length(groups)
+    # number of classes (two-levels)
+    ncl <- length(lgroupf)
     # count samples in each class of the dataframe, select the number from the class with a smaller
     # count of samples and multiply that number by 2/*2/3*0.5
     min_cl <-
@@ -326,7 +318,7 @@ lefser <-
     # lda_fn repeated 30 times, producing a matrix of 30 scores per feature
     eff_size_mat <-
       replicate(30, suppressWarnings(ldaFunction(
-        relab_sub_t_df, lfk, rfk, min_cl, ncl, groups
+        relab_sub_t_df, lfk, rfk, min_cl, ncl, lgroupf
       )), simplify = TRUE)
 
     # mean of 30 scores per feature
@@ -347,6 +339,6 @@ lefser <-
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
     res_scores <- scores_df[threshold_scores, ]
     class(res_scores) <- c("lefser_df", class(res_scores))
-    attr(res_scores, "groups") <- groups
+    attr(res_scores, "groups") <- lgroupf
     res_scores
   }
