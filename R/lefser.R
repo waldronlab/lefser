@@ -281,20 +281,21 @@ lefser <-
             "Convert counts to relative abundances with 'relativeAb()'"
         )
     groupf <- colData(relab)[[groupCol]]
-    if (is.null(groupf)){
-      stop("A valid group assignment 'groupCol' must be provided")
-    }
     groupf <- as.factor(groupf)
-    groupsf <- levels(groupf)
-    if (length(groupsf) != 2L){
-      stop(
-        "Group classification is not dichotomous:\n",
-        "Found (", paste(groupsf, collapse = ", "), ")"
-      )
+    lgroupf <- levels(groupf)
+    if (is.null(groupf) || !identical(length(lgroupf), 2L)) {
+        stop(
+            "'groupCol' must refer to a valid dichotomous (two-level) variable"
+        )
     }
     group <- .numeric01(groupf)
     groups <- 0:1
     relab_sub <- filterKruskal(relab = relab_data, group = group, p.value = kruskal.threshold)
+    message(
+        "The outcome variable is specified as '", groupCol,
+        "' and the reference category is '", lgroupf[1],
+        "'.\n See `?factor` or `?relevel` to change the reference category."
+    )
 
     if (!is.null(blockCol)) {
         block <- as.factor(colData(relab)[[blockCol]])
