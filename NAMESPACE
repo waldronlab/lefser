@@ -2,6 +2,7 @@
 
 export(lefser)
 export(lefserPlot)
+export(relativeAb)
 import(SummarizedExperiment)
 importFrom(MASS,lda)
 importFrom(coin,pvalue)
@@ -22,4 +23,5 @@ importFrom(stats,kruskal.test)
 importFrom(stats,reorder)
 importFrom(stats,rnorm)
 importFrom(stats,setNames)
+importFrom(utils,head)
 importFrom(utils,tail)

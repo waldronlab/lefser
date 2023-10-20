@@ -5,18 +5,22 @@
 \title{R implementation of the LEfSe method}
 \usage{
 lefser(
-  expr,
+  relab,
   kruskal.threshold = 0.05,
   wilcox.threshold = 0.05,
   lda.threshold = 2,
   groupCol = "GROUP",
   blockCol = NULL,
   assay = 1L,
-  trim.names = FALSE
+  trim.names = FALSE,
+  checkAbundances = TRUE,
+  ...,
+  expr
 )
 }
 \arguments{
-\item{expr}{A \code{\linkS4class{SummarizedExperiment}} with expression data.}
+\item{relab}{A \linkS4class{SummarizedExperiment} with relative
+abundances in the assay}
 
 \item{kruskal.threshold}{numeric(1) The p-value for the Kruskal-Wallis Rank
 Sum Test (default 0.05).}
@@ -26,21 +30,30 @@ when 'blockCol' is present (default 0.05).}
 
 \item{lda.threshold}{numeric(1) The effect size threshold (default 2.0).}
 
-\item{groupCol}{character(1) Column name in `colData(expr)` indicating
-groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
+\item{groupCol}{character(1) Column name in \code{colData(relab)} indicating
+groups, usually a factor with two levels (e.g., \code{c("cases", "controls")};
 default "GROUP").}
 
-\item{blockCol}{character(1) Optional column name in `colData(expr)`
+\item{blockCol}{character(1) Optional column name in \code{colData(relab)}
 indicating the blocks, usually a factor with two levels (e.g.,
-`c("adult", "senior")`; default NULL).}
+\code{c("adult", "senior")}; default NULL).}
 
-\item{assay}{The i-th assay matrix in the `SummarizedExperiment` ('expr';
+\item{assay}{The i-th assay matrix in the \code{SummarizedExperiment} ('relab';
 default 1).}
 
-\item{trim.names}{If `TRUE` extracts the most specific taxonomic rank of organism.}
+\item{trim.names}{If \code{TRUE} extracts the most specific taxonomic rank of organism.}
+
+\item{checkAbundances}{\code{logical(1)} Whether to check if the assay data in the
+\code{relab} input are relative abundances or counts. If counts are found, a
+warning will be emitted (default \code{TRUE}).}
+
+\item{expr}{(\code{deprecated}) Use \code{relab} instead. A \linkS4class{SummarizedExperiment}
+with relative abundances in the assay}
+
+\item{\ldots}{Additional inputs to lower level functions (not used).}
 }
 \value{
-The function returns a dataframe with two columns, which are
+The function returns a \code{data.frame} with two columns, which are
 names of microorganisms and their LDA scores.
 }
 \description{
@@ -49,6 +62,14 @@ between two sample groups for multiple microorganisms and uses linear discirmina
 to establish their effect sizes. Subclass information for each class can be incorporated
 into the analysis (see examples). Microorganisms with large differences between two sample groups
 are identified as biomarkers.
+}
+\details{
+The LEfSe method expects relative abundances in the \code{expr} input. A warning
+will be emitted if the column sums do not result in 1. Use the \code{relativeAb}
+helper function to convert the data in the \code{SummarizedExperiment} to relative
+abundances. The \code{checkAbundances} argument enables checking the data
+for presence of relative abundances and can be turned off by setting the
+argument to \code{FALSE}.
 }
 \examples{
     # (1) Using classes only

@@ -10,9 +10,9 @@ utils::globalVariables(c("Names", "scores"))
 #'
 #' @param colors character(2) The two colors corresponding to class 0 and 1,
 #' respectively. Defaults to `c("red", "forestgreen")`.
-#' 
+#'
 #' @param trim.names If `TRUE` extracts the most specific taxonomic rank of organism.
-#' 
+#'
 #' @return
 #' Function returns plot of effect size scores produed by `lefser`.
 #' Positive scores represent microorganisms with that are more abundant in class '1'.
@@ -21,15 +21,22 @@ utils::globalVariables(c("Names", "scores"))
 #' @export
 #' @importFrom ggplot2 ggplot aes ylab theme element_blank element_text
 #' @importFrom ggplot2 geom_bar coord_flip scale_fill_manual
+#' @importFrom utils head tail
 #'
 #' @examples
 #' example("lefser")
 #' lefserPlot(res_group)
-lefserPlot <- function(df, colors = c("red", "forestgreen"), 
+lefserPlot <- function(df, colors = c("red", "forestgreen"),
                        trim.names = TRUE) {
   df <- .trunc(df, trim.names)
-  group <- ifelse(df$scores > 0, 1, 0)
-  df$group <- as.factor(group)
+  groups <- attr(df, "groups")
+  if (!is.null(groups)) {
+      group <- ifelse(df$scores > 0, tail(groups, 1), head(groups, 1))
+      df$group <- factor(group, levels = groups)
+  } else {
+      group <- ifelse(df$scores > 0, 1, 0)
+      df$group <- as.factor(group)
+  }
   plt <-
     ggplot(df, aes(reorder(Names, scores), scores)) + ylab("LDA SCORE (log 10)") +
     theme(

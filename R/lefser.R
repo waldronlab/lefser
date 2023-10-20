@@ -1,6 +1,6 @@
 fillPmatZmat <- function(group,
                          block,
-                         expr_sub,
+                         relab_sub,
                          p.threshold)
 {
   # creates a list of boolean vectors, each vector indicates
@@ -15,11 +15,11 @@ fillPmatZmat <- function(group,
   ## "pval_mat" and "z_mat" matrices
   whichlist <- lapply(logilist, which)
   sblock <- seq_along(levels(block))
-  texp_sub <- t(expr_sub)
+  trelab_sub <- t(relab_sub)
   iters <- expand.grid(sblock, sblock + length(sblock))
   group_formats <- apply(iters, 1L, function(x) {
     ind <- unlist(whichlist[x])
-    apply(texp_sub, 2L, function(g) {
+    apply(trelab_sub, 2L, function(g) {
       wx <- suppressWarnings(coin::wilcox_test(g ~ group, subset = ind))
       cbind.data.frame(
           p.value = coin::pvalue(wx), statistic = coin::statistic(wx)
@@ -31,8 +31,8 @@ fillPmatZmat <- function(group,
   pval_mat <- do.call(cbind, lapply(res, `[[`, "p.value"))
   z_mat <- do.call(cbind, lapply(res, `[[`, "statistic"))
 
-  rownames(pval_mat) <- rownames(expr_sub)
-  rownames(z_mat) <- rownames(expr_sub)
+  rownames(pval_mat) <- rownames(relab_sub)
+  rownames(z_mat) <- rownames(relab_sub)
 
   ## converts "pval_mat" into boolean matrix "logical_pval_mat" where
   ## p-values <= wilcoxon.threshold
@@ -45,7 +45,7 @@ fillPmatZmat <- function(group,
   z_mat_sub <- z_mat[sub, , drop = FALSE]
     # confirms that z-statistics of a row all have the same sign
   sub <- abs(rowSums(z_mat_sub)) == rowSums(abs(z_mat_sub))
-  expr_sub[names(sub[sub]), , drop = FALSE]
+  relab_sub[names(sub[sub]), , drop = FALSE]
 }
 
 ## ensures that more than half of the values in each for each feature are unique
@@ -71,9 +71,9 @@ createUniqueValues <- function(df, group){
 }
 
 contastWithinClassesOrFewPerClass <-
-  function(expr_sub_t_df, rand_s, min_cl, ncl, groups) {
-    cols <- expr_sub_t_df[rand_s, , drop = FALSE]
-    cls <- expr_sub_t_df$class[rand_s]
+  function(relab_sub_t_df, rand_s, min_cl, ncl, groups) {
+    cols <- relab_sub_t_df[rand_s, , drop = FALSE]
+    cls <- relab_sub_t_df$class[rand_s]
     # if the number of classes is less than the actual number (typically two)
     # of classes in the dataframe then return TRUE
     if (length(unique(cls)) < ncl) {
@@ -128,7 +128,7 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   # effect size is calculated as difference between averaged disciminants
   # of two classes
   effect_size <-
-    abs(mean(LD[sub_d[, "class"] == 0]) - mean(LD[sub_d[, "class"] == 1]))
+    abs(mean(LD[sub_d[, "class"] == 1]) - mean(LD[sub_d[, "class"] == 0]))
   # scaling lda coefficients by the efect size
   scal <- w.unit * effect_size
   # mean count values per fclass per feature
@@ -150,16 +150,10 @@ ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
   (lda.means.diff + coeff) / 2
 }
 
-.numeric01 <- function(x) {
-    x <- as.factor(x)
-    uvals <- levels(x)
-    ifelse(x == uvals[1L], 0L, 1L)
-}
-
-filterKruskal <- function(expr, group, p.value) {
-  # applies "kruskal.test.alt" function to each row (feature) of expr
+filterKruskal <- function(relab, group, p.value) {
+  # applies "kruskal.test.alt" function to each row (feature) of relab
   # to detect differential abundance between classes, 0 and 1
-  kw.res <- apply(expr, 1L, function(x) {
+  kw.res <- apply(relab, 1L, function(x) {
     kruskal.test(x ~ group)[["p.value"]]
   })
   # TRUE for p-values less than or equal to kw.threshold
@@ -174,8 +168,8 @@ filterKruskal <- function(expr, group, p.value) {
   }
 
   # extracts features with statistically significant differential abundance
-  # from "expr" matrix
-  expr[kw.sub,]
+  # from "relab" matrix
+  relab[kw.sub,]
 }
 
 .trunc <- function(scores_df, trim.names){
@@ -196,23 +190,38 @@ filterKruskal <- function(expr, group, p.value) {
 #' into the analysis (see examples). Microorganisms with large differences between two sample groups
 #' are identified as biomarkers.
 #'
-#' @param expr A \code{\linkS4class{SummarizedExperiment}} with expression data.
+#' @details
+#' The LEfSe method expects relative abundances in the `expr` input. A warning
+#' will be emitted if the column sums do not result in 1. Use the `relativeAb`
+#' helper function to convert the data in the `SummarizedExperiment` to relative
+#' abundances. The `checkAbundances` argument enables checking the data
+#' for presence of relative abundances and can be turned off by setting the
+#' argument to `FALSE`.
+#'
+#' @param relab A [SummarizedExperiment-class] with relative
+#'   abundances in the assay
+#' @param expr (`deprecated`) Use `relab` instead. A [SummarizedExperiment-class]
+#'   with relative abundances in the assay
 #' @param kruskal.threshold numeric(1) The p-value for the Kruskal-Wallis Rank
 #' Sum Test (default 0.05).
 #' @param wilcox.threshold numeric(1) The p-value for the Wilcoxon Rank-Sum Test
 #' when 'blockCol' is present (default 0.05).
 #' @param lda.threshold numeric(1) The effect size threshold (default 2.0).
-#' @param groupCol character(1) Column name in `colData(expr)` indicating
+#' @param groupCol character(1) Column name in `colData(relab)` indicating
 #' groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
 #' default "GROUP").
-#' @param blockCol character(1) Optional column name in `colData(expr)`
+#' @param blockCol character(1) Optional column name in `colData(relab)`
 #' indicating the blocks, usually a factor with two levels (e.g.,
 #' `c("adult", "senior")`; default NULL).
-#' @param assay The i-th assay matrix in the `SummarizedExperiment` ('expr';
+#' @param assay The i-th assay matrix in the `SummarizedExperiment` ('relab';
 #' default 1).
 #' @param trim.names If `TRUE` extracts the most specific taxonomic rank of organism.
+#' @param checkAbundances `logical(1)` Whether to check if the assay data in the
+#'   `relab` input are relative abundances or counts. If counts are found, a
+#'   warning will be emitted (default `TRUE`).
+#' @param \ldots Additional inputs to lower level functions (not used).
 #' @return
-#' The function returns a dataframe with two columns, which are
+#' The function returns a `data.frame` with two columns, which are
 #' names of microorganisms and their LDA scores.
 #'
 #' @importFrom stats kruskal.test reorder rnorm
@@ -241,55 +250,68 @@ filterKruskal <- function(expr, group, p.value) {
 #'     head(res_block)
 #' @export
 lefser <-
-  function(expr,
+  function(relab,
            kruskal.threshold = 0.05,
            wilcox.threshold = 0.05,
            lda.threshold = 2.0,
            groupCol = "GROUP",
            blockCol = NULL,
            assay = 1L,
-           trim.names = FALSE)
-  {
-    groupf <- colData(expr)[[groupCol]]
-    if (is.null(groupf)){
-      stop("A valid group assignment 'groupCol' must be provided")
+           trim.names = FALSE,
+           checkAbundances = TRUE,
+           ...,
+           expr
+) {
+    if (!missing(expr)) {
+        .Deprecated(
+            msg = "The 'expr' argument is deprecated, use 'relab' instead."
+        )
+        relab_data <- assay(expr, i = assay)
+    } else {
+        relab_data <- assay(relab, i = assay)
     }
+    if (checkAbundances && !identical(length(unique(colSums(relab_data))), 1L))
+        warning(
+            "Convert counts to relative abundances with 'relativeAb()'"
+        )
+    groupf <- colData(relab)[[groupCol]]
     groupf <- as.factor(groupf)
-    groupsf <- levels(groupf)
-    if (length(groupsf) != 2L){
-      stop(
-        "Group classification is not dichotomous:\n",
-        "Found (", paste(groupsf, collapse = ", "), ")"
-      )
+    lgroupf <- levels(groupf)
+    if (is.null(groupf) || !identical(length(lgroupf), 2L)) {
+        stop(
+            "'groupCol' must refer to a valid dichotomous (two-level) variable"
+        )
     }
-    group <- .numeric01(groupf)
-    groups <- 0:1
-    expr_data <- assay(expr, i = assay)
-    expr_sub <- filterKruskal(expr = expr_data, group = group, p.value = kruskal.threshold)
+    message(
+        "The outcome variable is specified as '", groupCol,
+        "' and the reference category is '", lgroupf[1],
+        "'.\n See `?factor` or `?relevel` to change the reference category."
+    )
+    relab_sub <- filterKruskal(relab = relab_data, group = groupf, p.value = kruskal.threshold)
 
     if (!is.null(blockCol)) {
         block <- as.factor(colData(expr)[[blockCol]])
         block <- droplevels(block)
-        expr_sub <- fillPmatZmat(group = groupf, block = block, expr_sub = expr_sub, p.threshold = wilcox.threshold)
+        relab_sub <- fillPmatZmat(group = groupf, block = block, relab_sub = relab_sub, p.threshold = wilcox.threshold)
     }
 
-    # transposes matrix and add a "class" (i.e., group) column
+    # transposes matrix and add a "class" (i.e., groupf) column
     # matrix converted to dataframe
-    expr_sub_t <- t(expr_sub)
-    expr_sub_t_df <- as.data.frame(expr_sub_t)
-    expr_sub_t_df <- createUniqueValues(df = expr_sub_t_df, group = groupf)
-    expr_sub_t_df <- cbind(expr_sub_t_df, class = group)
+    relab_sub_t <- t(relab_sub)
+    relab_sub_t_df <- as.data.frame(relab_sub_t)
+    relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, group = groupf)
+    relab_sub_t_df <- cbind(relab_sub_t_df, class = groupf)
 
     # number of samples (i.e., subjects) in the dataframe
-    lfk <- nrow(expr_sub_t_df)
+    lfk <- nrow(relab_sub_t_df)
     # rfk is the number of subject that will be used in linear discriminant analysis
     rfk <- floor(lfk * 2 / 3)
-    # number of classes (two)
-    ncl <- length(groups)
+    # number of classes (two-levels)
+    ncl <- length(lgroupf)
     # count samples in each class of the dataframe, select the number from the class with a smaller
     # count of samples and multiply that number by 2/*2/3*0.5
     min_cl <-
-      as.integer(min(table(expr_sub_t_df$class)) * 2 / 3 * 2 / 3 *
+      as.integer(min(table(relab_sub_t_df$class)) * 2 / 3 * 2 / 3 *
                    0.5)
     # if min_cl is less than 1, then make it equal to 1
     min_cl <- max(min_cl, 1)
@@ -297,7 +319,7 @@ lefser <-
     # lda_fn repeated 30 times, producing a matrix of 30 scores per feature
     eff_size_mat <-
       replicate(30, suppressWarnings(ldaFunction(
-        expr_sub_t_df, lfk, rfk, min_cl, ncl, groups
+        relab_sub_t_df, lfk, rfk, min_cl, ncl, lgroupf
       )), simplify = TRUE)
 
     # mean of 30 scores per feature
@@ -316,5 +338,8 @@ lefser <-
     scores_df <- .trunc(scores_df, trim.names)
 
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
-    scores_df[threshold_scores, ]
+    res_scores <- scores_df[threshold_scores, ]
+    class(res_scores) <- c("lefser_df", class(res_scores))
+    attr(res_scores, "groups") <- lgroupf
+    res_scores
   }

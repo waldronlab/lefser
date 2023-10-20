@@ -2,25 +2,25 @@
 % Please edit documentation in R/lefserPlot.R
 \name{lefserPlot}
 \alias{lefserPlot}
-\title{Plots results from `lefser` function}
+\title{Plots results from \code{lefser} function}
 \usage{
 lefserPlot(df, colors = c("red", "forestgreen"), trim.names = TRUE)
 }
 \arguments{
-\item{df}{Data frame produced by `lefser`.}
+\item{df}{Data frame produced by \code{lefser}.}
 
 \item{colors}{character(2) The two colors corresponding to class 0 and 1,
-respectively. Defaults to `c("red", "forestgreen")`.}
+respectively. Defaults to \code{c("red", "forestgreen")}.}
 
-\item{trim.names}{If `TRUE` extracts the most specific taxonomic rank of organism.}
+\item{trim.names}{If \code{TRUE} extracts the most specific taxonomic rank of organism.}
 }
 \value{
-Function returns plot of effect size scores produed by `lefser`.
+Function returns plot of effect size scores produed by \code{lefser}.
 Positive scores represent microorganisms with that are more abundant in class '1'.
 Negative scores represent microorganisms with that are more abundant in class '0'.
 }
 \description{
-`lefserPlot` function displays effect sizes for differentially expressed microorganisms
+\code{lefserPlot} function displays effect sizes for differentially expressed microorganisms
 and whether they are more abundant in '0' or '1' sample group.
 }
 \examples{
