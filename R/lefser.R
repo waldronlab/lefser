@@ -290,7 +290,7 @@ lefser <-
     relab_sub <- filterKruskal(relab = relab_data, group = groupf, p.value = kruskal.threshold)
 
     if (!is.null(blockCol)) {
-        block <- as.factor(colData(expr)[[blockCol]])
+        block <- as.factor(colData(relab)[[blockCol]])
         block <- droplevels(block)
         relab_sub <- fillPmatZmat(group = groupf, block = block, relab_sub = relab_sub, p.threshold = wilcox.threshold)
     }
