@@ -25,7 +25,8 @@ Imports:
   ggplot2,
   S4Vectors,
   stats,
-  methods
+  methods,
+  utils
 Suggests: 
   knitr,
   rmarkdown,
