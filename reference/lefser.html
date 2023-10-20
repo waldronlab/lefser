@@ -27,7 +27,7 @@ are identified as biomarkers."><!-- mathjax --><script src="https://cdnjs.cloudf
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lefser</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.11.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.11.3</span>
       </span>
     </div>
 
@@ -167,6 +167,8 @@ argument to <code>FALSE</code>.</p>
 <span class="r-in"><span>    <span class="va">zeller14</span> <span class="op">&lt;-</span> <span class="va">zeller14</span><span class="op">[</span>, <span class="va">zeller14</span><span class="op">$</span><span class="va">study_condition</span> <span class="op">!=</span> <span class="st">"adenoma"</span><span class="op">]</span></span></span>
 <span class="r-in"><span>    <span class="va">res_group</span> <span class="op">&lt;-</span> <span class="fu">lefser</span><span class="op">(</span><span class="va">zeller14</span>, groupCol <span class="op">=</span> <span class="st">"study_condition"</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Convert counts to relative abundances with 'relativeAb()'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The outcome variable is specified as 'study_condition' and the reference category is 'CRC'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  See `?factor` or `?relevel` to change the reference category.</span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_group</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                 Names</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                                         k__Bacteria|p__Bacteroidetes|c__Bacteroidia</span>
@@ -176,12 +178,12 @@ argument to <code>FALSE</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Coprococcus|s__Coprococcus_eutactus</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Coprococcus|s__Coprococcus_eutactus|t__GCF_000154425</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      scores</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -6.346146</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -6.346146</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 -6.346114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -5.723075</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 -5.614742</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -5.604040</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -6.354209</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -6.354209</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 -6.354174</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -5.747853</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 -5.665942</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -5.638854</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>    <span class="co"># (2) Using classes and sublasses</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">zeller14</span><span class="op">)</span></span></span>
@@ -191,21 +193,23 @@ argument to <code>FALSE</code>.</p>
 <span class="r-in"><span>         <span class="va">zeller14</span>, groupCol <span class="op">=</span> <span class="st">"study_condition"</span>, blockCol <span class="op">=</span> <span class="st">"age_category"</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Convert counts to relative abundances with 'relativeAb()'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The outcome variable is specified as 'study_condition' and the reference category is 'CRC'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  See `?factor` or `?relevel` to change the reference category.</span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_block</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                                                                Names</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                                                k__Bacteria|p__Fusobacteria|c__Fusobacteriia|o__Fusobacteriales|f__Fusobacteriaceae</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                                               k__Bacteria|p__Fusobacteria|c__Fusobacteriia|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                               k__Bacteria|p__Fusobacteria|c__Fusobacteriia|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                                                                k__Bacteria|p__Fusobacteria|c__Fusobacteriia|o__Fusobacteriales|f__Fusobacteriaceae</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3                                                                                k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae|g__Porphyromonas</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae|g__Porphyromonas|s__Porphyromonas_asaccharolytica|t__Porphyromonas_asaccharolytica_unclassified</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5                                               k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae|g__Porphyromonas|s__Porphyromonas_asaccharolytica</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                                             k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Peptostreptococcaceae|g__Peptostreptococcus|s__Peptostreptococcus_stomatis</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                                                                                                                    k__Bacteria|p__Fusobacteria|c__Fusobacteriia|o__Fusobacteriales</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      scores</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -5.226387</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -5.225642</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 -5.067156</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -4.998954</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 -4.990213</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -4.830890</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -5.257637</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -5.242320</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 -5.043539</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -4.952424</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 -4.926706</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -4.884561</span>
 </code></pre></div>
     </div>
   </div>

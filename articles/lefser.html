@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">lefser</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.11.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.11.3</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@ Waldron<br><small>School of Public Health, City University of New
 York</small>
 </div></h4>
             
-            <h4 data-toc-skip class="date">2023-09-06</h4>
+            <h4 data-toc-skip class="date">2023-10-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/waldronlab/lefser/blob/HEAD/vignettes/lefser.Rmd" class="external-link"><code>vignettes/lefser.Rmd</code></a></small>
       <div class="hidden name"><code>lefser.Rmd</code></div>
@@ -162,7 +162,9 @@ and their effect size.</p>
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lefser.html">lefser</a></span><span class="op">(</span><span class="va">zeller14</span>, groupCol <span class="op">=</span> <span class="st">"study_condition"</span>, blockCol <span class="op">=</span> <span class="st">"age_category"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in lefser(zeller14, groupCol = "study_condition", blockCol =</span></span>
 <span><span class="co">## "age_category"): Convert counts to relative abundances with 'relativeAb()'</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## The outcome variable is specified as 'study_condition' and the reference category is 'control'.</span></span>
+<span><span class="co">##  See `?factor` or `?relevel` to change the reference category.</span></span></code></pre>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                                                                                                                                        Names</span></span>
 <span><span class="co">## 1                                                k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus</span></span>
@@ -172,23 +174,23 @@ and their effect size.</p>
 <span><span class="co">## 5 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975</span></span>
 <span><span class="co">## 6                            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Eubacterium|s__Eubacterium_hallii</span></span>
 <span><span class="co">##      scores</span></span>
-<span><span class="co">## 1 -6.200407</span></span>
-<span><span class="co">## 2 -5.960807</span></span>
-<span><span class="co">## 3 -5.951899</span></span>
-<span><span class="co">## 4 -5.651024</span></span>
-<span><span class="co">## 5 -5.651024</span></span>
-<span><span class="co">## 6 -5.515625</span></span></code></pre>
+<span><span class="co">## 1 -6.174735</span></span>
+<span><span class="co">## 2 -5.944198</span></span>
+<span><span class="co">## 3 -5.932699</span></span>
+<span><span class="co">## 4 -5.498126</span></span>
+<span><span class="co">## 5 -5.498126</span></span>
+<span><span class="co">## 6 -5.474545</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="visualizing-results-with-lefserplot">Visualizing results with <code>lefserPlot</code><a class="anchor" aria-label="anchor" href="#visualizing-results-with-lefserplot"></a>
 </h2>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/lefserPlot.html">lefserPlot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p><img src="lefser_files/figure-html/unnamed-chunk-8-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="section level3">
 <h3 id="sessioninfo">sessionInfo<a class="anchor" aria-label="anchor" href="#sessioninfo"></a>
 </h3>
-<details><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<details><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.3.0 (2023-04-21)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
@@ -214,40 +216,40 @@ and their effect size.</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] lefser_1.11.2               SummarizedExperiment_1.30.2</span></span>
-<span><span class="co">##  [3] Biobase_2.60.0              GenomicRanges_1.52.0       </span></span>
-<span><span class="co">##  [5] GenomeInfoDb_1.36.2         IRanges_2.34.1             </span></span>
-<span><span class="co">##  [7] S4Vectors_0.38.1            BiocGenerics_0.46.0        </span></span>
+<span><span class="co">##  [1] lefser_1.11.3               SummarizedExperiment_1.30.2</span></span>
+<span><span class="co">##  [3] Biobase_2.60.0              GenomicRanges_1.52.1       </span></span>
+<span><span class="co">##  [5] GenomeInfoDb_1.36.4         IRanges_2.34.1             </span></span>
+<span><span class="co">##  [7] S4Vectors_0.38.2            BiocGenerics_0.46.0        </span></span>
 <span><span class="co">##  [9] MatrixGenerics_1.12.3       matrixStats_1.0.0          </span></span>
-<span><span class="co">## [11] BiocStyle_2.28.0           </span></span>
+<span><span class="co">## [11] BiocStyle_2.28.1           </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] gtable_0.3.4            ggplot2_3.4.3           xfun_0.40              </span></span>
-<span><span class="co">##  [4] bslib_0.5.1             coin_1.4-2              lattice_0.21-8         </span></span>
-<span><span class="co">##  [7] generics_0.1.3          vctrs_0.6.3             tools_4.3.0            </span></span>
+<span><span class="co">##  [1] gtable_0.3.4            ggplot2_3.4.4           xfun_0.40              </span></span>
+<span><span class="co">##  [4] bslib_0.5.1             coin_1.4-3              lattice_0.21-9         </span></span>
+<span><span class="co">##  [7] generics_0.1.3          vctrs_0.6.4             tools_4.3.0            </span></span>
 <span><span class="co">## [10] bitops_1.0-7            parallel_4.3.0          sandwich_3.0-2         </span></span>
-<span><span class="co">## [13] fansi_1.0.4             tibble_3.2.1            highr_0.10             </span></span>
-<span><span class="co">## [16] pkgconfig_2.0.3         Matrix_1.6-1            desc_1.4.2             </span></span>
-<span><span class="co">## [19] lifecycle_1.0.3         GenomeInfoDbData_1.2.10 farver_2.1.1           </span></span>
-<span><span class="co">## [22] compiler_4.3.0          stringr_1.5.0           textshaping_0.3.6      </span></span>
-<span><span class="co">## [25] munsell_0.5.0           codetools_0.2-19        htmltools_0.5.6        </span></span>
-<span><span class="co">## [28] sass_0.4.7              RCurl_1.98-1.12         yaml_2.3.7             </span></span>
-<span><span class="co">## [31] pillar_1.9.0            pkgdown_2.0.7           crayon_1.5.2           </span></span>
-<span><span class="co">## [34] jquerylib_0.1.4         MASS_7.3-60             DelayedArray_0.26.7    </span></span>
-<span><span class="co">## [37] cachem_1.0.8            abind_1.4-5             multcomp_1.4-25        </span></span>
-<span><span class="co">## [40] tidyselect_1.2.0        digest_0.6.33           mvtnorm_1.2-3          </span></span>
-<span><span class="co">## [43] stringi_1.7.12          dplyr_1.1.3             purrr_1.0.2            </span></span>
-<span><span class="co">## [46] bookdown_0.35           labeling_0.4.3          splines_4.3.0          </span></span>
-<span><span class="co">## [49] rprojroot_2.0.3         fastmap_1.1.1           grid_4.3.0             </span></span>
-<span><span class="co">## [52] colorspace_2.1-0        cli_3.6.1               magrittr_2.0.3         </span></span>
-<span><span class="co">## [55] S4Arrays_1.0.6          utf8_1.2.3              survival_3.5-7         </span></span>
-<span><span class="co">## [58] TH.data_1.1-2           withr_2.5.0             libcoin_1.0-9          </span></span>
-<span><span class="co">## [61] scales_1.2.1            rmarkdown_2.24          XVector_0.40.0         </span></span>
-<span><span class="co">## [64] ragg_1.2.5              zoo_1.8-12              modeltools_0.2-23      </span></span>
-<span><span class="co">## [67] memoise_2.0.1           evaluate_0.21           knitr_1.43             </span></span>
-<span><span class="co">## [70] rlang_1.1.1             glue_1.6.2              BiocManager_1.30.22    </span></span>
-<span><span class="co">## [73] jsonlite_1.8.7          R6_2.5.1                systemfonts_1.0.4      </span></span>
-<span><span class="co">## [76] fs_1.6.3                zlibbioc_1.46.0</span></span></code></pre>
+<span><span class="co">## [13] fansi_1.0.5             tibble_3.2.1            pkgconfig_2.0.3        </span></span>
+<span><span class="co">## [16] Matrix_1.6-1.1          desc_1.4.2              lifecycle_1.0.3        </span></span>
+<span><span class="co">## [19] GenomeInfoDbData_1.2.10 farver_2.1.1            compiler_4.3.0         </span></span>
+<span><span class="co">## [22] stringr_1.5.0           textshaping_0.3.7       munsell_0.5.0          </span></span>
+<span><span class="co">## [25] codetools_0.2-19        htmltools_0.5.6.1       sass_0.4.7             </span></span>
+<span><span class="co">## [28] RCurl_1.98-1.12         yaml_2.3.7              pillar_1.9.0           </span></span>
+<span><span class="co">## [31] pkgdown_2.0.7           crayon_1.5.2            jquerylib_0.1.4        </span></span>
+<span><span class="co">## [34] MASS_7.3-60             DelayedArray_0.26.7     cachem_1.0.8           </span></span>
+<span><span class="co">## [37] abind_1.4-5             multcomp_1.4-25         tidyselect_1.2.0       </span></span>
+<span><span class="co">## [40] digest_0.6.33           mvtnorm_1.2-3           stringi_1.7.12         </span></span>
+<span><span class="co">## [43] dplyr_1.1.3             purrr_1.0.2             bookdown_0.36          </span></span>
+<span><span class="co">## [46] labeling_0.4.3          splines_4.3.0           rprojroot_2.0.3        </span></span>
+<span><span class="co">## [49] fastmap_1.1.1           grid_4.3.0              colorspace_2.1-0       </span></span>
+<span><span class="co">## [52] cli_3.6.1               magrittr_2.0.3          S4Arrays_1.0.6         </span></span>
+<span><span class="co">## [55] utf8_1.2.3              survival_3.5-7          TH.data_1.1-2          </span></span>
+<span><span class="co">## [58] withr_2.5.1             libcoin_1.0-10          scales_1.2.1           </span></span>
+<span><span class="co">## [61] rmarkdown_2.25          XVector_0.40.0          ragg_1.2.6             </span></span>
+<span><span class="co">## [64] zoo_1.8-12              modeltools_0.2-23       memoise_2.0.1          </span></span>
+<span><span class="co">## [67] evaluate_0.22           knitr_1.44              rlang_1.1.1            </span></span>
+<span><span class="co">## [70] glue_1.6.2              BiocManager_1.30.22     jsonlite_1.8.7         </span></span>
+<span><span class="co">## [73] R6_2.5.1                systemfonts_1.0.5       fs_1.6.3               </span></span>
+<span><span class="co">## [76] zlibbioc_1.46.0</span></span></code></pre>
 </details>
 </div>
 </div>
