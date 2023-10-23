@@ -7,14 +7,15 @@ Description: lefser is an implementation in R of the popular
   Analysis to find biomarkers of groups and sub-groups.
 Version: 1.11.5
 Authors@R: c(
-  person("Asya", "Khleborodova", email = "asya.bioconductor@gmail.com",
-      role = c("cre", "aut")),
-  person("Ludwig", "Geistlinger", email = "Ludwig.Geistlinger@sph.cuny.edu",
-      role = "ctb"),
-  person("Marcel", "Ramos", email = "marcel.ramos@roswellpark.org",
-      role = "ctb", comment = c(ORCID = "0000-0002-3242-0582")),
+  person("Asya", "Khleborodova", , "asya.bioconductor@gmail.com",
+      c("cre", "aut")
+  ),
+  person("Ludwig", "Geistlinger", , "Ludwig.Geistlinger@sph.cuny.edu", "ctb"),
+  person("Marcel", "Ramos", , "marcel.ramos@roswellpark.org", "ctb",
+      c(ORCID = "0000-0002-3242-0582")
+  ),
   person("Samuel", "Gamboa-Tuz", , "Samuel.Gamboa.Tuz@gmail.com", "ctb"),
-  person("Levi", "Waldron", email ="levi.waldron@sph.cuny.edu", role = "ctb")
+  person("Levi", "Waldron", , levi.waldron@sph.cuny.edu", "ctb")
   )
 License: Artistic-2.0
 Depends:
