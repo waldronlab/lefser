@@ -13,6 +13,7 @@ Authors@R: c(
       role = "ctb"),
   person("Marcel", "Ramos", email = "marcel.ramos@roswellpark.org",
       role = "ctb", comment = c(ORCID = "0000-0002-3242-0582")),
+  person("Samuel", "Gamboa-Tuz", , "Samuel.Gamboa.Tuz@gmail.com", "ctb"),
   person("Levi", "Waldron", email ="levi.waldron@sph.cuny.edu", role = "ctb")
   )
 License: Artistic-2.0
