@@ -9,10 +9,8 @@ home:
   title: "LEfSe in R"
   type: inverse
 
-
 navbar:
   right:
    - icon: fa-github
      href: https://github.com/waldronlab/lefser/
-     
 
