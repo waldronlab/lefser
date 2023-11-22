@@ -15,7 +15,7 @@ Authors@R: c(
       c(ORCID = "0000-0002-3242-0582")
   ),
   person("Samuel", "Gamboa-Tuz", , "Samuel.Gamboa.Tuz@gmail.com", "ctb"),
-  person("Levi", "Waldron", , levi.waldron@sph.cuny.edu", "ctb")
+  person("Levi", "Waldron", , "levi.waldron@sph.cuny.edu", "ctb")
   )
 License: Artistic-2.0
 Depends:
