@@ -2,3 +2,5 @@
 lefser.Rproj
 docs
 vignettes/lefser_cache/
+.Rdata
+.Rhistory
