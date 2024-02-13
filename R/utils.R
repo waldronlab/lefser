@@ -31,7 +31,7 @@
 #' This function calculates the relative abundance of each feature in a dataset,
 #' expressed as counts per million (CPM) 
 #' 
-#' @param normalize Logical value indicating whether counts should be normalized
+#' @param Logical value indicating whether counts should be normalized
 #' to counts per million (default is TRUE)
 #' 
 #' 
