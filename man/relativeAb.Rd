@@ -7,20 +7,18 @@
 relativeAb(se, assay = 1L)
 }
 \arguments{
-\item{se}{A SummarizedExperiment object with counts}
+\item{se}{returns a new SummarizedExperiment object
+with counts per million calculated and added as a new assay named rel_abs.}
 
 \item{assay}{The i-th assay matrix in the \code{SummarizedExperiment} ('relab';
 default 1).}
-
-\item{normalize}{Logical value indicating whether counts should be normalized
-to counts per million (default is TRUE)}
 }
 \description{
 The function calculates the column totals and divides each value within the
 column by the respective column total.
 
-This function calculates the relative abundance of each feature in a dataset,
-expressed as counts per million (CPM)
+This function calculates the relative abundance of each feature in the SummarizedExperiment
+object containing count data, expressed as counts per million (CPM)
 }
 \examples{
 
@@ -33,7 +31,6 @@ se <- SummarizedExperiment(
 )
 assay(se)
 assay(relativeAb(se))
-
 
 utility function for relativeAb to return counts per million
 
