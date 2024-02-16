@@ -20,16 +20,23 @@
 #' assay(se)
 #' assay(relativeAb(se))
 #'
+#' @description
+#' This function calculates the relative abundance of each feature in the SummarizedExperiment 
+#' object containing count data, expressed as counts per million (CPM) 
+#' 
+#' @returns returns a new SummarizedExperiment object with counts per million
+#' calculated and added as a new assay named rel_abs.
+#' 
 #' @export
 relativeAb <- function(se, assay = 1L) {
-    assay_data <- assay(se, i = assay)
-    csums <- colSums(assay_data)
-    div <- matrix(rep(csums, each = nrow(assay_data)), ncol = ncol(assay_data))
-    res <- assay_data / div
-    assaylist <- assays(se)
-    newalist <- append(
-        assaylist, values = S4Vectors::SimpleList(rel_abs = res), after = 0L
-    )
-    assays(se) <- newalist
-    se
+  assay_data <- assay(se, i = assay)
+  csums <- colSums(assay_data)
+  div <- matrix(rep(csums, each = nrow(assay_data)), ncol = ncol(assay_data))
+  res <- assay_data / div * 1e6
+  assaylist <- assays(se)
+  newalist <- append(
+    assaylist, values = S4Vectors::SimpleList(rel_abs = res), after = 0L
+  )
+  assays(se) <- newalist
+  se
 }
