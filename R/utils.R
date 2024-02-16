@@ -27,8 +27,6 @@
 #' @returns returns a new SummarizedExperiment object with counts per million
 #' calculated and added as a new assay named rel_abs.
 #' 
-#' @param assay Name or number of the assay of se containing count data to be used for the relative abundance calculation (default: 1L).
-#' 
 #' @export
 relativeAb <- function(se, assay = 1L) {
   assay_data <- assay(se, i = assay)

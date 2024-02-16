@@ -7,11 +7,14 @@
 relativeAb(se, assay = 1L)
 }
 \arguments{
-\item{se}{returns a new SummarizedExperiment object
-with counts per million calculated and added as a new assay named rel_abs.}
+\item{se}{A SummarizedExperiment object with counts}
 
 \item{assay}{The i-th assay matrix in the \code{SummarizedExperiment} ('relab';
 default 1).}
+}
+\value{
+returns a new SummarizedExperiment object with counts per million
+calculated and added as a new assay named rel_abs.
 }
 \description{
 The function calculates the column totals and divides each value within the
@@ -31,7 +34,5 @@ se <- SummarizedExperiment(
 )
 assay(se)
 assay(relativeAb(se))
-
-utility function for relativeAb to return counts per million
 
 }
