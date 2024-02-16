@@ -19,14 +19,12 @@
 #' )
 #' assay(se)
 #' assay(relativeAb(se))
-#' 
-#' utility function for relativeAb to return counts per million
 #'
 #' @description
 #' This function calculates the relative abundance of each feature in the SummarizedExperiment 
 #' object containing count data, expressed as counts per million (CPM) 
 #' 
-#' @returns se returns a new SummarizedExperiment object with counts per million
+#' @returns returns a new SummarizedExperiment object with counts per million
 #' calculated and added as a new assay named rel_abs.
 #' 
 #' @param assay Name or number of the assay of se containing count data to be used for the relative abundance calculation (default: 1L).
