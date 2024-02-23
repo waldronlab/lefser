@@ -3,7 +3,6 @@ checkEnding <- function(resObj, index, column, value) {
 }
 
 test_that("lefser and lefserPlot work", {
-  skip_if_not(identical(Sys.getlocale("LC_COLLATE"), "en_US.UTF-8"))
   dataenv <- new.env(parent = emptyenv())
   data("zeller14", package = "lefser", envir = dataenv)
   zeller14 <- dataenv[["zeller14"]]
@@ -16,11 +15,6 @@ test_that("lefser and lefserPlot work", {
   results <- withr::with_seed(1,
     lefser(zellersub, groupCol = "study_condition", blockCol = NULL)
   )
-  expect_equal(colnames(results), c("Names", "scores"))
-  expect_true(checkEnding(results, 1, "Names", "p__Firmicutes"))
-  expect_true(
-    checkEnding(results, nrow(results), "Names", "o__Bacteroidales")
-  )
 # TODO: compare results between LEfSe and lefser
   expect_equal(results[1, "scores"], -3.688676, tolerance = tol)
   expect_equal(results[nrow(results), "scores"], 3.815295, tolerance = tol)
@@ -29,15 +23,29 @@ test_that("lefser and lefserPlot work", {
         zellersub, groupCol = "study_condition", blockCol = "age_category"
     )
   )
+  expect_equal(results2[1, "scores"], -3.58, tolerance = tol)
+  expect_equal(results2[nrow(results2), "scores"], 3.83, tolerance = tol)
+  expect_equal(nrow(results2), 14)
+
+  # Perform text-based checks only if system locale is en_US.UTF-8
+  skip_if_not(identical(Sys.getlocale("LC_COLLATE"), "en_US.UTF-8"))
+  expect_equal(results2$scores,
+               c(-3.58274695616907, -3.32856514474989, -3.31328636163603, -3.28470366735756, 
+                 -2.99971715869742, -2.82238742034892, 2.36885229314682, 2.36885229314682, 
+                 2.36885229314682, 2.53194431507908, 2.53194431507908, 3.83089005744698, 
+                 3.83093344936543, 3.83093344936543),
+               tolerance = tol)
+  
+  expect_equal(colnames(results), c("Names", "scores"))
+  expect_true(checkEnding(results, 1, "Names", "p__Firmicutes"))
+  expect_true(
+    checkEnding(results, nrow(results), "Names", "o__Bacteroidales")
+  )
   expect_equal(colnames(results2), c("Names", "scores"))
   expect_true(checkEnding(results2, 1, "Names", "g__Ruminococcus"))
   expect_true(checkEnding(
     results2, nrow(results2), "Names", "o__Bacteroidales"
   ))
-  expect_equal(results2[1, "scores"], -3.58, tolerance = tol)
-  expect_equal(results2[nrow(results2), "scores"], 3.83, tolerance = tol)
-
-  expect_equal(nrow(results2), 14)
   expect_true(all(
     mapply(endsWith, results2$Names[1:7], c(
       "g__Ruminococcus",
@@ -50,12 +58,6 @@ test_that("lefser and lefserPlot work", {
       ))
   ))
 
-  expect_equal(results2$scores,
-    c(-3.58274695616907, -3.32856514474989, -3.31328636163603, -3.28470366735756, 
-    -2.99971715869742, -2.82238742034892, 2.36885229314682, 2.36885229314682, 
-    2.36885229314682, 2.53194431507908, 2.53194431507908, 3.83089005744698, 
-    3.83093344936543, 3.83093344936543),
-    tolerance = tol)
   plt <- lefserPlot(results2)
   expect_s3_class(plt, "ggplot")
 })
