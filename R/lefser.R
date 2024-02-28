@@ -293,11 +293,8 @@ lefser <-
         relab_sub <- fillPmatZmat(group = groupf, block = block, relab_sub = relab_sub, p.threshold = wilcox.threshold)
     }
     
-    if(nrow(relab_sub) == 0L) {
-      message("No significant features found.")
-      res_scores <- data.frame(Names=character(), scores=numeric())
-      class(res_scores) <- c("lefser_df", class(res_scores))
-      return(res_scores)
+    if(nrow(relab_sub) == 0L){
+      return(.return_no_results())
     }
 
     # transposes matrix and add a "class" (i.e., groupf) column
@@ -346,5 +343,15 @@ lefser <-
     res_scores <- scores_df[threshold_scores, ]
     class(res_scores) <- c("lefser_df", class(res_scores))
     attr(res_scores, "groups") <- lgroupf
+    if(nrow(res_scores) == 0L){
+      return(.return_no_results())
+    }
     res_scores
   }
+
+.return_no_results <- function() {
+  message("No significant features found.")
+  res_scores <- data.frame(Names=character(), scores=numeric())
+  class(res_scores) <- c("lefser_df", class(res_scores))
+  return(res_scores)
+}
