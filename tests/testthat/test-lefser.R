@@ -78,7 +78,7 @@ test_that("no significant results behaviors are consistent", {
     "No significant features found."
   )
   expect_message(
-    res2 <- lefser(zellersub, groupCol = "study_condition", blockCol = "age_category", lda.threshold = 1e6),
+    res3 <- lefser(zellersub, groupCol = "study_condition", blockCol = "age_category", lda.threshold = 1e6),
     "No significant features found."
   )
   expect_equal(nrow(res1), 0L)
