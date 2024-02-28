@@ -62,3 +62,14 @@ test_that("lefser and lefserPlot work", {
   expect_s3_class(plt, "ggplot")
 })
 
+test_that("no results behaviors are consistent", {
+  suppressPackageStartupMessages(library(lefser))
+  dataenv <- new.env(parent = emptyenv())
+  data("zeller14", package = "lefser", envir = dataenv)
+  zeller14 <- dataenv[["zeller14"]]
+  zellersub <- zeller14[1:150, zeller14$study_condition != "adenoma"]
+  zellersub <- relativeAb(zellersub)
+  lefser(zellersub, groupCol = "study_condition", blockCol = "age_category", wilcox.threshold = 1e-10)
+  lefser(zellersub, groupCol = "study_condition", blockCol = "age_category", kruskal.threshold = 1e-10)
+  lefser(zellersub, groupCol = "study_condition", blockCol = "age_category", lda.threshold = 1e6)
+}  
