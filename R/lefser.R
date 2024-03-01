@@ -3,6 +3,9 @@ fillPmatZmat <- function(group,
                          relab_sub,
                          p.threshold)
 {
+  if(nrow(relab_sub) == 0L){
+    return(relab_sub)
+  }
   # creates a list of boolean vectors, each vector indicates
   # existance (TRUE) or absence (FALSE) of a class/sub-class combination
   combos <- apply(
@@ -162,11 +165,6 @@ filterKruskal <- function(relab, group, p.value) {
   # NAs are FALSE
   kw.sub[is.na(kw.sub)] <- FALSE
 
-  # Solve the “Error in svd(X, nu = 0L) : a dimension is zero”
-  if (sum(kw.sub)==0){
-    stop("There are no significant inter-group differences under the Kruskal-Wallis test at p < ", p.value)
-  }
-
   # extracts features with statistically significant differential abundance
   # from "relab" matrix
   relab[kw.sub,]
@@ -294,6 +292,10 @@ lefser <-
         block <- droplevels(block)
         relab_sub <- fillPmatZmat(group = groupf, block = block, relab_sub = relab_sub, p.threshold = wilcox.threshold)
     }
+    
+    if(nrow(relab_sub) == 0L){
+      return(.return_no_results())
+    }
 
     # transposes matrix and add a "class" (i.e., groupf) column
     # matrix converted to dataframe
@@ -341,5 +343,15 @@ lefser <-
     res_scores <- scores_df[threshold_scores, ]
     class(res_scores) <- c("lefser_df", class(res_scores))
     attr(res_scores, "groups") <- lgroupf
+    if(nrow(res_scores) == 0L){
+      return(.return_no_results())
+    }
     res_scores
   }
+
+.return_no_results <- function() {
+  message("No significant features found.")
+  res_scores <- data.frame(Names=character(), scores=numeric())
+  class(res_scores) <- c("lefser_df", class(res_scores))
+  return(res_scores)
+}
