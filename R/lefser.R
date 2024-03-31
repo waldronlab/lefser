@@ -268,10 +268,10 @@ lefser <-
     } else {
         relab_data <- assay(relab, i = assay)
     }
-    if (checkAbundances && !identical(all.equal(colSums(relab_data), rep(1e6, ncol(relab_data)), check.attributes = FALSE), TRUE))
-        warning(
-            "Convert counts to relative abundances with 'relativeAb()'"
-        )
+    if (checkAbundances && !identical(all.equal(colSums(relab_data), rep(1e6, ncol(relab_data)), check.attributes = FALSE), TRUE)) {
+        stop("Convert counts to relative abundances with 'relativeAb()'")
+    }
+        
     groupf <- colData(relab)[[groupCol]]
     groupf <- as.factor(groupf)
     lgroupf <- levels(groupf)
