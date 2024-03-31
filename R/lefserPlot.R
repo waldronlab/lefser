@@ -19,8 +19,8 @@ utils::globalVariables(c("Names", "scores"))
 #' Negative scores represent microorganisms with that are more abundant in class '0'.
 #'
 #' @export
-#' @importFrom ggplot2 ggplot aes ylab theme element_blank element_text
-#' @importFrom ggplot2 geom_bar coord_flip scale_fill_manual
+#' @import ggplot2
+#' @importFrom dplyr %>% arrange
 #' @importFrom utils head tail
 #'
 #' @examples
@@ -30,6 +30,8 @@ lefserPlot <- function(df, colors = c("red", "forestgreen"),
                        trim.names = TRUE) {
   df <- .trunc(df, trim.names)
   groups <- attr(df, "groups")
+  
+  ## Create the `group` column
   if (!is.null(groups)) {
       group <- ifelse(df$scores > 0, tail(groups, 1), head(groups, 1))
       df$group <- factor(group, levels = groups)
@@ -37,8 +39,16 @@ lefserPlot <- function(df, colors = c("red", "forestgreen"),
       group <- ifelse(df$scores > 0, 1, 0)
       df$group <- as.factor(group)
   }
+  
+  ## Add the `order` column based on the scores 
+  ## To make duplicated features behave independently
+  df <- df %>%
+      arrange(scores) %>%
+      mutate(order = seq_len(nrow(.)))
+
   plt <-
-    ggplot(df, aes(reorder(Names, scores), scores)) + ylab("LDA SCORE (log 10)") +
+    ggplot(df, aes(factor(order), scores)) + # plot same x-axis values separatedly
+      ylab("LDA SCORE (log 10)") +
     theme(
       axis.title.y = element_blank(),
       axis.title.x = element_text(size = 11, face = "bold"),
@@ -60,6 +70,7 @@ lefserPlot <- function(df, colors = c("red", "forestgreen"),
     ) +
     geom_bar(stat = "identity", aes(fill = group)) +
     scale_fill_manual(values = colors) +
+    scale_x_discrete(labels = df$Names) + # plot same x-axis values separatedly
     coord_flip()
   return(plt)
 }
