@@ -40,3 +40,13 @@ relativeAb <- function(se, assay = 1L) {
   assays(se) <- newalist
   se
 }
+
+.trunc <- function(scores_df, trim.names){
+    Names <- gsub("`", "", scores_df[["Names"]])
+    if (trim.names) {
+        listNames <- strsplit(Names, "\\||\\.")
+        Names <- vapply(listNames, tail, character(1L), 1L)
+    }
+    scores_df[["Names"]] <- Names
+    return(scores_df)
+}

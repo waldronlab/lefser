@@ -170,16 +170,6 @@ filterKruskal <- function(relab, group, p.value) {
   relab[kw.sub,]
 }
 
-.trunc <- function(scores_df, trim.names){
-  Names <- gsub("`", "", scores_df[["Names"]])
-  if (trim.names) {
-    listNames <- strsplit(Names, "\\||\\.")
-    Names <- vapply(listNames, tail, character(1L), 1L)
-  }
-  scores_df[["Names"]] <- Names
-  return(scores_df)
-}
-
 #' R implementation of the LEfSe method
 #'
 #' Perform a LEfSe analysis: the function carries out differential analysis
