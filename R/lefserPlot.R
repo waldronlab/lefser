@@ -47,8 +47,9 @@ lefserPlot <- function(df, colors = c("red", "forestgreen"),
       mutate(order = seq_len(nrow(.)))
 
   plt <-
-    ggplot(df, aes(factor(order), scores)) + # plot same x-axis values separatedly
+    ggplot(df, aes(factor(order), scores, width = 0.75)) + # plot same x-axis values separatedly
       ylab("LDA SCORE (log 10)") +
+    theme_minimal() +
     theme(
       axis.title.y = element_blank(),
       axis.title.x = element_text(size = 11, face = "bold"),
@@ -68,9 +69,12 @@ lefserPlot <- function(df, colors = c("red", "forestgreen"),
         face = "bold"
       )
     ) +
-    geom_bar(stat = "identity", aes(fill = group)) +
+    geom_bar(stat = "identity", aes(fill = group), 
+             color = "black", size = 0.3) +
+    theme(legend.position = "top") +
+    theme(legend.title = element_blank()) +
     scale_fill_manual(values = colors) +
-    scale_x_discrete(labels = df$Names) + # plot same x-axis values separatedly
+    scale_x_discrete(labels = df$Names) + # plot same x-axis values separately
     coord_flip()
   return(plt)
 }
