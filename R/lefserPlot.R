@@ -20,7 +20,7 @@ utils::globalVariables(c("Names", "scores"))
 #'
 #' @export
 #' @import ggplot2
-#' @importFrom dplyr %>% arrange
+#' @importFrom dplyr %>% arrange mutate
 #' @importFrom utils head tail
 #'
 #' @examples
@@ -47,34 +47,35 @@ lefserPlot <- function(df, colors = c("red", "forestgreen"),
       mutate(order = seq_len(nrow(.)))
 
   plt <-
-    ggplot(df, aes(factor(order), scores, width = 0.75)) + # plot same x-axis values separatedly
+    ggplot(df, aes(factor(order), scores, width = 0.75)) + # plot same x-axis values separately
       ylab("LDA SCORE (log 10)") +
-    theme_minimal() +
+    theme_void() +
     theme(
       axis.title.y = element_blank(),
-      axis.title.x = element_text(size = 11, face = "bold"),
-      axis.text.y  = element_text(
-        vjust = 0.7,
-        size = 9,
-        face = "bold"
-      ),
+      axis.title.x = element_text(size = 11),
+      axis.text.y  = element_blank(),
       axis.text.x  = element_text(
         vjust = 0.7,
-        size = 9,
-        face = "bold"
-      ),
-      plot.title = element_text(
-        hjust = 0.5,
-        size = 13,
-        face = "bold"
-      )
-    ) +
+        size = 9)) +
     geom_bar(stat = "identity", aes(fill = group), 
              color = "black", size = 0.3) +
-    theme(legend.position = "top") +
-    theme(legend.title = element_blank()) +
+    theme(legend.position = "top",
+          legend.title = element_blank(),
+          legend.key.height = unit(0.07, 'cm'),
+          legend.key.width = unit(0.6, 'cm')) +
     scale_fill_manual(values = colors) +
-    scale_x_discrete(labels = df$Names) + # plot same x-axis values separately
+    geom_text(
+        aes(y = 0, label = Names),
+        hjust = ifelse(df$scores < 0, 0, 1),
+        nudge_y = ifelse(df$scores < 0, 0.1, -0.1),
+        color = "black",
+        size = 2.5) +    
+    theme(
+        panel.grid.major.x = element_line(color = "grey", size = 0.5, 
+                                          linetype = "dotted"),
+        panel.grid.minor.x = element_line(color = "grey", size = 0.5, 
+                                          linetype = "dotted")) +
     coord_flip()
-  return(plt)
+    
+    return(plt)
 }
