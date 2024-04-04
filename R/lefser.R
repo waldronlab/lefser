@@ -173,7 +173,7 @@ filterKruskal <- function(relab, group, p.value) {
 #' R implementation of the LEfSe method
 #'
 #' Perform a LEfSe analysis: the function carries out differential analysis
-#' between two sample groups for multiple microorganisms and uses linear discirminant analysis
+#' between two sample groups for multiple microorganisms and uses linear discriminant analysis
 #' to establish their effect sizes. Subclass information for each class can be incorporated
 #' into the analysis (see examples). Microorganisms with large differences between two sample groups
 #' are identified as biomarkers.
@@ -259,7 +259,7 @@ lefser <-
         relab_data <- assay(relab, i = assay)
     }
     if (checkAbundances && !identical(all.equal(colSums(relab_data), rep(1e6, ncol(relab_data)), check.attributes = FALSE), TRUE)) {
-        stop("Convert counts to relative abundances with 'relativeAb()'")
+        warning("Convert counts to relative abundances with 'relativeAb()'")
     }
         
     groupf <- colData(relab)[[groupCol]]

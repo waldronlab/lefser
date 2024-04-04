@@ -58,7 +58,7 @@ names of microorganisms and their LDA scores.
 }
 \description{
 Perform a LEfSe analysis: the function carries out differential analysis
-between two sample groups for multiple microorganisms and uses linear discirminant analysis
+between two sample groups for multiple microorganisms and uses linear discriminant analysis
 to establish their effect sizes. Subclass information for each class can be incorporated
 into the analysis (see examples). Microorganisms with large differences between two sample groups
 are identified as biomarkers.
