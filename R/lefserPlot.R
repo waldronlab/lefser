@@ -14,6 +14,8 @@ utils::globalVariables(c("Names", "scores"))
 #' Defaults to `c("red", "forestgreen")`.
 #' @param trim.names Under the default (`TRUE`), this function extracts the 
 #' most specific taxonomic rank of organism.
+#' @param label.font.size A numeric(1). The font size of the feature labels.
+#' The default is `3`.
 #'
 #' @return
 #' Function returns plot of effect size scores produced by \code{lefser}.
@@ -27,7 +29,8 @@ utils::globalVariables(c("Names", "scores"))
 #' @export
 lefserPlot <- function(df, 
                        colors = c("red", "forestgreen"),
-                       trim.names = TRUE) {
+                       trim.names = TRUE,
+                       label.font.size = 3) {
     
     df <- .trunc(df, trim.names)
     groups <- attr(df, "groups")
@@ -69,7 +72,7 @@ lefserPlot <- function(df,
             hjust = ifelse(df$scores < 0, 0, 1),
             nudge_y = ifelse(df$scores < 0, 0.1, -0.1),
             color = "black",
-            size = 2.5) +    
+            size = label.font.size) +    
         theme(    # Guide lines
             panel.grid.major.x = element_line(
                 color = "grey", size = 0.5, linetype = "dotted"),

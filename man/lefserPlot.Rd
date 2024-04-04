@@ -9,21 +9,23 @@ lefserPlot(df, colors = c("red", "forestgreen"), trim.names = TRUE)
 \arguments{
 \item{df}{Data frame produced by \code{lefser}.}
 
-\item{colors}{character(2) The two colors corresponding to class 0 and 1,
-respectively. Defaults to \code{c("red", "forestgreen")}.}
+\item{colors}{A character(2). Colors corresponding to class 0 and 1.
+Defaults to \code{c("red", "forestgreen")}.}
 
-\item{trim.names}{If \code{TRUE} extracts the most specific taxonomic rank of organism.}
+\item{trim.names}{Under the default (\code{TRUE}), this function extracts the
+most specific taxonomic rank of organism.}
 }
 \value{
-Function returns plot of effect size scores produed by \code{lefser}.
-Positive scores represent microorganisms with that are more abundant in class '1'.
-Negative scores represent microorganisms with that are more abundant in class '0'.
+Function returns plot of effect size scores produced by \code{lefser}.
+Positive scores represent the biomarker is more abundant in class '1'.
+Negative scores represent the biomarker is more abundant in class '0'.
 }
 \description{
-\code{lefserPlot} function displays effect sizes for differentially expressed microorganisms
-and whether they are more abundant in '0' or '1' sample group.
+This function plots the biomarkers found by LEfSe, that are ranked according
+to their effect sizes and linked to their abundance in each class.
 }
 \examples{
 example("lefser")
 lefserPlot(res_group)
+
 }
