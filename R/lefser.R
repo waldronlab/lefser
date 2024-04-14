@@ -1,3 +1,4 @@
+## Wilcoxon Rank-Sum Test for the sub-classes
 fillPmatZmat <- function(group,
                          block,
                          relab_sub,
@@ -7,14 +8,14 @@ fillPmatZmat <- function(group,
     return(relab_sub)
   }
   # creates a list of boolean vectors, each vector indicates
-  # existance (TRUE) or absence (FALSE) of a class/sub-class combination
+  # existence (TRUE) or absence (FALSE) of a class/sub-class combination
   combos <- apply(
     expand.grid(levels(group), levels(block)), 1L, paste0, collapse = "")
   combined <- paste0(as.character(group), as.character(block))
   logilist <- lapply(setNames(nm = sort(combos)), `==`, combined)
 
   ## uses Wilcoxon rank-sum test to test for significant differential abundances between
-  ## subclasses of one class against subclasses of all othe classes; results are saved in
+  ## subclasses of one class against subclasses of all other classes; results are saved in
   ## "pval_mat" and "z_mat" matrices
   whichlist <- lapply(logilist, which)
   sblock <- seq_along(levels(block))
@@ -73,19 +74,29 @@ createUniqueValues <- function(df, group){
   df[match(orderedrows, rownames(df)),, drop = FALSE]
 }
 
-contastWithinClassesOrFewPerClass <-
-  function(relab_sub_t_df, rand_s, min_cl, ncl, groups) {
+## Quality control of the random subset for LDA
+## This function returns `FALSE` when the selected random samples meet 
+## the 3 quality criteria
+contastWithinClassesOrFewPerClass <- function(relab_sub_t_df, 
+                                              rand_s, 
+                                              min_cl, 
+                                              ncl, 
+                                              groups) {
     cols <- relab_sub_t_df[rand_s, , drop = FALSE]
     cls <- relab_sub_t_df$class[rand_s]
-    # if the number of classes is less than the actual number (typically two)
-    # of classes in the dataframe then return TRUE
-    if (length(unique(cls)) < ncl) {
-      return (TRUE)
+    
+    ## 1. Minimum number of classes in the random subset
+    if (length(unique(cls)) != ncl) { # if the random subset doesn't include all the classes
+      return (TRUE) # retry random selection
     }
-    # detect if for each class there are not fewer than the minimum (min_cl) number of samples
-    if (any(table(cls) < min_cl)) {
-      return (TRUE)
+    
+    ## 2. Minimum number of samples per class
+    ## Check each class in sub-samples container more than `min_cl` number of samples
+    if (any(table(cls) < min_cl)) { # if there is fewer samples
+      return (TRUE) # retry random selection
     }
+    
+    ## 3. Minimum number of unique values per feature
     # separate the randomly selected samples (cols) into a list of the two classes
     drops <- c("class")
     by_class <-
@@ -104,55 +115,67 @@ contastWithinClassesOrFewPerClass <-
         return (TRUE)
       }
     }
+    
+    ## The `rand_s` satisfies all three quality criteria is returned for LDA
     return (FALSE)
-
   }
 
-ldaFunction <- function (data, lfk, rfk, min_cl, ncl, groups) {
-  # test 1000 samples for contrast within classes per feature
-  # and that there is at least a minimum number of samples per class
-  for (j in 1:1000) {
-    rand_s <- sample(seq_len(lfk), rfk, replace = TRUE)
-    if (!contastWithinClassesOrFewPerClass(data, rand_s, min_cl, ncl, groups)) {
-      break
+
+# Perform LDA modeling
+# 
+# @param data A data frame with z-score values. Rows are samples and columns 
+# are features that pass the significance cutoff. 
+# @param groups The names of groups for the main class.
+# 
+ldaFunction <- function (data, groups) {
+    # test 1000 samples for contrast within classes per feature
+    # and that there is at least a minimum number of samples per class
+    for (j in 1:1000) {
+        rand_s <- sample(seq_len(lfk), rfk, replace = TRUE)
+        if (!contastWithinClassesOrFewPerClass(data, rand_s, min_cl, ncl, groups)) {
+            break
+        }
     }
-  }
-  # lda with rfk number of samples
-  lda.fit <- lda(class ~ ., data = data, subset = rand_s)
-  # coefficients that transform observations to discriminants
-  w <- lda.fit$scaling[, 1]
-  # scaling of lda coefficients
-  w.unit <- w / sqrt(sum(w ^ 2))
-  sub_d <- data[rand_s,]
-  ss <- sub_d[,-match("class", colnames(sub_d))]
-  xy.matrix <- as.matrix(ss)
-  # the original matrix is transformed
-  LD <- xy.matrix %*% w.unit
-  # effect size is calculated as difference between averaged disciminants
-  # of two classes
-  effect_size <-
-    abs(mean(LD[sub_d[, "class"] == 1]) - mean(LD[sub_d[, "class"] == 0]))
-  # scaling lda coefficients by the efect size
-  scal <- w.unit * effect_size
-  # mean count values per fclass per feature
-  rres <- lda.fit$means
+    # lda with rfk number of samples
+    lda.fit <- lda(class ~ ., data = data, subset = rand_s)
+    # coefficients that transform observations to discriminants
+    w <- lda.fit$scaling[, 1]
+    # scaling of lda coefficients
+    w.unit <- w / sqrt(sum(w ^ 2))
+    sub_d <- data[rand_s,]
+    ss <- data[,-match("class", colnames(data))]
+    xy.matrix <- as.matrix(ss) # the original feature matrix
 
-  coeff <- vector("numeric", length(scal))
-  for (v in seq_along(scal)) {
-    if (!is.na(scal[v])) {
-      coeff[v] <- abs(scal[v])
-    } else{
-      coeff[v] <- 0
+    ## Transform the original feature matrix
+    LD <- xy.matrix %*% w.unit # discriminant scores
+    
+    ## Calculating Effect Size for each feature
+    ## Effect Size = the absolute difference between the mean discriminant scores of the two classes
+    effect_size <-
+        abs(mean(LD[data[, "class"] == 1]) - mean(LD[data[, "class"] == 0]))
+    
+    ## Coefficient scaling
+    ## Scale the unit-normalized LDA coefficients by the effect size
+    scal <- w.unit * effect_size # scaled LDA coefficient
+
+    coeff <- vector("numeric", length(scal)) # absolute scaled LDA coefficient
+    for (v in seq_along(scal)) {
+        if (!is.na(scal[v])) {
+            coeff[v] <- abs(scal[v])
+        } else{
+            coeff[v] <- 0
+        }
     }
-
-  }
-  # count value differences between means of two classes for each feature
-  lda.means.diff <- (lda.fit$means[2,] - lda.fit$means[1,])
-  # difference between a feature's class means and effect size adjusted lda coefficient
-  # are averaged for each feature
-  (lda.means.diff + coeff) / 2
+  
+    ## Feature Importance
+    lda.means.diff <- (lda.fit$means[2,] - lda.fit$means[1,]) # difference between the class means for each feature
+    res <- (lda.means.diff + coeff) / 2
+    
+    return(res)
 }
 
+
+## Kruskal-Wallis Rank Sum Test for the classes
 filterKruskal <- function(relab, group, p.value) {
   # applies "kruskal.test.alt" function to each row (feature) of relab
   # to detect differential abundance between classes, 0 and 1
@@ -173,14 +196,14 @@ filterKruskal <- function(relab, group, p.value) {
 #' R implementation of the LEfSe method
 #'
 #' Perform a LEfSe analysis: the function carries out differential analysis
-#' between two sample groups for multiple microorganisms and uses linear discriminant analysis
+#' between two sample groups for multiple features and uses linear discriminant analysis
 #' to establish their effect sizes. Subclass information for each class can be incorporated
-#' into the analysis (see examples). Microorganisms with large differences between two sample groups
+#' into the analysis (see examples). Features with large differences between two sample groups
 #' are identified as biomarkers.
 #'
 #' @details
 #' The LEfSe method expects relative abundances in the `expr` input. A warning
-#' will be emitted if the column sums do not result in 1. Use the `relativeAb`
+#' will be emitted if the column sums do not result in 1. Use the \code{relativeAb}
 #' helper function to convert the data in the `SummarizedExperiment` to relative
 #' abundances. The `checkAbundances` argument enables checking the data
 #' for presence of relative abundances and can be turned off by setting the
@@ -203,14 +226,15 @@ filterKruskal <- function(relab, group, p.value) {
 #' `c("adult", "senior")`; default NULL).
 #' @param assay The i-th assay matrix in the `SummarizedExperiment` ('relab';
 #' default 1).
-#' @param trim.names If `TRUE` extracts the most specific taxonomic rank of organism.
+#' @param trim.names Default is `FALSE`. If `TRUE`, this function extracts 
+#' the most specific taxonomic rank of organism.
 #' @param checkAbundances `logical(1)` Whether to check if the assay data in the
 #'   `relab` input are relative abundances or counts. If counts are found, a
 #'   warning will be emitted (default `TRUE`).
 #' @param \ldots Additional inputs to lower level functions (not used).
 #' @return
 #' The function returns a `data.frame` with two columns, which are
-#' names of microorganisms and their LDA scores.
+#' names of features and their LDA scores.
 #'
 #' @importFrom stats kruskal.test reorder rnorm
 #' @importFrom coin pvalue statistic wilcox_test
@@ -225,19 +249,20 @@ filterKruskal <- function(relab, group, p.value) {
 #'     data(zeller14)
 #'     # exclude 'adenoma'
 #'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-#'     res_group <- lefser(zeller14, groupCol = "study_condition")
+#'     res_group <- lefser(relativeAb(zeller14), 
+#'                         groupCol = "study_condition")
 #'     head(res_group)
 #'
 #'     # (2) Using classes and sublasses
 #'     data(zeller14)
 #'     # exclude 'adenoma'
 #'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-#'     res_block <- lefser(
-#'          zeller14, groupCol = "study_condition", blockCol = "age_category"
-#'     )
+#'     res_block <- lefser(relativeAb(zeller14), 
+#'                         groupCol = "study_condition", 
+#'                         blockCol = "age_category")
 #'     head(res_block)
 #' @export
-lefser <-
+newlefser <-
   function(relab,
            kruskal.threshold = 0.05,
            wilcox.threshold = 0.05,
@@ -258,31 +283,46 @@ lefser <-
     } else {
         relab_data <- assay(relab, i = assay)
     }
-    if (checkAbundances && !identical(all.equal(colSums(relab_data), rep(1e6, ncol(relab_data)), check.attributes = FALSE), TRUE)) {
+      
+    ## Check whether relative abundance is provided or not
+    if (checkAbundances && !identical(all.equal(colSums(relab_data), 
+                                                rep(1e6, ncol(relab_data)), 
+                                                check.attributes = FALSE), 
+                                      TRUE)) {
         warning("Convert counts to relative abundances with 'relativeAb()'")
     }
-        
+     
+    ## Extract the class/group information   
     groupf <- colData(relab)[[groupCol]]
     groupf <- as.factor(groupf)
     lgroupf <- levels(groupf)
     if (is.null(groupf) || !identical(length(lgroupf), 2L)) {
-        stop(
-            "'groupCol' must refer to a valid dichotomous (two-level) variable"
-        )
+        msg <- "'groupCol' must refer to a valid dichotomous (two-level) variable"
+        stop(msg) # ensure the class has only two levels
     }
     message(
         "The outcome variable is specified as '", groupCol,
         "' and the reference category is '", lgroupf[1],
         "'.\n See `?factor` or `?relevel` to change the reference category."
     )
-    relab_sub <- filterKruskal(relab = relab_data, group = groupf, p.value = kruskal.threshold)
+    
+    ## Kruskal-Wallis Rank Sum Test for the classes
+    relab_sub <- filterKruskal(relab = relab_data, 
+                               group = groupf, 
+                               p.value = kruskal.threshold)
 
+    ## Wilcoxon Rank-Sum Test for the sub-classes
     if (!is.null(blockCol)) {
         block <- as.factor(colData(relab)[[blockCol]])
         block <- droplevels(block)
-        relab_sub <- fillPmatZmat(group = groupf, block = block, relab_sub = relab_sub, p.threshold = wilcox.threshold)
+        ## z-statistics result of the features passing the significance cut-off
+        relab_sub <- fillPmatZmat(group = groupf, 
+                                  block = block, 
+                                  relab_sub = relab_sub, 
+                                  p.threshold = wilcox.threshold)
     }
     
+    ## Return an empty data table if there is no significant features
     if(nrow(relab_sub) == 0L){
       return(.return_no_results())
     }
@@ -294,28 +334,15 @@ lefser <-
     relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, group = groupf)
     relab_sub_t_df <- cbind(relab_sub_t_df, class = groupf)
 
-    # number of samples (i.e., subjects) in the dataframe
-    lfk <- nrow(relab_sub_t_df)
-    # rfk is the number of subject that will be used in linear discriminant analysis
-    rfk <- floor(lfk * 2 / 3)
-    # number of classes (two-levels)
-    ncl <- length(lgroupf)
-    # count samples in each class of the dataframe, select the number from the class with a smaller
-    # count of samples and multiply that number by 2/*2/3*0.5
-    min_cl <-
-      as.integer(min(table(relab_sub_t_df$class)) * 2 / 3 * 2 / 3 *
-                   0.5)
-    # if min_cl is less than 1, then make it equal to 1
-    min_cl <- max(min_cl, 1)
-
     # lda_fn repeated 30 times, producing a matrix of 30 scores per feature
     eff_size_mat <-
-      replicate(30, suppressWarnings(ldaFunction(
-        relab_sub_t_df, lfk, rfk, min_cl, ncl, lgroupf
-      )), simplify = TRUE)
-
+        replicate(30, suppressWarnings(ldaFunction(
+            relab_sub_t_df, lfk, rfk, min_cl, ncl, lgroupf
+        )), simplify = TRUE)
+    
     # mean of 30 scores per feature
     raw_lda_scores <- rowMeans(eff_size_mat)
+    
 
     # processing of score
     processed_scores <-
