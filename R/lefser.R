@@ -128,6 +128,14 @@ contastWithinClassesOrFewPerClass <- function(relab_sub_t_df,
 # @param groups The names of groups for the main class.
 # 
 ldaFunction <- function (data, groups) {
+    
+    lfk <- nrow(data) # the number of samples
+    rfk <- floor(lfk * 2 / 3) # the number of sub-samples for LDA
+    ncl <- length(groups) # the number of classes
+
+    min_cl <- as.integer(min(table(data$class)) * 2/3 * 2/3 * 0.5) # the minimum number of samples
+    min_cl <- max(min_cl, 1) # make the minimum number of samples to be at least 1 if there is <= 4 samples
+    
     # test 1000 samples for contrast within classes per feature
     # and that there is at least a minimum number of samples per class
     for (j in 1:1000) {
