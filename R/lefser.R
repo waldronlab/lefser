@@ -337,7 +337,7 @@ lefser <-
     # lda_fn repeated 30 times, producing a matrix of 30 scores per feature
     eff_size_mat <-
         replicate(30, suppressWarnings(ldaFunction(
-            relab_sub_t_df, lfk, rfk, min_cl, ncl, lgroupf
+            relab_sub_t_df, lgroupf
         )), simplify = TRUE)
     
     # mean of 30 scores per feature
