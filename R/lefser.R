@@ -262,7 +262,7 @@ filterKruskal <- function(relab, group, p.value) {
 #'                         blockCol = "age_category")
 #'     head(res_block)
 #' @export
-newlefser <-
+lefser <-
   function(relab,
            kruskal.threshold = 0.05,
            wilcox.threshold = 0.05,
