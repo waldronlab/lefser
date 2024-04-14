@@ -4,7 +4,12 @@
 \alias{lefserPlot}
 \title{Plots results from \code{lefser} function}
 \usage{
-lefserPlot(df, colors = c("red", "forestgreen"), trim.names = TRUE)
+lefserPlot(
+  df,
+  colors = c("red", "forestgreen"),
+  trim.names = TRUE,
+  label.font.size = 3
+)
 }
 \arguments{
 \item{df}{Data frame produced by \code{lefser}.}
@@ -14,6 +19,9 @@ Defaults to \code{c("red", "forestgreen")}.}
 
 \item{trim.names}{Under the default (\code{TRUE}), this function extracts the
 most specific taxonomic rank of organism.}
+
+\item{label.font.size}{A numeric(1). The font size of the feature labels.
+The default is \code{3}.}
 }
 \value{
 Function returns plot of effect size scores produced by \code{lefser}.

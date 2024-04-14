@@ -41,6 +41,7 @@ relativeAb <- function(se, assay = 1L) {
   se
 }
 
+#' Truncate the feature name
 .trunc <- function(scores_df, trim.names){
     Names <- gsub("`", "", scores_df[["Names"]])
     if (trim.names) {
