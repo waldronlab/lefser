@@ -8,6 +8,7 @@ lefserPlot(
   df,
   colors = c("red", "forestgreen"),
   trim.names = TRUE,
+  title = "",
   label.font.size = 3
 )
 }
@@ -19,6 +20,8 @@ Defaults to \code{c("red", "forestgreen")}.}
 
 \item{trim.names}{Under the default (\code{TRUE}), this function extracts the
 most specific taxonomic rank of organism.}
+
+\item{title}{A character(1). The title of the plot.}
 
 \item{label.font.size}{A numeric(1). The font size of the feature labels.
 The default is \code{3}.}

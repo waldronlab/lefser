@@ -14,6 +14,7 @@ utils::globalVariables(c("Names", "scores"))
 #' Defaults to `c("red", "forestgreen")`.
 #' @param trim.names Under the default (`TRUE`), this function extracts the 
 #' most specific taxonomic rank of organism.
+#' @param title A character(1). The title of the plot. 
 #' @param label.font.size A numeric(1). The font size of the feature labels.
 #' The default is `3`.
 #'
@@ -30,6 +31,7 @@ utils::globalVariables(c("Names", "scores"))
 lefserPlot <- function(df, 
                        colors = c("red", "forestgreen"),
                        trim.names = TRUE,
+                       title = "",
                        label.font.size = 3) {
     
     df <- .trunc(df, trim.names)
@@ -53,6 +55,7 @@ lefserPlot <- function(df,
     plt <-
         ggplot(df, aes(factor(order), scores, width = 0.75)) + # Plot same x-axis values separately
         ylab("LDA SCORE (log 10)") +
+        ggtitle(title) +
         theme_void() +
         theme(
             axis.title.y = element_blank(),
