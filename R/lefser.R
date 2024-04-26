@@ -128,29 +128,12 @@ contastWithinClassesOrFewPerClass <- function(relab_sub_t_df,
 # @param groups The names of groups for the main class.
 # 
 ldaFunction <- function (data, groups) {
+ 
+    ## Fitting LDA model
+    lda.fit <- lda(class ~ ., data = data)
+    w <- lda.fit$scaling[, 1] # extract LDA coefficients
+    w.unit <- w / sqrt(sum(w ^ 2)) # scaling LDA coefficient by their Euclidean norm to get unit-normalized coefficient
     
-    lfk <- nrow(data) # the number of samples
-    rfk <- floor(lfk * 2 / 3) # the number of sub-samples for LDA
-    ncl <- length(groups) # the number of classes
-
-    min_cl <- as.integer(min(table(data$class)) * 2/3 * 2/3 * 0.5) # the minimum number of samples
-    min_cl <- max(min_cl, 1) # make the minimum number of samples to be at least 1 if there is <= 4 samples
-    
-    # test 1000 samples for contrast within classes per feature
-    # and that there is at least a minimum number of samples per class
-    for (j in 1:1000) {
-        rand_s <- sample(seq_len(lfk), rfk, replace = TRUE)
-        if (!contastWithinClassesOrFewPerClass(data, rand_s, min_cl, ncl, groups)) {
-            break
-        }
-    }
-    # lda with rfk number of samples
-    lda.fit <- lda(class ~ ., data = data, subset = rand_s)
-    # coefficients that transform observations to discriminants
-    w <- lda.fit$scaling[, 1]
-    # scaling of lda coefficients
-    w.unit <- w / sqrt(sum(w ^ 2))
-    sub_d <- data[rand_s,]
     ss <- data[,-match("class", colnames(data))]
     xy.matrix <- as.matrix(ss) # the original feature matrix
 
@@ -342,15 +325,8 @@ lefser <-
     relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, group = groupf)
     relab_sub_t_df <- cbind(relab_sub_t_df, class = groupf)
 
-    # lda_fn repeated 30 times, producing a matrix of 30 scores per feature
-    eff_size_mat <-
-        replicate(30, suppressWarnings(ldaFunction(
-            relab_sub_t_df, lgroupf
-        )), simplify = TRUE)
-    
-    # mean of 30 scores per feature
-    raw_lda_scores <- rowMeans(eff_size_mat)
-    
+    ## LDA model
+    raw_lda_scores <- ldaFunction(relab_sub_t_df, lgroupf)
 
     # processing of score
     processed_scores <-
