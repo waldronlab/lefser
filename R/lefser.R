@@ -318,8 +318,7 @@ lefser <-
       return(.return_no_results())
     }
 
-    # transposes matrix and add a "class" (i.e., groupf) column
-    # matrix converted to dataframe
+    ## Transposed relative abundance matrix with the 'class' column
     relab_sub_t <- t(relab_sub)
     relab_sub_t_df <- as.data.frame(relab_sub_t)
     relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, group = groupf)
@@ -328,18 +327,16 @@ lefser <-
     ## LDA model
     raw_lda_scores <- ldaFunction(relab_sub_t_df, lgroupf)
 
-    # processing of score
+    ## Processing LDA scores
     processed_scores <-
       sign(raw_lda_scores) * log((1 + abs(raw_lda_scores)), 10)
-
-    # sorting of scores
-    processed_sorted_scores <- sort(processed_scores)
+    processed_sorted_scores <- sort(processed_scores)   # sorting of scores
     scores_df <- data.frame(Names = names(processed_sorted_scores),
                             scores = as.vector(processed_sorted_scores),
                             stringsAsFactors = FALSE)
+    scores_df <- .trunc(scores_df, trim.names)   # short-form of taxa name
 
-    scores_df <- .trunc(scores_df, trim.names)
-
+    ## Filter with LDA threshold
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
     res_scores <- scores_df[threshold_scores, ]
     class(res_scores) <- c("lefser_df", class(res_scores))
@@ -351,8 +348,8 @@ lefser <-
   }
 
 .return_no_results <- function() {
-  message("No significant features found.")
-  res_scores <- data.frame(Names=character(), scores=numeric())
-  class(res_scores) <- c("lefser_df", class(res_scores))
-  return(res_scores)
+    message("No significant features found.")
+    res_scores <- data.frame(Names = character(), scores = numeric())
+    class(res_scores) <- c("lefser_df", class(res_scores))
+    return(res_scores)
 }
