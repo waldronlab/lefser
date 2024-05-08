@@ -1,3 +1,16 @@
+# lefser 1.14.0
+
+* [Error fix] The `lefserPlot` function merged the duplicated labels when the 
+truncated name of the feature is used. Now those are plotted separately.
+* [New feature] The `lefserPlot` function accepts the `title` argument that 
+adds the barplot title.
+* [Update] The feature names of the `lefserPlot` outputs are re-positioned 
+for the improved readability.
+* [Major algorithm update] Sub-sampling and bootstrap for LDA step in the 
+`lefser` function is removed. Now the LDA score is calculated directly from
+the whole samples.
+
+
 # lefser 1.12.0
 
 ## Significant user-visible changes
