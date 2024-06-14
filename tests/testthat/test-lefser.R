@@ -18,11 +18,11 @@ test_that("lefser and lefserPlot work", {
     # TODO: compare results between LEfSe and lefser
     expect_equal(results[1, "scores"], -3.688676, tolerance = tol)
     expect_equal(results[nrow(results), "scores"], 3.815295, tolerance = tol)
-    results2 <- withr::with_seed(1,
-                                 lefser(
-                                     zellersub, groupCol = "study_condition", blockCol = "age_category"
-                                 )
-    )
+    # With BH correction
+    resultsBH <- lefser(zellersub, groupCol = "study_condition", blockCol = NULL, method = "BH")
+    results2 <- lefser(zellersub, groupCol = "study_condition", blockCol = "age_category")
+    # With BH correction
+    results2BH <- lefser(zellersub, groupCol = "study_condition", blockCol = "age_category", method = "BH")
     expect_equal(results2[1, "scores"], -3.58, tolerance = tol)
     expect_equal(results2[nrow(results2), "scores"], 3.83, tolerance = tol)
     expect_equal(nrow(results2), 14)

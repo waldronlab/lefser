@@ -2,7 +2,8 @@
 fillPmatZmat <- function(group,
                          block,
                          relab_sub,
-                         p.threshold)
+                         p.threshold,
+                         method)
 {
   if(nrow(relab_sub) == 0L){
     return(relab_sub)
@@ -37,7 +38,9 @@ fillPmatZmat <- function(group,
 
   rownames(pval_mat) <- rownames(relab_sub)
   rownames(z_mat) <- rownames(relab_sub)
-
+  for (i in seq_along(1:ncol(pval_mat))){
+    pval_mat[, i] <- stats::p.adjust(pval_mat[, i], method = method)
+  }
   ## converts "pval_mat" into boolean matrix "logical_pval_mat" where
   ## p-values <= wilcoxon.threshold
   logical_pval_mat <- pval_mat <= p.threshold * 2.0
@@ -45,7 +48,7 @@ fillPmatZmat <- function(group,
 
   ## determines which rows (features) have all p-values<=0.05
   ## and selects such rows from the matrix of z-statistics
-  sub <- apply(logical_pval_mat, 1L, all)
+  sub <- rowSums(logical_pval_mat) == ncol(logical_pval_mat)
   z_mat_sub <- z_mat[sub, , drop = FALSE]
     # confirms that z-statistics of a row all have the same sign
   sub <- abs(rowSums(z_mat_sub)) == rowSums(abs(z_mat_sub))
@@ -167,13 +170,14 @@ ldaFunction <- function (data, groups) {
 
 
 ## Kruskal-Wallis Rank Sum Test for the classes
-filterKruskal <- function(relab, group, p.value) {
+filterKruskal <- function(relab, group, p.value, method = method) {
   # applies "kruskal.test.alt" function to each row (feature) of relab
   # to detect differential abundance between classes, 0 and 1
   kw.res <- apply(relab, 1L, function(x) {
     kruskal.test(x ~ group)[["p.value"]]
   })
   # TRUE for p-values less than or equal to kw.threshold
+  kw.res <- stats::p.adjust(kw.res, method = method)
   kw.sub <- kw.res < p.value
 
   # NAs are FALSE
@@ -205,9 +209,11 @@ filterKruskal <- function(relab, group, p.value) {
 #' @param expr (`deprecated`) Use `relab` instead. A [SummarizedExperiment-class]
 #'   with relative abundances in the assay
 #' @param kruskal.threshold numeric(1) The p-value for the Kruskal-Wallis Rank
-#' Sum Test (default 0.05).
+#' Sum Test (default 0.05). If multiple hypothesis testing is performed, this 
+#' threshold is applied to corrected p-values.
 #' @param wilcox.threshold numeric(1) The p-value for the Wilcoxon Rank-Sum Test
-#' when 'blockCol' is present (default 0.05).
+#' when 'blockCol' is present (default 0.05). If multiple hypothesis testing is 
+#' performed, this threshold is applied to corrected p-values.
 #' @param lda.threshold numeric(1) The effect size threshold (default 2.0).
 #' @param groupCol character(1) Column name in `colData(relab)` indicating
 #' groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
@@ -222,6 +228,11 @@ filterKruskal <- function(relab, group, p.value) {
 #' @param checkAbundances `logical(1)` Whether to check if the assay data in the
 #'   `relab` input are relative abundances or counts. If counts are found, a
 #'   warning will be emitted (default `TRUE`).
+#' @param method Default is "none" as in the original LEfSe implementation. 
+#' Character string of length one, passed on to \link[stats]{p.adjust} to set 
+#' option for multiple testing. For multiple pairwise comparisons, each comparison
+#' is adjusted separately. Options are "holm", "hochberg", "hommel", 
+#' "bonferroni", "BH", "BY", "fdr" (synonym for "BH"), and "none".
 #' @param \ldots Additional inputs to lower level functions (not used).
 #' @return
 #' The function returns a `data.frame` with two columns, which are
@@ -263,6 +274,7 @@ lefser <-
            assay = 1L,
            trim.names = FALSE,
            checkAbundances = TRUE,
+           method = "none",
            ...,
            expr
 ) {
@@ -300,7 +312,8 @@ lefser <-
     ## Kruskal-Wallis Rank Sum Test for the classes
     relab_sub <- filterKruskal(relab = relab_data, 
                                group = groupf, 
-                               p.value = kruskal.threshold)
+                               p.value = kruskal.threshold,
+                               method = method)
 
     ## Wilcoxon Rank-Sum Test for the sub-classes
     if (!is.null(blockCol)) {
@@ -310,7 +323,8 @@ lefser <-
         relab_sub <- fillPmatZmat(group = groupf, 
                                   block = block, 
                                   relab_sub = relab_sub, 
-                                  p.threshold = wilcox.threshold)
+                                  p.threshold = wilcox.threshold,
+                                  method = method)
     }
     
     ## Return an empty data table if there is no significant features

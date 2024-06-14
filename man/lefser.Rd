@@ -14,6 +14,7 @@ lefser(
   assay = 1L,
   trim.names = FALSE,
   checkAbundances = TRUE,
+  method = "none",
   ...,
   expr
 )
@@ -23,10 +24,12 @@ lefser(
 abundances in the assay}
 
 \item{kruskal.threshold}{numeric(1) The p-value for the Kruskal-Wallis Rank
-Sum Test (default 0.05).}
+Sum Test (default 0.05). If multiple hypothesis testing is performed, this
+threshold is applied to corrected p-values.}
 
 \item{wilcox.threshold}{numeric(1) The p-value for the Wilcoxon Rank-Sum Test
-when 'blockCol' is present (default 0.05).}
+when 'blockCol' is present (default 0.05). If multiple hypothesis testing is
+performed, this threshold is applied to corrected p-values.}
 
 \item{lda.threshold}{numeric(1) The effect size threshold (default 2.0).}
 
@@ -47,6 +50,12 @@ the most specific taxonomic rank of organism.}
 \item{checkAbundances}{\code{logical(1)} Whether to check if the assay data in the
 \code{relab} input are relative abundances or counts. If counts are found, a
 warning will be emitted (default \code{TRUE}).}
+
+\item{method}{Default is "none" as in the original LEfSe implementation.
+Character string of length one, passed on to \link[stats]{p.adjust} to set
+option for multiple testing. For multiple pairwise comparisons, each comparison
+is adjusted separately. Options are "holm", "hochberg", "hommel",
+"bonferroni", "BH", "BY", "fdr" (synonym for "BH"), and "none".}
 
 \item{expr}{(\code{deprecated}) Use \code{relab} instead. A \linkS4class{SummarizedExperiment}
 with relative abundances in the assay}
