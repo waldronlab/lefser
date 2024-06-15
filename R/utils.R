@@ -41,6 +41,37 @@ relativeAb <- function(se, assay = 1L) {
   se
 }
 
+#' Identify which elements of a string are terminal nodes
+#'
+#' @param string 
+#'
+#' @return A logical vector indicating which elements of the string are terminal
+#' nodes
+#' @description
+#' A terminal node in a taxonomy does not have any child nodes. For example, a 
+#' species is a terminal node if there are no subspecies or strains that belong
+#' to that species. This function identifies which elements of a vector are terminal
+#' nodes simply by checking whether that element appears as a substring in any other
+#' element of the vector.
+#' 
+#' @export
+#'
+#' @examples
+#' data("zeller14")
+#' rownames(zeller14)[988:989]
+#' get_terminal_nodes(rownames(zeller14)[988:989])
+get_terminal_nodes <- function(string) {
+  terminal_nodes <- logical(length(string)) # Initialize logical vector
+  for (i in seq_along(string)) {
+    # Check if the string appears as a substring in any other strings
+    if (!any(grepl(string[i], string[-i], fixed = TRUE))) {
+      terminal_nodes[i] <- TRUE
+    }
+  }
+  return(terminal_nodes)
+}
+
+
 # Truncate the feature name
 .trunc <- function(scores_df, trim.names){
     Names <- gsub("`", "", scores_df[["Names"]])
