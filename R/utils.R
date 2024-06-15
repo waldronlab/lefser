@@ -43,7 +43,7 @@ relativeAb <- function(se, assay = 1L) {
 
 #' Identify which elements of a string are terminal nodes
 #'
-#' @param string 
+#' @param string A character vector of strings to check for terminal nodes
 #'
 #' @return A logical vector indicating which elements of the string are terminal
 #' nodes

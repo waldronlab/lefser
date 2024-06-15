@@ -7,7 +7,7 @@
 get_terminal_nodes(string)
 }
 \arguments{
-\item{string}{}
+\item{string}{A character vector of strings to check for terminal nodes}
 }
 \value{
 A logical vector indicating which elements of the string are terminal
