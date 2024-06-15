@@ -21,7 +21,12 @@ nodes simply by checking whether that element appears as a substring in any othe
 element of the vector.
 }
 \examples{
+# What does it do?
 data("zeller14")
 rownames(zeller14)[988:989]
 get_terminal_nodes(rownames(zeller14)[988:989])
+# How do I use it to keep only terminal nodes for a lefser analysis?
+terminal_nodes <- get_terminal_nodes(rownames(zeller14))
+zeller14sub <- zeller14[terminal_nodes, ]
+# Then continue with your analysis!
 }

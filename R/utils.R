@@ -57,9 +57,14 @@ relativeAb <- function(se, assay = 1L) {
 #' @export
 #'
 #' @examples
+#' # What does it do?
 #' data("zeller14")
 #' rownames(zeller14)[988:989]
 #' get_terminal_nodes(rownames(zeller14)[988:989])
+#' # How do I use it to keep only terminal nodes for a lefser analysis?
+#' terminal_nodes <- get_terminal_nodes(rownames(zeller14))
+#' zeller14sub <- zeller14[terminal_nodes, ]
+#' # Then continue with your analysis!
 get_terminal_nodes <- function(string) {
   terminal_nodes <- logical(length(string)) # Initialize logical vector
   for (i in seq_along(string)) {
