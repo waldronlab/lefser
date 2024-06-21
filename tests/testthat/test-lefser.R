@@ -2,6 +2,7 @@ checkEnding <- function(resObj, index, column, value) {
     endsWith(resObj[index, column], value)
 }
 
+library(lefser)
 dataenv <- new.env(parent = emptyenv())
 data("zeller14", package = "lefser", envir = dataenv)
 zeller14 <- dataenv[["zeller14"]]
@@ -11,8 +12,12 @@ zellersub <- zeller142[tn, ]
 zellersubra <- relativeAb(zellersub)
 
 test_that("lefser and lefserPlot work", {
-    tol <- 0.001 # this is a fractional tolerance, ie 0.001 -> 0.1% fractional difference allowed
-    ## subsetting a DataFrame with NULL
+    
+    ## This is a fractional tolerance, i.e. 0.001 -> 0.1% fractional difference allowed
+    tol <- 0.001 
+    
+    ## Subsetting a DataFrame with NULL
+    set.seed(1234)
     expect_warning(expect_error(lefser(zellersub, groupCol = NULL, blockCol = NULL)))
     withr::with_seed(1,
       results <- lefser(zellersubra, groupCol = "study_condition", blockCol = NULL)
@@ -34,18 +39,18 @@ test_that("lefser and lefserPlot work", {
     
     # Perform text-based checks only if system locale is en_US.UTF-8
     skip_if_not(identical(Sys.getlocale("LC_COLLATE"), "en_US.UTF-8"))
-    expect_equal(colnames(results), c("Names", "scores"))
-    expect_true(checkEnding(results, 1, "Names", "t__GCF_000209875"))
+    expect_equal(colnames(results), c("features", "scores"))
+    expect_true(checkEnding(results, 1, "features", "t__GCF_000209875"))
     expect_true(
-        checkEnding(results, nrow(results), "Names", "s__Subdoligranulum_unclassified")
+        checkEnding(results, nrow(results), "features", "s__Subdoligranulum_unclassified")
     )
-    expect_equal(colnames(results2), c("Names", "scores"))
-    expect_true(checkEnding(results2, 1, "Names", "t__GCF_000159975"))
+    expect_equal(colnames(results2), c("features", "scores"))
+    expect_true(checkEnding(results2, 1, "features", "t__GCF_000159975"))
     expect_true(checkEnding(
-        results2, nrow(results2), "Names", "s__Oscillibacter_unclassified"
+        results2, nrow(results2), "features", "s__Oscillibacter_unclassified"
     ))
     expect_true(all(
-        mapply(endsWith, results2$Names[14:15], c(
+        mapply(endsWith, results2$features[14:15], c(
             "t__GCF_000147675",
             "s__Oscillibacter_unclassified"
         ))
@@ -71,9 +76,9 @@ test_that("no significant results behaviors are consistent", {
     expect_equal(nrow(res1), 0L)
     expect_equal(nrow(res2), 0L)
     expect_equal(nrow(res3), 0L)
-    expect_equal(colnames(res1), c("Names", "scores"))
-    expect_equal(colnames(res2), c("Names", "scores"))
-    expect_equal(colnames(res3), c("Names", "scores"))
+    expect_equal(colnames(res1), c("features", "scores"))
+    expect_equal(colnames(res2), c("features", "scores"))
+    expect_equal(colnames(res3), c("features", "scores"))
 })
 
 test_that("Relative abundance", {
@@ -82,6 +87,6 @@ test_that("Relative abundance", {
     expect_equal(colSums(assay(zellersubra, "rel_abs")), rep(1e6, ncol(zellersubra)), check.attributes = FALSE)
     set.seed(1)
     expect_warning(x <- lefser(zeller142, groupCol = "study_condition"),
-                   "variables are collinear")
+                   "Variables in the input are collinear")
 })
 

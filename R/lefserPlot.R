@@ -1,4 +1,4 @@
-utils::globalVariables(c("Names", "scores"))
+utils::globalVariables(c("features", "scores"))
 
 #' Plots results from `lefser` function
 #'
@@ -71,7 +71,7 @@ lefserPlot <- function(df,
             legend.key.width = unit(0.6, 'cm')) +
         scale_fill_manual(values = colors) +
         geom_text(    # Feature labeling
-            aes(y = 0, label = Names), 
+            aes(y = 0, label = features), 
             hjust = ifelse(df$scores < 0, 0, 1),
             nudge_y = ifelse(df$scores < 0, 0.1, -0.1),
             color = "black",
