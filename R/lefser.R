@@ -345,7 +345,7 @@ lefser <-
     processed_scores <-
       sign(raw_lda_scores) * log((1 + abs(raw_lda_scores)), 10)
     processed_sorted_scores <- sort(processed_scores)   # sorting of scores
-    scores_df <- data.frame(Names = names(processed_sorted_scores),
+    scores_df <- data.frame(features = names(processed_sorted_scores),
                             scores = as.vector(processed_sorted_scores),
                             stringsAsFactors = FALSE)
     scores_df <- .trunc(scores_df, trim.names)   # short-form of taxa name
@@ -363,7 +363,7 @@ lefser <-
 
 .return_no_results <- function() {
     message("No significant features found.")
-    res_scores <- data.frame(Names = character(), scores = numeric())
+    res_scores <- data.frame(features = character(), scores = numeric())
     class(res_scores) <- c("lefser_df", class(res_scores))
     return(res_scores)
 }
