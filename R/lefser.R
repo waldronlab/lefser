@@ -205,9 +205,9 @@ filterKruskal <- function(relab, group, p.value, method = method) {
 #'     
 #'     data(zeller14)
 #'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-#'     tn <- get_terminal_nodes(rownames(zeller14ra))
-#'     zeller14tn <- zeller14ra[tn,]
-#'     zeller14tn_ra <- relativeAb(zeller14)
+#'     tn <- get_terminal_nodes(rownames(zeller14))
+#'     zeller14tn <- zeller14[tn,]
+#'     zeller14tn_ra <- relativeAb(zeller14tn)
 #'     
 #'     # (1) Using classes only
 #'     res_group <- lefser(zeller14tn_ra, 
@@ -299,7 +299,7 @@ lefser <-
     
     ## Warning collinearity and recommend `get_terminal_nodes`
     if (length(warn) && nzchar(warn)) {
-        msg <- "Collinearity exists in your input data. Try only with the terminal nodes using `get_terminal_nodes` function"
+        msg <- "Variables in the input are collinear. Try only with the terminal nodes using `get_terminal_nodes` function"
         warning(msg)
     }
 
