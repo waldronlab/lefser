@@ -79,11 +79,11 @@ get_terminal_nodes <- function(string) {
 
 # Truncate the feature name
 .trunc <- function(scores_df, trim.names){
-    Names <- gsub("`", "", scores_df[["Names"]])
+    Names <- gsub("`", "", scores_df[["features"]])
     if (trim.names) {
         listNames <- strsplit(Names, "\\||\\.")
         Names <- vapply(listNames, tail, character(1L), 1L)
     }
-    scores_df[["Names"]] <- Names
+    scores_df[["features"]] <- Names
     return(scores_df)
 }
