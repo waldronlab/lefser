@@ -198,25 +198,25 @@ filterKruskal <- function(relab, group, p.value, method = method) {
 #' @importFrom methods as is
 #' @importFrom stats setNames
 #' @importFrom utils tail
+#' @importFrom testthat capture_warnings
 #' @import SummarizedExperiment
 #'
 #' @examples
+#'     
+#'     data(zeller14)
+#'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
+#'     tn <- get_terminal_nodes(rownames(zeller14ra))
+#'     zeller14tn <- zeller14ra[tn,]
+#'     zeller14tn_ra <- relativeAb(zeller14)
+#'     
 #'     # (1) Using classes only
-#'     data(zeller14)
-#'     # exclude 'adenoma'
-#'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-#'     res_group <- lefser(relativeAb(zeller14), 
+#'     res_group <- lefser(zeller14tn_ra, 
 #'                         groupCol = "study_condition")
-#'     head(res_group)
-#'
-#'     # (2) Using classes and sublasses
-#'     data(zeller14)
-#'     # exclude 'adenoma'
-#'     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-#'     res_block <- lefser(relativeAb(zeller14), 
+#'     # (2) Using classes and sub-classes
+#'     res_block <- lefser(zeller14tn_ra, 
 #'                         groupCol = "study_condition", 
 #'                         blockCol = "age_category")
-#'     head(res_block)
+#'                         
 #' @export
 lefser <-
   function(relab,
@@ -248,7 +248,7 @@ lefser <-
                                       TRUE)) {
         warning("Convert counts to relative abundances with 'relativeAb()'")
     }
-     
+           
     ## Extract the class/group information   
     groupf <- colData(relab)[[groupCol]]
     groupf <- as.factor(groupf)
@@ -293,7 +293,15 @@ lefser <-
     relab_sub_t_df <- cbind(relab_sub_t_df, class = groupf)
 
     ## LDA model
-    raw_lda_scores <- ldaFunction(relab_sub_t_df, lgroupf)
+    warn <- testthat::capture_warnings(
+        raw_lda_scores <- ldaFunction(relab_sub_t_df, lgroupf)
+    )
+    
+    ## Warning collinearity and recommend `get_terminal_nodes`
+    if (length(warn) && nzchar(warn)) {
+        msg <- "Collinearity exists in your input data. Try only with the terminal nodes using `get_terminal_nodes` function"
+        warning(msg)
+    }
 
     ## Processing LDA scores
     processed_scores <-
