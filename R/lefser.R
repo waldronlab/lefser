@@ -77,52 +77,6 @@ createUniqueValues <- function(df, group){
   df[match(orderedrows, rownames(df)),, drop = FALSE]
 }
 
-## Quality control of the random subset for LDA
-## This function returns `FALSE` when the selected random samples meet 
-## the 3 quality criteria
-contastWithinClassesOrFewPerClass <- function(relab_sub_t_df, 
-                                              rand_s, 
-                                              min_cl, 
-                                              ncl, 
-                                              groups) {
-    cols <- relab_sub_t_df[rand_s, , drop = FALSE]
-    cls <- relab_sub_t_df$class[rand_s]
-    
-    ## 1. Minimum number of classes in the random subset
-    if (length(unique(cls)) != ncl) { # if the random subset doesn't include all the classes
-      return (TRUE) # retry random selection
-    }
-    
-    ## 2. Minimum number of samples per class
-    ## Check each class in sub-samples container more than `min_cl` number of samples
-    if (any(table(cls) < min_cl)) { # if there is fewer samples
-      return (TRUE) # retry random selection
-    }
-    
-    ## 3. Minimum number of unique values per feature
-    # separate the randomly selected samples (cols) into a list of the two classes
-    drops <- c("class")
-    by_class <-
-      lapply(seq_along(groups), function(x) {
-        cols[cols[, "class"] == groups[x],!(names(cols) %in% drops)]
-      })
-
-    # makes sure that within each class all features have at least min_cl unique count values
-    for (i in seq_along(groups)) {
-      unique_counts_per_microb = apply(by_class[[i]], 2, function(x) {
-        length(unique(x))
-      })
-      if ((any(unique_counts_per_microb <= min_cl) &
-           min_cl > 1) |
-          (min_cl == 1 & any(unique_counts_per_microb <= 1))) {
-        return (TRUE)
-      }
-    }
-    
-    ## The `rand_s` satisfies all three quality criteria is returned for LDA
-    return (FALSE)
-  }
-
 
 # Perform LDA modeling
 # 
