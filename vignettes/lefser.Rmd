@@ -1,138 +1,199 @@
 ---
-title: "Lefser finds features that have greatest differences between classes."
-author: |
- | Asya Khleborodova, Ludwig Geistlinger, and Levi Waldron
- | <small>School of Public Health, City University of New York</small>
+title: "lefser: a Megatanomic biomarker discovery tool"
+author: Asya Khleborodova, Sehyun Oh, Ludwig Geistlinger, and Levi Waldron
 date: "`r Sys.Date()`"
-abstract: ""
-email:
 output:
   BiocStyle::html_document:
     toc: true
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Introduction to the lefser R implementation of the popular LEfSE software for biomarker discovery in microbiome analysis.}
+  %\VignetteIndexEntry{Quickstart}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-# Introduction
-
-Lefser is metagenomic biomarker discovery tool that is based on
-[LEfSe](https://huttenhower.sph.harvard.edu/galaxy/) tool and is published by
-[Huttenhower et al.  2011](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/).
-`Lefser` is the R implementation of the `LEfSe` method.
-
-Using statistical analyses, `lefser` compares microbial populations of healthy
-and diseased subjects to discover differencially expressed microorganisms.
-`Lefser` than computes effect size, which estimates magnitude of differential
-expression between the populations for each differentially expressed
-microorganism. Subclasses of classes can also be assigned and used within the
-analysis.
-
-```{r style, echo = FALSE, results = 'asis'}
-knitr::opts_chunk$set(fig.align = "center")
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(comment = "#>", 
+                      fig.align = "center",
+                      collapse = TRUE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      eval = TRUE)
 ```
 
-# Installation
+# Overview
+## Background
+*lefser* is the R implementation of the Linear discriminant analysis (LDA) 
+Effect Size ([LEfSe][]), a Python package for metagenomic biomarker discovery 
+and explanation. ([Huttenhower et al. 2011][]).
 
-To install Bioconductor and the `lefser` package, run the following
-commands.
+The original software utilizes standard statistical significance tests along 
+with supplementary tests that incorporate biological consistency and the 
+relevance of effects to identity the features (e.g., organisms, clades, OTU, 
+genes, or functions) that are most likely to account for differences between 
+the two sample groups of interest, referred as ‘classes’. While *LEfSe* is 
+widely used and available in different platform such as Galaxy UI and Conda, 
+there is no convenient way to incorporate it in R-based workflows. Thus, we 
+re-implement *LEfSe* as an R/Bioconductor package, *lefser*. Following the 
+*LEfSe*‘s algorithm including Kruskal-Wallis test, Wilcoxon-Rank Sum test, 
+and Linear Discriminant Analysis, with some modifications, *lefser* 
+successfully reproduces and improves the original statistical method and 
+the associated plotting functionality.
 
-```{r, eval = FALSE}
+[LEfSe]: https://huttenhower.sph.harvard.edu/galaxy/
+[Huttenhower et al. 2011]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/
+
+
+## Install and load pacakge
+```{r eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("lefser")
 ```
 
-Then load the `lefser` package.
-
-```{r,include=TRUE,results="hide",message=FALSE,warning=FALSE}
+```{r}
 library(lefser)
 ```
 
-# Overview and example use of `lefser`
+# Analysis example
+## Prepare input
 
-The `lefser` function can be used with a `SummarizedExperiment`.
+*lefser* package include the demo dataset, `zeller14`, which is the 
+microbiome data from colorectal cancer (CRC) patients and controls 
+([Zeller et al. 2014][]). 
 
-Load the `zeller14` example dataset and exclude 'adenoma' conditions.
+In this vignette, we excluded the 'adenoma' condition and used control/CRC 
+as the main classes and age category as sub-classes (adult vs. senior) with 
+different numbers of samples: control-adult (n = 46), control-senior (n = 20), 
+CRC-adult (n = 45), and CRC-senior (n = 46). 
+
+[Zeller et al. 2014]: https://www.embopress.org/doi/full/10.15252/msb.20145645
 
 ```{r}
 data(zeller14)
 zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
 ```
 
-Note. `lefser` supports only two-group contrasts.
-
-The `colData` in the `SummarizedExperiment` dataset contains the grouping
-column `study_condition` which includes the 'control' and 'CRC' groups.
+The class and subclass information is stored in the `colData` slot under the
+`study_condition` and `age_category` columns, respectively. 
 
 ```{r}
-table(zeller14$study_condition)
-```
-
-There can be subclasses in each group condition. In the example dataset
-we include `age_category` as a subclass of `study_condition` which includes
-'adults' and 'seniors'. This variable will correspond to the `blockCol`
-input argument.
-
-```{r}
-table(zeller14$age_category)
-```
-
-We can create a contingency table for the two categorical variables.
-
-```{r}
+## Contingency table
 table(zeller14$age_category, zeller14$study_condition)
 ```
 
-We can now use the `lefser` function. It provides results as a `data.frame`
-with the names of selected microorganisms and their effect size.
+If you try to run `lefser` directly on the 'zeller14' data, you will get the
+following warning messages
+```{r}
+lefser(zeller14, groupCol = "study_condition", blockCol = "age_category")
+```
 
+```
+Warning messages:
+1: In lefser(zeller14, groupCol = "study_condition", blockCol = "age_category") :
+  Convert counts to relative abundances with 'relativeAb()'
+2: In lda.default(x, grouping, ...) : variables are collinear
+```
+
+### Terminal node
+When working with taxonomic data, including both terminal and non-terminal 
+nodes in the analysis can lead to collinearity problems. Non-terminal nodes 
+(e.g., genus) are often linearly dependent on their corresponding terminal 
+nodes (e.g., species) since the species-level information is essentially a 
+subset or more specific representation of the genus-level information. This 
+collinearity can violate the assumptions of certain statistical methods, such 
+as linear discriminant analysis (LDA), and can lead to unstable or unreliable 
+results. By using only terminal nodes, you can effectively eliminate this 
+collinearity issue, ensuring that your analysis is not affected by linearly 
+dependent or highly correlated variables. Additionally, you can benefit of 
+avoiding redundancy, increasing specificity, simplifying data, and reducing
+ambiguity, using only terminal nodes.
+
+You can select only the terminal node using `get_terminal_nodes` function. 
 
 ```{r}
-res <- lefser(zeller14, groupCol = "study_condition", blockCol = "age_category")
+tn <- get_terminal_nodes(rownames(zeller14))
+zeller14tn <- zeller14[tn,]
+```
+
+
+### Relative abundance
+First warning message informs you that `lefser` requires relative abundance of
+features. You can use `relativeAb` function to reformat your input. 
+
+```{r}
+zeller14tn_ra <- relativeAb(zeller14tn)
+```
+
+
+## Run `lefser`
+The `lefser` function returns a `data.frame` with two columns - the names of 
+selected features (the `features` column) and their effect size (the `scores` 
+column).
+
+There is a random number generation step in the `lefser` algorithm to ensure 
+that more than half of the values for each features are unique. In most cases, 
+inputs are sparse, so in practice, this step is handling 0s. So to reproduce
+the identical result, you should set the seed before running `lefser`.
+
+```{r}
+set.seed(1234)
+res <- lefser(zeller14tn_ra, # relative abundance only with terminal nodes
+              groupCol = "study_condition", 
+              blockCol = "age_category")
 head(res)
 ```
 
-# Visualizing results with `lefserPlot`
 
-
+## Visualization using `lefserPlot`
 ```{r}
 lefserPlot(res)
 ```
 
-# Interoperating with phyloseq
 
+# Benchmarking againt other tools
+The codes for benchmarking *lefser* against *LEfSe* and the other R
+implementation of *LEfSe* is available [here][].
+
+[here]: https://github.com/shbrief/lefserBenchmarking
+
+
+
+# Interoperating with phyloseq
 When using `phyloseq` objects, we recommend to extract the data and create a
 `SummarizedExperiment` object as follows:
 
-```{r}
+```{r warning=FALSE}
 library(phyloseq)
-fp <- system.file(
-    "extdata", "study_1457_split_library_seqs_and_mapping.zip",
-    package = "phyloseq"
-)
-kostic <- suppressWarnings({
-    microbio_me_qiime(fp)
-})
+library(SummarizedExperiment)
+
+## Load phyloseq object
+fp <- system.file("extdata", 
+                  "study_1457_split_library_seqs_and_mapping.zip",
+                  package = "phyloseq")
+kostic <- microbio_me_qiime(fp)
+
+## Split data tables
 counts <- unclass(otu_table(kostic))
-colData <- as(sample_data(kostic), "data.frame")
-## create a SummarizedExperiment object
-SummarizedExperiment(
-    assays = list(counts = counts), colData = colData
-)
+coldata <- as(sample_data(kostic), "data.frame")
+
+## Create a SummarizedExperiment object
+SummarizedExperiment(assays = list(counts = counts), colData = coldata)
 ```
 
-You may also consider using `makeTreeSummarizedExperimentFromPhyloseq` from the
-`mia` package (example not shown).
+You may also consider using `makeTreeSummarizedExperimentFromPhyloseq` from 
+the `mia` package.
+```{r}
+mia::makeTreeSummarizedExperimentFromPhyloseq(kostic)
+```
 
-## sessionInfo
+
+
+
+# Session Info
 
 <details>
-
 ```{r}
 sessionInfo()
 ```
-
 </details>
