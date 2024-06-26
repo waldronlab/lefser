@@ -84,7 +84,7 @@ table(zeller14$age_category, zeller14$study_condition)
 
 If you try to run `lefser` directly on the 'zeller14' data, you will get the
 following warning messages
-```{r}
+```{r eval=FALSE}
 lefser(zeller14, groupCol = "study_condition", blockCol = "age_category")
 ```
 
