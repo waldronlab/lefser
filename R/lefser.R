@@ -274,10 +274,8 @@ lefser <-
     classf <- colData(relab)[[classCol]]
     classf <- as.factor(classf)
     lclassf <- levels(classf)
-    if (is.null(classf) || !identical(length(lclassf), 2L)) {
-        msg <- "'classCol' must refer to a valid dichotomous (two-level) variable"
-        stop(msg) # ensure the class has only two levels
-    }
+    if (is.null(classf) || length(lclassf) < 2L)
+        stop("'classCol' must be a valid two or more level variable")
     message(
         "The outcome variable is specified as '", classCol,
         "' and the reference category is '", lclassf[1],
