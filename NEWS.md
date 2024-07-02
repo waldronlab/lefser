@@ -1,3 +1,13 @@
+# lefser 1.15.3
+
+* The column names of `lefser` output is changed to `c("features", "scores")`
+from `c("Names", "scores")`
+* [New feature] The `get_terminal_nodes` function to select only the terminal
+nodes of the hierarchical features (e.g., taxonomic data).
+* [Major algorithm update] Add an option for adjusting the first Kruskal-Wallis 
+Rank Sum Test and Wilcoxon-Rank Sum test for multiple hypothesis testing 
+through the new argument `method` in the `lefser` function.
+
 # lefser 1.14.0
 
 * [Error fix] The `lefserPlot` function merged the duplicated labels when the 
