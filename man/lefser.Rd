@@ -85,7 +85,7 @@ argument to \code{FALSE}.
     
     data(zeller14)
     zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-    tn <- get_terminal_nodes(rownames(zeller14ra))
+    tn <- get_terminal_nodes(rownames(zeller14))
     zeller14tn <- zeller14[tn,]
     zeller14tn_ra <- relativeAb(zeller14tn)
     
