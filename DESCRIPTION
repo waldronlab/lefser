@@ -5,10 +5,10 @@ Description: lefser is an implementation in R of the popular
   "LDA Effect Size (LEfSe)" method  for microbiome biomarker discovery. It uses 
   the Kruskal-Wallis test, Wilcoxon-Rank Sum test, and Linear Discriminant
   Analysis to find biomarkers of groups and sub-groups.
-Version: 1.15.3
-Date: 2024-06-22
+Version: 1.15.4
+Date: 2024-07-17
 Authors@R: c(
-  person("Sehyun", "Oh", , "Sehyun.Oh@sph.cuny.edu", c("cre", "ctb"), c(ORCID = "0000-0002-9490-3061")),
+  person("Sehyun", "Oh", , "shbrief@gmail.com", c("cre", "ctb"), c(ORCID = "0000-0002-9490-3061")),
   person("Asya", "Khleborodova", , "asya.bioconductor@gmail.com", "aut"),
   person("Ludwig", "Geistlinger", , "Ludwig.Geistlinger@sph.cuny.edu", "ctb", c(ORCID = "0000-0002-2495-5464")),
   person("Marcel", "Ramos", , "marcel.ramos@roswellpark.org", "ctb", c(ORCID = "0000-0002-3242-0582")),
