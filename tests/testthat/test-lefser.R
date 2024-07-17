@@ -11,6 +11,10 @@ tn <- get_terminal_nodes(rownames(zeller142))
 zellersub <- zeller142[tn, ]
 zellersubra <- relativeAb(zellersub)
 
+## Set the level for group
+colData(zellersubra)$study_condition <- factor(colData(zellersubra)$study_condition,
+                                               levels = c("control", "CRC"))
+
 test_that("lefser and lefserPlot work", {
     
     ## This is a fractional tolerance, i.e. 0.001 -> 0.1% fractional difference allowed
