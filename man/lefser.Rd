@@ -38,8 +38,10 @@ groups, usually a factor with two levels (e.g., \code{c("cases", "controls")};
 default "GROUP").}
 
 \item{blockCol}{character(1) Optional column name in \code{colData(relab)}
-indicating the blocks, usually a factor with two levels (e.g.,
-\code{c("adult", "senior")}; default NULL).}
+indicating the blocks, usually a factor with two levels but can be more 
+than two levels (e.g., \code{c("adult", "senior") also, this is NOT a statistical 
+blocking variable, lefser does not have an option for statistical blocking}; 
+default NULL).}
 
 \item{assay}{The i-th assay matrix in the \code{SummarizedExperiment} ('relab';
 default 1).}
