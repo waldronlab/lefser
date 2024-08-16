@@ -174,7 +174,9 @@ filterKruskal <- function(relab, group, p.value, method = method) {
 #' default "GROUP").
 #' @param blockCol character(1) Optional column name in `colData(relab)`
 #' indicating the blocks, usually a factor with two levels (e.g.,
-#' `c("adult", "senior")`; default NULL).
+#' `c("adult", "senior")`; default NULL), but can be more than two levels; 
+#' also, this is NOT a statistical blocking variable, lefser does not have 
+#' statistical blocking option.
 #' @param assay The i-th assay matrix in the `SummarizedExperiment` ('relab';
 #' default 1).
 #' @param trim.names Default is `FALSE`. If `TRUE`, this function extracts 

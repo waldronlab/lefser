@@ -39,7 +39,9 @@ default "GROUP").}
 
 \item{blockCol}{character(1) Optional column name in \code{colData(relab)}
 indicating the blocks, usually a factor with two levels (e.g.,
-\code{c("adult", "senior")}; default NULL).}
+\code{c("adult", "senior")}; default NULL), but can be more than two levels;
+also, this is NOT a statistical blocking variable, lefser does not have
+statistical blocking option.}
 
 \item{assay}{The i-th assay matrix in the \code{SummarizedExperiment} ('relab';
 default 1).}
