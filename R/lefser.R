@@ -1,3 +1,12 @@
+wilcox_pstats <- function(datamat, group, index) {
+  apply(datamat, 1L, function(values) {
+    wx <- suppressWarnings({
+        coin::wilcox_test(values ~ group, subset = index)
+    })
+    c(pvalue = coin::pvalue(wx), statistic = coin::statistic(wx))
+  })
+}
+
 ## Wilcoxon Rank-Sum Test for the sub-classes
 fillPmatZmat <- function(group,
                          block,
@@ -5,52 +14,44 @@ fillPmatZmat <- function(group,
                          p.threshold,
                          method)
 {
-  if(nrow(relab_sub) == 0L){
+  if (!nrow(relab_sub))
     return(relab_sub)
-  }
   # creates a list of boolean vectors, each vector indicates
   # existence (TRUE) or absence (FALSE) of a class/sub-class combination
   combos <- apply(
-    expand.grid(levels(group), levels(block)), 1L, paste0, collapse = "")
-  combined <- paste0(as.character(group), as.character(block))
-  logilist <- lapply(setNames(nm = sort(combos)), `==`, combined)
+    expand.grid(levels(group), levels(block)), 1L, paste0, collapse = "."
+  )
+  combined <- interaction(group, block)
+  whichlist <- lapply(
+    setNames(nm = sort(combos)), function(combo) which(combo == combined)
+  )
 
   ## uses Wilcoxon rank-sum test to test for significant differential abundances between
   ## subclasses of one class against subclasses of all other classes; results are saved in
   ## "pval_mat" and "z_mat" matrices
-  whichlist <- lapply(logilist, which)
   sblock <- seq_along(levels(block))
-  trelab_sub <- t(relab_sub)
   iters <- expand.grid(sblock, sblock + length(sblock))
-  group_formats <- apply(iters, 1L, function(x) {
-    ind <- unlist(whichlist[x])
-    apply(trelab_sub, 2L, function(g) {
-      wx <- suppressWarnings(coin::wilcox_test(g ~ group, subset = ind))
-      cbind.data.frame(
-          p.value = coin::pvalue(wx), statistic = coin::statistic(wx)
-      )
-    })
-  })
+  inds <- apply(iters, 1L, function(x) unlist(whichlist[x], use.names = FALSE))
 
-  res <- lapply(group_formats, function(x) do.call(rbind, x))
-  pval_mat <- do.call(cbind, lapply(res, `[[`, "p.value"))
-  z_mat <- do.call(cbind, lapply(res, `[[`, "statistic"))
-
-  rownames(pval_mat) <- rownames(relab_sub)
-  rownames(z_mat) <- rownames(relab_sub)
-  for (i in seq_along(1:ncol(pval_mat))){
-    pval_mat[, i] <- stats::p.adjust(pval_mat[, i], method = method)
+  z_mat <- pval_mat <- matrix(
+    NA, nrow = nrow(relab_sub), ncol = length(inds),
+    dimnames = list(rownames(relab_sub), NULL)
+  )
+  for (i in seq_along(inds)) {
+    results <- wilcox_pstats(relab_sub, group = group, index = inds[[i]])
+    pval_mat[, i] <- stats::p.adjust(results["pvalue", ], method = method)
+    z_mat[, i] <- results["statistic", ]
   }
+
   ## converts "pval_mat" into boolean matrix "logical_pval_mat" where
   ## p-values <= wilcoxon.threshold
-  logical_pval_mat <- pval_mat <= p.threshold * 2.0
-  logical_pval_mat[is.na(logical_pval_mat)] <- FALSE
+  logical_pval_mat <- !is.na(pval_mat) & pval_mat <= p.threshold * 2.0
 
   ## determines which rows (features) have all p-values<=0.05
   ## and selects such rows from the matrix of z-statistics
   sub <- rowSums(logical_pval_mat) == ncol(logical_pval_mat)
   z_mat_sub <- z_mat[sub, , drop = FALSE]
-    # confirms that z-statistics of a row all have the same sign
+  ## confirms that z-statistics of a row all have the same sign
   sub <- abs(rowSums(z_mat_sub)) == rowSums(abs(z_mat_sub))
   relab_sub[names(sub[sub]), , drop = FALSE]
 }
