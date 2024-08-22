@@ -5,8 +5,8 @@ Description: lefser is the R implementation of the popular microbiome
   biomarker discovery too, LEfSe. It uses the Kruskal-Wallis test, 
   Wilcoxon-Rank Sum test, and Linear Discriminant Analysis to find biomarkers 
   from two-level groups (and optional sub-groups).
-Version: 1.15.5
-Date: 2024-07-17
+Version: 1.15.6
+Date: 2024-08-22
 Authors@R: c(
   person("Sehyun", "Oh", , "shbrief@gmail.com", c("cre", "ctb"), c(ORCID = "0000-0002-9490-3061")),
   person("Asya", "Khleborodova", , "asya.bioconductor@gmail.com", "aut"),
