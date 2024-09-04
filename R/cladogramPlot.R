@@ -2,6 +2,7 @@ library(tidyverse)
 library(proxy)
 suppressPackageStartupMessages(library(dendextend))
 library(circlize)
+library(lefser)
 data(zeller14)
 zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
 res <- lefser(zeller14, groupCol = "study_condition", blockCol = "age_category")
@@ -52,10 +53,10 @@ cladogram <- function(res, separator=NULL){
     set("branches_lwd",1) %>%
     set("branches_lty",1) %>%
     set("leaves_pch", c(19)) %>% 
-    set("leaves_cex", abs(res$scores[match(labels(dend),a$organism_name)])/2) %>% 
-    set("leaves_col", ifelse(sign(res$scores[match(labels(dend),a$organism_name)])==-1, "red","darkgreen"))%>% 
+    set("leaves_cex", abs(res$scores[match(labels(dend),df_names$organism_name)])/2) %>% 
+    set("leaves_col", ifelse(sign(res$scores[match(labels(dend),df_names$organism_name)])==-1, "red","darkgreen"))%>% 
     set("labels_cex", c(.4))%>%
-    set("labels_colors", ifelse(sign(res$scores[match(labels(dend),a$organism_name)])==-1, "red","darkgreen"))
+    set("labels_colors", ifelse(sign(res$scores[match(labels(dend),df_names$organism_name)])==-1, "red","darkgreen"))
   
   circos.initialize("a", xlim = c(0, n)) # only one sector
   circos.track(ylim = c(0, 1), bg.border = NA, track.height = 0.3, 
@@ -63,7 +64,7 @@ cladogram <- function(res, separator=NULL){
                  for(i in seq_len(n)) {
                    circos.text(i-0.5, 0, labels[i], adj = c(0, 0.5), 
                                facing = "clockwise", niceFacing = TRUE,
-                               col = ifelse(sign(res$scores[match(labels[i],a$organism_name)])==-1, "red","darkgreen"),cex = 0.5)
+                               col = ifelse(sign(res$scores[match(labels[i],df_names$organism_name)])==-1, "red","darkgreen"),cex = 0.5)
                  }
                })
 
