@@ -1,3 +1,9 @@
+# version 1.15.7 
+* [Major algorithm update] We remove the step (`createUniqueValues`) in the 
+`lefser` function, which used to add small random numbers to make all the 
+values unique. Potential issues (e.g., LDA) due to excess 0s should be managed 
+by filtering out low abundant features from the input. 
+
 # lefser 1.15.3
 
 * The column names of `lefser` output is changed to `c("features", "scores")`

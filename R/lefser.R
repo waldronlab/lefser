@@ -292,7 +292,7 @@ lefser <-
     ## Transposed relative abundance matrix with the 'class' column
     relab_sub_t <- t(relab_sub)
     relab_sub_t_df <- as.data.frame(relab_sub_t)
-    relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, group = groupf)
+    # relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, group = groupf)
     relab_sub_t_df <- cbind(relab_sub_t_df, class = groupf)
 
     ## LDA model
