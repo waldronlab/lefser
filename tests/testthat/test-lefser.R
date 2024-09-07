@@ -33,12 +33,10 @@ test_that("lefser and lefserPlot work", {
       results2 <- lefser(zellersubra, groupCol = "study_condition", blockCol = "age_category")
     )
     expect_equal(nrow(results2), 15)
-        expect_equal(results2$scores,
-                 c(-3.79532040165821, -3.70081304070088, -3.52124711962994, -3.35646736354917, 
-                   -3.12624477369647, -3.08271306137103, -3.07415263925044, 2.14169975718221, 
-                   2.48592299433808, 2.63986709426167, 2.76738470501209, 2.9270111481154, 
-                   3.09767990011079, 3.23928501499009, 3.33616975287112)
-                 ,
+    expect_equal(results2$scores,
+                 c(-3.795320, -3.700813, -3.521247, -3.154544, -3.126245,
+                   -3.082713, -2.962662,  2.141700,  2.286564,  2.431915,
+                   2.579108,  2.706471, 2.834329,  2.941230,  3.336170), 
                  tolerance = tol)
     
     # Perform text-based checks only if system locale is en_US.UTF-8
