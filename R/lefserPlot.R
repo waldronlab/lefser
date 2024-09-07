@@ -78,9 +78,9 @@ lefserPlot <- function(df,
             size = label.font.size) +    
         theme(    # Guide lines
             panel.grid.major.x = element_line(
-                color = "grey", size = 0.5, linetype = "dotted"),
+                color = "grey", linewidth = 0.5, linetype = "dotted"),
             panel.grid.minor.x = element_line(
-                color = "grey", size = 0.5, linetype = "dotted")) +
+                color = "grey", linewidth = 0.5, linetype = "dotted")) +
         coord_flip()
       
       return(plt)
