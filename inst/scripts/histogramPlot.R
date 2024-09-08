@@ -1,4 +1,4 @@
-library(lefser)
+# library(lefser)
 library(ggplot2)
 library(dplyr)
 data(zeller14)
@@ -7,14 +7,13 @@ tn <- get_terminal_nodes(rownames(zeller14))
 zeller14tn <- zeller14[tn,]
 zeller14tn_ra <- relativeAb(zeller14tn)
 
-res_block <- lefser(zeller14tn_ra, 
-                    groupCol = "study_condition", 
-                    blockCol = "age_category")
-
-dat <- lefserPlotHistogram(
-    res_block, zeller14tn_ra, groupCol = "study_condition",
+res <- lefser(
+    zeller14tn_ra, 
+    groupCol = "study_condition",
     blockCol = "age_category"
 )
+
+dat <- .prepareDataHistogram(res)
 
 bacName <- "k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|s__Ruminococcus_sp_5_1_39BFAA|t__GCF_000159975"
 dat |> 

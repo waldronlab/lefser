@@ -1,6 +1,14 @@
-lefsePlotHistogram <- function(
-        res, tse, groupCol = "GROUP", blockCol = NULL
-) {
+.prepareDataHistogram <- function(res) {
+    if (!.isLefser(res)) {
+        stop(
+            "Expected an object of class 'lefser_df'.",
+            " Only the output of a lefser function call is valid.",
+            call. = FALSE
+        )
+    }
+    tse <- attr(res, "inputSE")
+    groupCol <- attr(res, "grp")
+    blockCol <- attr(res, "blk")
     selectCols <- c(groupCol, blockCol)
     sampleData <- as.data.frame(SummarizedExperiment::colData(tse))
     sampleData <- sampleData[, selectCols, drop = FALSE]
@@ -16,4 +24,8 @@ lefsePlotHistogram <- function(
         ) |> 
         dplyr::left_join(sampleData, by = "sample")
     return(output)
+}
+
+.isLefser <- function(x) {
+    "lefser_df" %in% class(x)
 }
