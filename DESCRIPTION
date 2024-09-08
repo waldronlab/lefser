@@ -20,15 +20,17 @@ Depends:
   SummarizedExperiment,
   R (>= 4.0.0)
 Imports:
-  coin,
-  MASS,
-  ggplot2,
-  S4Vectors,
-  stats,
-  methods,
-  utils,
-  dplyr,
-  testthat
+    coin,
+    MASS,
+    ggplot2,
+    S4Vectors,
+    stats,
+    methods,
+    utils,
+    dplyr,
+    testthat,
+    tibble,
+    tidyr
 Suggests: 
   knitr,
   rmarkdown,
