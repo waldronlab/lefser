@@ -30,7 +30,8 @@ Imports:
     dplyr,
     testthat,
     tibble,
-    tidyr
+    tidyr,
+    forcats
 Suggests: 
   knitr,
   rmarkdown,

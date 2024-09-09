@@ -330,6 +330,7 @@ lefser <-
     attr(res_scores, "grp") <- groupCol
     attr(res_scores, "blk") <- blockCol
     attr(res_scores, "method") <- method
+    attr(res_scores, "lgroupf") <- lgroupf[1]
     res_scores
  }
 
