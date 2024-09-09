@@ -31,7 +31,8 @@ Imports:
     testthat,
     tibble,
     tidyr,
-    forcats
+    forcats,
+    stringr
 Suggests: 
   knitr,
   rmarkdown,

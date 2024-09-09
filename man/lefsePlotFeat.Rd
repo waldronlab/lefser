@@ -2,7 +2,7 @@
 % Please edit documentation in R/lefsePlotHistogram.R
 \name{lefsePlotFeat}
 \alias{lefsePlotFeat}
-\title{Plot Features}
+\title{Plot Feature}
 \usage{
 lefsePlotFeat(res, fName)
 }
@@ -35,11 +35,11 @@ zeller14tn <- zeller14[tn,]
 zeller14tn_ra <- relativeAb(zeller14tn)
 
 # (1) Using classes only
-res_group <- lefser(zeller14tn_ra, 
+res_group <- lefser(zeller14tn_ra,
                     groupCol = "study_condition")
 # (2) Using classes and sub-classes
-res_block <- lefser(zeller14tn_ra, 
-                    groupCol = "study_condition", 
+res_block <- lefser(zeller14tn_ra,
+                    groupCol = "study_condition",
                     blockCol = "age_category")
 plot_group <- lefsePlotFeat(res_group, res_group$features[[1]])
 plot_block <- lefsePlotFeat(res_block, res_block$features[[2]])
