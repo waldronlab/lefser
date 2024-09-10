@@ -6,7 +6,7 @@
 #' @param res An object of class lefser_df,
 #' output of the \code{lefser} function.
 #' @param fName A character string. The name of a feature in the lefser_df
-#' object
+#' object.
 #'
 #' @details
 #' The solid lines represent the mean by group or by group+block

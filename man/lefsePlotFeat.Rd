@@ -11,7 +11,7 @@ lefsePlotFeat(res, fName)
 output of the \code{lefser} function.}
 
 \item{fName}{A character string. The name of a feature in the lefser_df
-object}
+object.}
 }
 \value{
 A ggplot object.
