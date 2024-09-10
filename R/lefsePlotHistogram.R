@@ -37,6 +37,9 @@
 #'
 lefsePlotFeat <- function(res, fName) {
     dat <- .prepareDataHistogram(res = res, fName = fName)
+    refGroup <- attr(res, "lgroupf")
+    vLinePos <- which(dat$groupCol != refGroup)[1] - 0.5
+
     l <- split(dat, dat$groupCol)
     maxYVal <- max(dat$abundance)
     vals <- purrr::map(l, ~ {
@@ -49,7 +52,7 @@ lefsePlotFeat <- function(res, fName) {
             ggplot2::ggplot(
                 data = dat, mapping = ggplot2::aes(sample, abundance)
             ) +
-            ggplot2::geom_col(fill = "firebrick3", width = 1)
+            ggplot2::geom_col(fill = "#E57A77", width = 1)
     } else if (isTRUE(cond)) {
         p <- dat |>
             ggplot2::ggplot(
@@ -57,6 +60,9 @@ lefsePlotFeat <- function(res, fName) {
             ) +
             ggplot2::geom_col(
                 mapping = ggplot2::aes(fill = blockCol), width = 1
+            ) +
+            ggplot2::scale_fill_manual(
+                values = c("#E57A77", "#7CA1CC")
             )
     }
     p <- p +
@@ -81,6 +87,7 @@ lefsePlotFeat <- function(res, fName) {
             label = levels(dat$groupCol)[2],
             hjust = 0, vjust = 1
         ) +
+        ggplot2::geom_vline(xintercept = vLinePos) +
         theme_bw() +
         theme(
             axis.text.x = ggplot2::element_blank(),
