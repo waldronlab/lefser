@@ -320,11 +320,19 @@ lefser <-
     res_scores <- scores_df[threshold_scores, ]
     class(res_scores) <- c("lefser_df", class(res_scores))
     attr(res_scores, "groups") <- lgroupf
-    if(nrow(res_scores) == 0L){
-      return(.return_no_results())
-    }
+    
+    ## Add attributes with argument values
+    ## This is used for plottin functions
+    attr(res_scores, "inputSE") <- relab
+    attr(res_scores, "kth") <-  kruskal.threshold
+    attr(res_scores, "wth") <- wilcox.threshold
+    attr(res_scores, "ldath") <- lda.threshold
+    attr(res_scores, "grp") <- groupCol
+    attr(res_scores, "blk") <- blockCol
+    attr(res_scores, "method") <- method
+    attr(res_scores, "lgroupf") <- lgroupf[1]
     res_scores
-  }
+ }
 
 .return_no_results <- function() {
     message("No significant features found.")
