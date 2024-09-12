@@ -5,14 +5,14 @@ Description: lefser is the R implementation of the popular microbiome
   biomarker discovery too, LEfSe. It uses the Kruskal-Wallis test, 
   Wilcoxon-Rank Sum test, and Linear Discriminant Analysis to find biomarkers 
   from two-level groups (and optional sub-groups).
-Version: 1.15.6
-Date: 2024-08-22
+Version: 1.15.8
+Date: 2024-09-06
 Authors@R: c(
   person("Sehyun", "Oh", , "shbrief@gmail.com", c("cre", "ctb"), c(ORCID = "0000-0002-9490-3061")),
   person("Asya", "Khleborodova", , "asya.bioconductor@gmail.com", "aut"),
   person("Marcel", "Ramos", , "marcel.ramos@roswellpark.org", "ctb", c(ORCID = "0000-0002-3242-0582")),
-  person("Ludwig", "Geistlinger", , "Ludwig.Geistlinger@sph.cuny.edu", "ctb", c(ORCID = "0000-0002-2495-5464")),
   person("Samuel", "Gamboa-Tuz", , "Samuel.Gamboa.Tuz@gmail.com", "ctb"),
+  person("Ludwig", "Geistlinger", , "Ludwig.Geistlinger@sph.cuny.edu", "ctb", c(ORCID = "0000-0002-2495-5464")),
   person("Levi", "Waldron", , "levi.waldron@sph.cuny.edu", "ctb", c(ORCID = "0000-0003-2725-0694"))
   )
 License: Artistic-2.0
@@ -20,15 +20,19 @@ Depends:
   SummarizedExperiment,
   R (>= 4.0.0)
 Imports:
-  coin,
-  MASS,
-  ggplot2,
-  S4Vectors,
-  stats,
-  methods,
-  utils,
-  dplyr,
-  testthat
+    coin,
+    MASS,
+    ggplot2,
+    S4Vectors,
+    stats,
+    methods,
+    utils,
+    dplyr,
+    testthat,
+    tibble,
+    tidyr,
+    forcats,
+    stringr
 Suggests: 
   knitr,
   rmarkdown,
