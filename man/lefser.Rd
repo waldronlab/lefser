@@ -9,8 +9,8 @@ lefser(
   kruskal.threshold = 0.05,
   wilcox.threshold = 0.05,
   lda.threshold = 2,
-  groupCol = "GROUP",
-  blockCol = NULL,
+  classCol = "CLASS",
+  subclassCol = NULL,
   assay = 1L,
   trim.names = FALSE,
   checkAbundances = TRUE,
@@ -28,20 +28,18 @@ Sum Test (default 0.05). If multiple hypothesis testing is performed, this
 threshold is applied to corrected p-values.}
 
 \item{wilcox.threshold}{numeric(1) The p-value for the Wilcoxon Rank-Sum Test
-when 'blockCol' is present (default 0.05). If multiple hypothesis testing is
+when 'subclassCol' is present (default 0.05). If multiple hypothesis testing is
 performed, this threshold is applied to corrected p-values.}
 
 \item{lda.threshold}{numeric(1) The effect size threshold (default 2.0).}
 
-\item{groupCol}{character(1) Column name in \code{colData(relab)} indicating
-groups, usually a factor with two levels (e.g., \code{c("cases", "controls")};
-default "GROUP").}
+\item{classCol}{character(1) Column name in \code{colData(relab)} indicating
+class, usually a factor with two levels (e.g., \code{c("cases", "controls")};
+default "CLASS").}
 
-\item{blockCol}{character(1) Optional column name in \code{colData(relab)}
-indicating the blocks, usually a factor with two levels (e.g.,
-\code{c("adult", "senior")}; default NULL), but can be more than two levels;
-also, this is NOT a statistical blocking variable, lefser does not have
-statistical blocking option.}
+\item{subclassCol}{character(1) Optional column name in \code{colData(relab)}
+indicating the subclasses, usually a factor with two levels (e.g.,
+\code{c("adult", "senior")}; default NULL), but can be more than two levels.}
 
 \item{assay}{The i-th assay matrix in the \code{SummarizedExperiment} ('relab';
 default 1).}
@@ -70,9 +68,9 @@ names of features and their LDA scores.
 }
 \description{
 Perform a LEfSe analysis: the function carries out differential analysis
-between two sample groups for multiple features and uses linear discriminant analysis
+between two sample classes for multiple features and uses linear discriminant analysis
 to establish their effect sizes. Subclass information for each class can be incorporated
-into the analysis (see examples). Features with large differences between two sample groups
+into the analysis (see examples). Features with large differences between two sample classes
 are identified as biomarkers.
 }
 \details{
@@ -92,11 +90,11 @@ argument to \code{FALSE}.
     zeller14tn_ra <- relativeAb(zeller14tn)
     
     # (1) Using classes only
-    res_group <- lefser(zeller14tn_ra, 
-                        groupCol = "study_condition")
+    res_class <- lefser(zeller14tn_ra, 
+                        classCol = "study_condition")
     # (2) Using classes and sub-classes
-    res_block <- lefser(zeller14tn_ra, 
-                        groupCol = "study_condition", 
-                        blockCol = "age_category")
+    res_subclass <- lefser(zeller14tn_ra, 
+                        classCol = "study_condition", 
+                        subclassCol = "age_category")
                         
 }

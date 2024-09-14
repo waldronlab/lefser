@@ -37,6 +37,6 @@ to their effect sizes and linked to their abundance in each class.
 }
 \examples{
 example("lefser")
-lefserPlot(res_group)
+lefserPlot(res_class)
 
 }
