@@ -31,7 +31,7 @@ The original software utilizes standard statistical significance tests along
 with supplementary tests that incorporate biological consistency and the 
 relevance of effects to identity the features (e.g., organisms, clades, OTU, 
 genes, or functions) that are most likely to account for differences between 
-the two sample groups of interest, referred as ‘classes’. While *LEfSe* is 
+the two sample classes of interest, referred as ‘classes’. While *LEfSe* is 
 widely used and available in different platform such as Galaxy UI and Conda, 
 there is no convenient way to incorporate it in R-based workflows. Thus, we 
 re-implement *LEfSe* as an R/Bioconductor package, *lefser*. Following the 
@@ -85,12 +85,12 @@ table(zeller14$age_category, zeller14$study_condition)
 If you try to run `lefser` directly on the 'zeller14' data, you will get the
 following warning messages
 ```{r eval=FALSE}
-lefser(zeller14, groupCol = "study_condition", blockCol = "age_category")
+lefser(zeller14, classCol = "study_condition", subclassCol = "age_category")
 ```
 
 ```
 Warning messages:
-1: In lefser(zeller14, groupCol = "study_condition", blockCol = "age_category") :
+1: In lefser(zeller14, classCol = "study_condition", subclassCol = "age_category") :
   Convert counts to relative abundances with 'relativeAb()'
 2: In lda.default(x, grouping, ...) : variables are collinear
 ```
@@ -139,8 +139,8 @@ the identical result, you should set the seed before running `lefser`.
 ```{r}
 set.seed(1234)
 res <- lefser(zeller14tn_ra, # relative abundance only with terminal nodes
-              groupCol = "study_condition", 
-              blockCol = "age_category")
+              classCol = "study_condition", 
+              subclassCol = "age_category")
 head(res)
 ```
 
