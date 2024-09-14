@@ -32,7 +32,12 @@ Imports:
     tibble,
     tidyr,
     forcats,
-    stringr
+    stringr,
+    ape,
+    ggtree,
+    ggrepel,
+    purrr,
+    treeio
 Suggests: 
   knitr,
   rmarkdown,
