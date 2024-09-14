@@ -1,15 +1,15 @@
-wilcox_pstats <- function(datamat, group, index) {
+wilcox_pstats <- function(datamat, class, index) {
   apply(datamat, 1L, function(values) {
     wx <- suppressWarnings({
-        coin::wilcox_test(values ~ group, subset = index)
+        coin::wilcox_test(values ~ class, subset = index)
     })
     c(pvalue = coin::pvalue(wx), statistic = coin::statistic(wx))
   })
 }
 
 ## Wilcoxon Rank-Sum Test for the sub-classes
-fillPmatZmat <- function(group,
-                         block,
+fillPmatZmat <- function(class,
+                         subclass,
                          relab_sub,
                          p.threshold,
                          method)
@@ -19,9 +19,9 @@ fillPmatZmat <- function(group,
   # creates a list of boolean vectors, each vector indicates
   # existence (TRUE) or absence (FALSE) of a class/sub-class combination
   combos <- apply(
-    expand.grid(levels(group), levels(block)), 1L, paste0, collapse = "."
+    expand.grid(levels(class), levels(subclass)), 1L, paste0, collapse = "."
   )
-  combined <- interaction(group, block)
+  combined <- interaction(class, subclass)
   whichlist <- lapply(
     setNames(nm = sort(combos)), function(combo) which(combo == combined)
   )
@@ -29,8 +29,8 @@ fillPmatZmat <- function(group,
   ## uses Wilcoxon rank-sum test to test for significant differential abundances between
   ## subclasses of one class against subclasses of all other classes; results are saved in
   ## "pval_mat" and "z_mat" matrices
-  sblock <- seq_along(levels(block))
-  iters <- expand.grid(sblock, sblock + length(sblock))
+  ssubclass <- seq_along(levels(subclass))
+  iters <- expand.grid(ssubclass, ssubclass + length(ssubclass))
   inds <- apply(iters, 1L, function(x) unlist(whichlist[x], use.names = FALSE))
 
   z_mat <- pval_mat <- matrix(
@@ -38,7 +38,7 @@ fillPmatZmat <- function(group,
     dimnames = list(rownames(relab_sub), NULL)
   )
   for (i in seq_along(inds)) {
-    results <- wilcox_pstats(relab_sub, group = group, index = inds[[i]])
+    results <- wilcox_pstats(relab_sub, class = class, index = inds[[i]])
     pval_mat[, i] <- stats::p.adjust(results["pvalue", ], method = method)
     z_mat[, i] <- results["statistic", ]
   }
@@ -59,10 +59,10 @@ fillPmatZmat <- function(group,
 ## ensures that more than half of the values in each for each feature are unique
 ## if that is not the case then a count value is altered by adding it to a small value
 ## generated via normal distribution with mean=0 and sd=5% of the count value
-createUniqueValues <- function(df, group){
+createUniqueValues <- function(df, class){
   orderedrows <- rownames(df)
-  splitdf <- split(df, group)
-  maxim <- vapply(table(group), function(x) max(x * 0.5, 4), numeric(1L))
+  splitdf <- split(df, class)
+  maxim <- vapply(table(class), function(x) max(x * 0.5, 4), numeric(1L))
   for (i in seq_along(splitdf)) {
     sdat <- splitdf[[i]]
     splitdf[[i]][] <- lapply(sdat, function(cols) {
@@ -83,9 +83,9 @@ createUniqueValues <- function(df, group){
 # 
 # @param data A data frame with z-score values. Rows are samples and columns 
 # are features that pass the significance cutoff. 
-# @param groups The names of groups for the main class.
+# @param classes The names of classes for the main class.
 # 
-ldaFunction <- function (data, groups) {
+ldaFunction <- function (data, classes) {
  
     ## Fitting LDA model
     lda.fit <- lda(class ~ ., data = data)
@@ -125,11 +125,11 @@ ldaFunction <- function (data, groups) {
 
 
 ## Kruskal-Wallis Rank Sum Test for the classes
-filterKruskal <- function(relab, group, p.value, method = method) {
+filterKruskal <- function(relab, class, p.value, method = method) {
   # applies "kruskal.test.alt" function to each row (feature) of relab
   # to detect differential abundance between classes, 0 and 1
   kw.res <- apply(relab, 1L, function(x) {
-    kruskal.test(x ~ group)[["p.value"]]
+    kruskal.test(x ~ class)[["p.value"]]
   })
   # TRUE for p-values less than or equal to kw.threshold
   kw.res <- stats::p.adjust(kw.res, method = method)
@@ -146,9 +146,9 @@ filterKruskal <- function(relab, group, p.value, method = method) {
 #' R implementation of the LEfSe method
 #'
 #' Perform a LEfSe analysis: the function carries out differential analysis
-#' between two sample groups for multiple features and uses linear discriminant analysis
+#' between two sample classes for multiple features and uses linear discriminant analysis
 #' to establish their effect sizes. Subclass information for each class can be incorporated
-#' into the analysis (see examples). Features with large differences between two sample groups
+#' into the analysis (see examples). Features with large differences between two sample classes
 #' are identified as biomarkers.
 #'
 #' @details
@@ -167,17 +167,15 @@ filterKruskal <- function(relab, group, p.value, method = method) {
 #' Sum Test (default 0.05). If multiple hypothesis testing is performed, this 
 #' threshold is applied to corrected p-values.
 #' @param wilcox.threshold numeric(1) The p-value for the Wilcoxon Rank-Sum Test
-#' when 'blockCol' is present (default 0.05). If multiple hypothesis testing is 
+#' when 'subclassCol' is present (default 0.05). If multiple hypothesis testing is 
 #' performed, this threshold is applied to corrected p-values.
 #' @param lda.threshold numeric(1) The effect size threshold (default 2.0).
-#' @param groupCol character(1) Column name in `colData(relab)` indicating
-#' groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
-#' default "GROUP").
-#' @param blockCol character(1) Optional column name in `colData(relab)`
-#' indicating the blocks, usually a factor with two levels (e.g.,
-#' `c("adult", "senior")`; default NULL), but can be more than two levels; 
-#' also, this is NOT a statistical blocking variable, lefser does not have 
-#' statistical blocking option.
+#' @param classCol character(1) Column name in `colData(relab)` indicating
+#' class, usually a factor with two levels (e.g., `c("cases", "controls")`;
+#' default "CLASS").
+#' @param subclassCol character(1) Optional column name in `colData(relab)`
+#' indicating the subclasses, usually a factor with two levels (e.g.,
+#' `c("adult", "senior")`; default NULL), but can be more than two levels.
 #' @param assay The i-th assay matrix in the `SummarizedExperiment` ('relab';
 #' default 1).
 #' @param trim.names Default is `FALSE`. If `TRUE`, this function extracts 
@@ -213,12 +211,12 @@ filterKruskal <- function(relab, group, p.value, method = method) {
 #'     zeller14tn_ra <- relativeAb(zeller14tn)
 #'     
 #'     # (1) Using classes only
-#'     res_group <- lefser(zeller14tn_ra, 
-#'                         groupCol = "study_condition")
+#'     res_class <- lefser(zeller14tn_ra, 
+#'                         classCol = "study_condition")
 #'     # (2) Using classes and sub-classes
-#'     res_block <- lefser(zeller14tn_ra, 
-#'                         groupCol = "study_condition", 
-#'                         blockCol = "age_category")
+#'     res_subclass <- lefser(zeller14tn_ra, 
+#'                         classCol = "study_condition", 
+#'                         subclassCol = "age_category")
 #'                         
 #' @export
 lefser <-
@@ -226,8 +224,8 @@ lefser <-
            kruskal.threshold = 0.05,
            wilcox.threshold = 0.05,
            lda.threshold = 2.0,
-           groupCol = "GROUP",
-           blockCol = NULL,
+           classCol = "CLASS",
+           subclassCol = NULL,
            assay = 1L,
            trim.names = FALSE,
            checkAbundances = TRUE,
@@ -252,33 +250,33 @@ lefser <-
         warning("Convert counts to relative abundances with 'relativeAb()'")
     }
            
-    ## Extract the class/group information   
-    groupf <- colData(relab)[[groupCol]]
-    groupf <- as.factor(groupf)
-    lgroupf <- levels(groupf)
-    if (is.null(groupf) || !identical(length(lgroupf), 2L)) {
-        msg <- "'groupCol' must refer to a valid dichotomous (two-level) variable"
+    ## Extract the class information   
+    classf <- colData(relab)[[classCol]]
+    classf <- as.factor(classf)
+    lclassf <- levels(classf)
+    if (is.null(classf) || !identical(length(lclassf), 2L)) {
+        msg <- "'classCol' must refer to a valid dichotomous (two-level) variable"
         stop(msg) # ensure the class has only two levels
     }
     message(
-        "The outcome variable is specified as '", groupCol,
-        "' and the reference category is '", lgroupf[1],
+        "The outcome variable is specified as '", classCol,
+        "' and the reference category is '", lclassf[1],
         "'.\n See `?factor` or `?relevel` to change the reference category."
     )
     
     ## Kruskal-Wallis Rank Sum Test for the classes
     relab_sub <- filterKruskal(relab = relab_data, 
-                               group = groupf, 
+                               class = classf, 
                                p.value = kruskal.threshold,
                                method = method)
 
     ## Wilcoxon Rank-Sum Test for the sub-classes
-    if (!is.null(blockCol)) {
-        block <- as.factor(colData(relab)[[blockCol]])
-        block <- droplevels(block)
+    if (!is.null(subclassCol)) {
+        subclass <- as.factor(colData(relab)[[subclassCol]])
+        subclass <- droplevels(subclass)
         ## z-statistics result of the features passing the significance cut-off
-        relab_sub <- fillPmatZmat(group = groupf, 
-                                  block = block, 
+        relab_sub <- fillPmatZmat(class = classf, 
+                                  subclass = subclass, 
                                   relab_sub = relab_sub, 
                                   p.threshold = wilcox.threshold,
                                   method = method)
@@ -292,12 +290,12 @@ lefser <-
     ## Transposed relative abundance matrix with the 'class' column
     relab_sub_t <- t(relab_sub)
     relab_sub_t_df <- as.data.frame(relab_sub_t)
-    # relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, group = groupf)
-    relab_sub_t_df <- cbind(relab_sub_t_df, class = groupf)
+    # relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, class = classf)
+    relab_sub_t_df <- cbind(relab_sub_t_df, class = classf)
 
     ## LDA model
     warn <- testthat::capture_warnings(
-        raw_lda_scores <- ldaFunction(relab_sub_t_df, lgroupf)
+        raw_lda_scores <- ldaFunction(relab_sub_t_df, lclassf)
     )
     
     ## Warning collinearity and recommend `get_terminal_nodes`
@@ -319,7 +317,7 @@ lefser <-
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
     res_scores <- scores_df[threshold_scores, ]
     class(res_scores) <- c("lefser_df", class(res_scores))
-    attr(res_scores, "groups") <- lgroupf
+    attr(res_scores, "classes") <- lclassf
     
     ## Add attributes with argument values
     ## This is used for plottin functions
@@ -327,10 +325,10 @@ lefser <-
     attr(res_scores, "kth") <-  kruskal.threshold
     attr(res_scores, "wth") <- wilcox.threshold
     attr(res_scores, "ldath") <- lda.threshold
-    attr(res_scores, "grp") <- groupCol
-    attr(res_scores, "blk") <- blockCol
+    attr(res_scores, "grp") <- classCol
+    attr(res_scores, "blk") <- subclassCol
     attr(res_scores, "method") <- method
-    attr(res_scores, "lgroupf") <- lgroupf[1]
+    attr(res_scores, "lclassf") <- lclassf[1]
     res_scores
  }
 

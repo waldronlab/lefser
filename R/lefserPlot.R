@@ -25,7 +25,7 @@ utils::globalVariables(c("features", "scores"))
 #'
 #' @examples
 #' example("lefser")
-#' lefserPlot(res_group)
+#' lefserPlot(res_class)
 #' 
 #' @export
 lefserPlot <- function(df, 
@@ -35,15 +35,15 @@ lefserPlot <- function(df,
                        label.font.size = 3) {
     
     df <- .trunc(df, trim.names)
-    groups <- attr(df, "groups")
+    classes <- attr(df, "classes")
   
-    ## Create the `group` column
-     if (!is.null(groups)) {
-         group <- ifelse(df$scores > 0, tail(groups, 1), head(groups, 1))
-         df$group <- factor(group, levels = groups)
+    ## Create the `class` column
+     if (!is.null(classes)) {
+         class <- ifelse(df$scores > 0, tail(classes, 1), head(classes, 1))
+         df$class <- factor(class, levels = classes)
     } else {
-        group <- ifelse(df$scores > 0, 1, 0)
-        df$group <- as.factor(group)
+        class <- ifelse(df$scores > 0, 1, 0)
+        df$class <- as.factor(class)
     }
   
     ## Add the `order` column based on the scores 
@@ -63,7 +63,7 @@ lefserPlot <- function(df,
             axis.text.y  = element_blank(),
             axis.text.x  = element_text(vjust = 0.7, size = 9)) +
         geom_bar(
-            stat = "identity", aes(fill = group), color = "black", size = 0.3) +
+            stat = "identity", aes(fill = class), color = "black", size = 0.3) +
         theme(    # Legends
             legend.position = "top",
             legend.title = element_blank(),
