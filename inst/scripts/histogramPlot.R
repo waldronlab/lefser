@@ -6,13 +6,13 @@ zeller14tn <- zeller14[tn,]
 zeller14tn_ra <- relativeAb(zeller14tn)
 
 # (1) Using classes only
-res_group <- lefser(zeller14tn_ra,
-                    groupCol = "study_condition")
+res_class <- lefser(zeller14tn_ra,
+                    classCol = "study_condition")
 # (2) Using classes and sub-classes
-res_block <- lefser(zeller14tn_ra,
-                    groupCol = "study_condition",
-                    blockCol = "age_category")
-plot_group <- lefsePlotFeat(res_group, res_group$features[[1]])
-plot_group
-plot_block <- lefsePlotFeat(res_block, res_block$features[[2]])
-plot_block
+res_subclass <- lefser(zeller14tn_ra,
+                    classCol = "study_condition",
+                    subclassCol = "age_category")
+plot_class <- lefsePlotFeat(res_class, res_class$features[[1]])
+plot_class
+plot_subclass <- lefsePlotFeat(res_subclass, res_subclass$features[[2]])
+plot_subclass
