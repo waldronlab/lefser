@@ -1,4 +1,4 @@
-suppresslibrary(lefesr)
+library(lefser)
 data("zeller14")
 z14 <- zeller14[, zeller14$study_condition != "adenoma"]
 tn <- get_terminal_nodes(rownames(z14))
