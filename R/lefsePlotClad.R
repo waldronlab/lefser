@@ -9,41 +9,46 @@
 lefserAllRanks <- function(relab,...) {
     se <- rowNames2RowData(relab)
     seL <- mia::splitByRanks(se)
+    ## The kingdom level is not needed
+    ## The mia package doesn't support strain.
     seL <- seL[names(seL) != "kingdom"]
     res <- seL |> 
         purrr::map(function(x, ...) lefser(relab = x,...), ...) |> 
         dplyr::bind_rows()
     resOriginal <- lefser(relab, ...)
-    resOriginal$features  <- stringr::str_extract(resOriginal$features, "[^|]+$")
-    
-    res2 <- res |> 
-        dplyr::filter(!.data$features %in% resOriginal$features) |> 
+    ## Get only tip names (full names with full taxonomy are too long).
+    resOriginal$features  <- stringr::str_extract(
+        resOriginal$features, "[^|]+$"
+    )
+    res <- res |> 
+        ## Avoid repeating features.
+        dplyr::filter(!.data[["features"]] %in% resOriginal$features) |> 
+        ## Features not supported by mia are added (strain, OTUs, etc.)
         dplyr::bind_rows(resOriginal)
     
-    grp <- attr(resOriginal, "groups")
-    control <- grp[grp == attr(resOriginal, "lgroupf")]
-    case <- grp[grp != attr(resOriginal, "lgroupf")]
+    controlVar <- attr(resOriginal, "lgroupf")
+    caseVar <- attr(resOriginal, "case")
+    pathStrings <- .selectPathStrings(relab, res)
     
-    pathString <- rownames(relab)
-    index <- res2$features |> 
-        purrr::map(~ which(stringr::str_detect(pathString, .x))) |> 
-        unlist() |> 
-        unique() |> 
-        sort()
-    pathString <- pathString[index]
-    
-    res3 <- res2 |> 
-        dplyr::mutate(sample = ifelse(.data$scores > 0, .env$case, .env$control)) |> 
-        dplyr::mutate(abs = abs(scores)) |> 
+    resOutput <- res |>
+        dplyr::mutate(
+            sample = dplyr::case_when(
+                ## This assumes positive values always mean enriched in
+                ## the case condition.
+                .data[["scores"]] > 0 ~ .env[["case"]],
+                TRUE ~ .env[["controlVar"]]
+            )
+        ) |> 
+        dplyr::mutate(abs = abs(.data[["scores"]])) |> 
         as.data.frame()
-    class(res3) <- c("lefser_df_all", class(res3))
     
-    attr(res3, "pathString") <- pathString
-    attr(res3, "tree") <- .toTree(pathString)
-    attr(res3, "case") <- case
-    attr(res3, "control") <- control
+    class(resOutput) <- c("lefser_df_all", class(resOutput))
+    attr(resOutput, "pathStrings") <- pathStrings
+    attr(resOutput, "tree") <- .toTree(pathStrings)
+    attr(resOutput, "lgroupf") <- control
+    attr(resOutput, "case") <- caseVar
     
-    return(res3)
+    return(resOutput)
 }
 
 #' Plot Cladogram
@@ -57,15 +62,15 @@ lefserAllRanks <- function(relab,...) {
 #'
 lefsePlotClad <- function(x) {
     
-    if (!"lefser_df_all" %in% class(x)) {
-        stop(
-            "You need an object of class 'lefser_df_all'",
-            call. = FALSE
-        )
-    }
-    
+    # if (!"lefser_df_all" %in% class(x)) {
+    #     stop(
+    #         "You need an object of class 'lefser_df_all'",
+    #         call. = FALSE
+    #     )
+    # }
+    browser()
     tree <- attr(x, "tree")
-    control <- attr(x, "control")
+    control <- attr(x, "lgroupf")
     case <- attr(x, "case")
     
     labels <- c(tree$tip.label, tree$node.label)
@@ -105,7 +110,6 @@ lefsePlotClad <- function(x) {
         ggrepel::geom_label_repel(
             mapping = ggtree::aes(label = showNodeLabs)
         ) +
-        # ggtree::geom_label(aes(label = showNodeLabs)) +
         ggtree::theme(legend.position = "right") + 
         ggtree::scale_fill_manual(
             values = c("red", "forestgreen"), breaks = c(control, case)
@@ -145,7 +149,18 @@ rowNames2RowData <- function(x) {
     return(se)
 }
 
-## Convert a character vector into a 
+.selectPathStrings <- function(se, res) {
+    pathStrings <- rownames(se)
+    index <- res$features |> 
+        purrr::map(~ which(stringr::str_detect(pathStrings, .x))) |> 
+        unlist() |> 
+        unique() |> 
+        sort()
+    pathStrings <- pathStrings[index]
+    return(pathStrings)
+}
+
+## Convert a character vector into a cladogram based on taxonomy
 .toTree <- function(v) {
     edgeDF <- v |> 
         purrr::map(.pathString2EdgeList) |> 
