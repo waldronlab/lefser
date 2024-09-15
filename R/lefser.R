@@ -331,6 +331,12 @@ lefser <-
     attr(res_scores, "blk") <- blockCol
     attr(res_scores, "method") <- method
     attr(res_scores, "lgroupf") <- lgroupf[1]
+    attr(res_scores, "case") <- lgroupf[2]
+    
+    ## Some more attributes to create the cladogram.
+    pathStrings <- .selectPathStrings(relab, res_scores)
+    attr(res_scores, "pathStrings") <- pathStrings
+    attr(res_scores, "tree") <- .toTree(pathStrings)
     res_scores
  }
 
