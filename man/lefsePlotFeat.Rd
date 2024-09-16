@@ -4,7 +4,7 @@
 \alias{lefsePlotFeat}
 \title{Plot Feature}
 \usage{
-lefsePlotFeat(res, fName)
+lefsePlotFeat(res, fName, colors = "colorblind")
 }
 \arguments{
 \item{res}{An object of class lefser_df,
@@ -12,6 +12,10 @@ output of the \code{lefser} function.}
 
 \item{fName}{A character string. The name of a feature in the lefser_df
 object.}
+
+\item{colors}{Colors corresponding to class 0 and 1.
+Options: "c" (colorblind), "l" (lefse), "g" (greyscale). Defaults to "c".
+This argument also accepts a character(2) with two color names.}
 }
 \value{
 A ggplot object.

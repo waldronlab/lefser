@@ -6,7 +6,7 @@
 \usage{
 lefserPlot(
   df,
-  colors = c("red", "forestgreen"),
+  colors = "c",
   trim.names = TRUE,
   title = "",
   label.font.size = 3
@@ -15,8 +15,9 @@ lefserPlot(
 \arguments{
 \item{df}{Data frame produced by \code{lefser}.}
 
-\item{colors}{A character(2). Colors corresponding to class 0 and 1.
-Defaults to \code{c("red", "forestgreen")}.}
+\item{colors}{Colors corresponding to class 0 and 1.
+Options: "c" (colorblind), "l" (lefse), "g" (greyscale). Defaults to "c".
+This argument also accepts a character(2) with two color names.}
 
 \item{trim.names}{Under the default (\code{TRUE}), this function extracts the
 most specific taxonomic rank of organism.}
