@@ -7,6 +7,9 @@
 #' output of the \code{lefser} function.
 #' @param fName A character string. The name of a feature in the lefser_df
 #' object.
+#' @param colors Colors corresponding to class 0 and 1.
+#' Options: "c" (colorblind), "l" (lefse), "g" (greyscale). Defaults to "c".
+#' This argument also accepts a character(2) with two color names.
 #'
 #' @details
 #' The solid lines represent the mean by group or by group+block
@@ -35,11 +38,11 @@
 #' plot_group <- lefsePlotFeat(res_group, res_group$features[[1]])
 #' plot_block <- lefsePlotFeat(res_block, res_block$features[[2]])
 #'
-lefsePlotFeat <- function(res, fName) {
+lefsePlotFeat <- function(res, fName, colors = "colorblind") {
     dat <- .prepareDataHistogram(res = res, fName = fName)
     refGroup <- attr(res, "lgroupf")
     vLinePos <- which(dat$groupCol != refGroup)[1] - 0.5
-
+    colVar <- .selectPalette(colors)
     l <- split(dat, dat$groupCol)
     maxYVal <- max(dat$abundance)
     vals <- purrr::map(l, ~ {
@@ -52,7 +55,12 @@ lefsePlotFeat <- function(res, fName) {
             ggplot2::ggplot(
                 data = dat, mapping = ggplot2::aes(sample, abundance)
             ) +
-            ggplot2::geom_col(fill = "#E57A77", width = 1)
+            ggplot2::geom_col(
+                mapping = ggplot2::aes(fill = groupCol), width = 1
+            ) +
+            ggplot2::scale_fill_manual(
+                values = colVar
+            )
     } else if (isTRUE(cond)) {
         p <- dat |>
             ggplot2::ggplot(
@@ -62,7 +70,7 @@ lefsePlotFeat <- function(res, fName) {
                 mapping = ggplot2::aes(fill = blockCol), width = 1
             ) +
             ggplot2::scale_fill_manual(
-                values = c("#E57A77", "#7CA1CC")
+                values = colVar
             )
     }
     p <- p +

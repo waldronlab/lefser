@@ -21,12 +21,12 @@
 #' assay(relativeAb(se))
 #'
 #' @description
-#' This function calculates the relative abundance of each feature in the SummarizedExperiment 
-#' object containing count data, expressed as counts per million (CPM) 
-#' 
+#' This function calculates the relative abundance of each feature in the SummarizedExperiment
+#' object containing count data, expressed as counts per million (CPM)
+#'
 #' @returns returns a new SummarizedExperiment object with counts per million
 #' calculated and added as a new assay named rel_abs.
-#' 
+#'
 #' @export
 relativeAb <- function(se, assay = 1L) {
   assay_data <- assay(se, i = assay)
@@ -48,12 +48,12 @@ relativeAb <- function(se, assay = 1L) {
 #' @return A logical vector indicating which elements of the string are terminal
 #' nodes
 #' @description
-#' A terminal node in a taxonomy does not have any child nodes. For example, a 
+#' A terminal node in a taxonomy does not have any child nodes. For example, a
 #' species is a terminal node if there are no subspecies or strains that belong
 #' to that species. This function identifies which elements of a vector are terminal
 #' nodes simply by checking whether that element appears as a substring in any other
 #' element of the vector.
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -86,4 +86,21 @@ get_terminal_nodes <- function(string) {
     }
     scores_df[["features"]] <- Names
     return(scores_df)
+}
+
+## A function for selecting colors for the plots
+.selectPalette <- function(x = "colorblind") {
+    if (is.character(x) && length(x) == 1) {
+        sel <- match.arg(x, choices = c("colorblind", "lefse", "greyscale"))
+        message("Using palette: ", sel)
+        presetColors <- list(
+            colorblind = c("#E57A77", "#7CA1CC"),
+            lefse = c("red", "forestgreen"),
+            greyscale = c("grey30", "grey60")
+        )
+        selectedColor <- presetColors[[sel]]
+        return(selectedColor)
+    } else {
+        return(x)
+    }
 }
