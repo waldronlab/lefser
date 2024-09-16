@@ -9,7 +9,8 @@ utils::globalVariables(c("features", "scores"))
 #' @importFrom dplyr %>% arrange mutate
 #' @importFrom utils head tail
 #'
-#' @param df Data frame produced by \code{lefser}.
+#' @param df Data frame produced by \code{lefser}. This data frame contains
+#' two columns labeled as `c("features", "scores")`.
 #' @param colors Colors corresponding to class 0 and 1.
 #' Options: "c" (colorblind), "l" (lefse), "g" (greyscale). Defaults to "c".
 #' This argument also accepts a character(2) with two color names.
