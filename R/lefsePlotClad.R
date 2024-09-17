@@ -1,59 +1,9 @@
-#' Run lefser on all taxonomic levels
-#'
-#' @param relab A SummarizedExperiment.
-#' @param ... Arguments passed to the \code{lefser} function.
-#'
-#' @return An object of class 'lefser_df_all' and 'data.frame'.
-#' @export
-#'
-lefserAllRanks <- function(relab,...) {
-    se <- .rowNames2RowData(relab)
-    seL <- mia::splitByRanks(se)
-    ## The kingdom level is not needed
-    ## The mia package doesn't support strain.
-    seL <- seL[names(seL) != "kingdom"]
-    res <- seL |>
-        purrr::map(function(x, ...) lefser(relab = x,...), ...) |>
-        dplyr::bind_rows()
-    resOriginal <- lefser(relab, ...)
-    ## Get only tip names (full names with full taxonomy are too long).
-    resOriginal$features  <- stringr::str_extract(
-        resOriginal$features, "[^|]+$"
-    )
-    res <- res |>
-        ## Avoid repeating features.
-        dplyr::filter(!.data[["features"]] %in% resOriginal$features) |>
-        ## Features not supported by mia are added (strain, OTUs, etc.)
-        dplyr::bind_rows(resOriginal)
 
-    controlVar <- attr(resOriginal, "lgroupf")
-    caseVar <- attr(resOriginal, "case")
-    pathStrings <- .selectPathStrings(relab, res)
-
-    resOutput <- res |>
-        dplyr::mutate(
-            sample = dplyr::case_when(
-                ## This assumes positive values always mean enriched in
-                ## the case condition.
-                .data[["scores"]] > 0 ~ .env[["case"]],
-                TRUE ~ .env[["controlVar"]]
-            )
-        ) |>
-        dplyr::mutate(abs = abs(.data[["scores"]])) |>
-        as.data.frame()
-
-    class(resOutput) <- c("lefser_df_all", class(resOutput))
-    attr(resOutput, "pathStrings") <- pathStrings
-    attr(resOutput, "tree") <- .toTree(pathStrings)
-    attr(resOutput, "lgroupf") <- control
-    attr(resOutput, "case") <- caseVar
-
-    return(resOutput)
-}
+# Functions for plotting a cladogram --------------------------------------
 
 #' Plot Cladogram
 #'
-#' @param x An object of class "lefesr_df_all".
+#' @param x An object of class "lefser_df" or "lefesr_df_all".
 #'
 #' @importFrom ggtree %<+%
 #'
@@ -61,14 +11,12 @@ lefserAllRanks <- function(relab,...) {
 #' @export
 #'
 lefsePlotClad <- function(x) {
-
     # if (!"lefser_df_all" %in% class(x)) {
     #     stop(
     #         "You need an object of class 'lefser_df_all'",
     #         call. = FALSE
     #     )
     # }
-    browser()
     tree <- attr(x, "tree")
     control <- attr(x, "lgroupf")
     case <- attr(x, "case")
@@ -121,6 +69,74 @@ lefsePlotClad <- function(x) {
     gt2
 }
 
+
+.cladPlotTips <- function() {
+
+}
+
+.cladPlotAll <- function() {
+
+}
+
+# Run lefser at all taxonomic levels --------------------------------------
+
+#' Run lefser on all taxonomic levels
+#'
+#' @param relab A SummarizedExperiment.
+#' @param ... Arguments passed to the \code{lefser} function.
+#'
+#' @return An object of class 'lefser_df_all' and 'data.frame'.
+#' @export
+#'
+lefserAllRanks <- function(relab,...) {
+    se <- .rowNames2RowData(relab)
+    seL <- mia::splitByRanks(se)
+    ## The kingdom level is not needed
+    ## The mia package doesn't support strain.
+    seL <- seL[names(seL) != "kingdom"]
+    res <- seL |>
+        purrr::map(function(x, ...) lefser(relab = x,...), ...) |>
+        dplyr::bind_rows()
+    resOriginal <- lefser(relab, ...)
+    ## Get only tip names (full names with full taxonomy are too long).
+    resOriginal$features  <- stringr::str_extract(
+        resOriginal$features, "[^|]+$"
+    )
+    res <- res |>
+        ## Avoid repeating features.
+        dplyr::filter(!.data[["features"]] %in% resOriginal$features) |>
+        ## Features not supported by mia are added (strain, OTUs, etc.)
+        dplyr::bind_rows(resOriginal)
+
+    controlVar <- attr(resOriginal, "lgroupf")
+    caseVar <- attr(resOriginal, "case")
+
+    ## This code could be added to the plotting function
+    ## To avoid modfying the current lefser function
+    resOutput <- res |>
+        dplyr::mutate(
+            sample = dplyr::case_when(
+                ## This assumes positive values always mean enriched in
+                ## the case condition.
+                .data[["scores"]] > 0 ~ .env[["caseVar"]],
+                TRUE ~ .env[["controlVar"]]
+            )
+        ) |>
+        dplyr::mutate(abs = abs(.data[["scores"]])) |>
+        as.data.frame()
+
+    class(resOutput) <- c("lefser_df_all", class(resOutput))
+
+    ## These pathStrings could be used in the plotting function instead (or not)
+    pathStrings <- .selectPathStrings(relab, res)
+    attr(resOutput, "pathStrings") <- pathStrings
+    attr(resOutput, "tree") <- .toTree(pathStrings)
+
+    attr(resOutput, "lgroupf") <- controlVar
+    attr(resOutput, "case") <- caseVar
+    return(resOutput)
+}
+
 ## Add taxonomic information to rowData
 ## This step is necessary for mia to work
 .rowNames2RowData <- function(x) {
@@ -163,7 +179,7 @@ lefsePlotClad <- function(x) {
 }
 
 ## This function selects pathStrings containing only
-## taxa that is differentially abundant
+## taxa that is differentiallty abundant
 .selectPathStrings <- function(se, res) {
     pathStrings <- rownames(se)
     index <- res$features |>
