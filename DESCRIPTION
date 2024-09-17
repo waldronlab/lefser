@@ -37,7 +37,8 @@ Imports:
     ggtree,
     ggrepel,
     purrr,
-    treeio
+    treeio,
+    mia
 Suggests: 
   knitr,
   rmarkdown,
