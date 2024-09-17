@@ -327,8 +327,8 @@ lefser <-
     attr(res_scores, "kth") <-  kruskal.threshold
     attr(res_scores, "wth") <- wilcox.threshold
     attr(res_scores, "ldath") <- lda.threshold
-    attr(res_scores, "grp") <- classCol
-    attr(res_scores, "blk") <- subclassCol
+    attr(res_scores, "class") <- classCol
+    attr(res_scores, "subclass") <- subclassCol
     attr(res_scores, "method") <- method
     attr(res_scores, "lclassf") <- lclassf[1]
     res_scores
