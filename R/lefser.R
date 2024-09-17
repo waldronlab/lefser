@@ -231,7 +231,9 @@ lefser <-
            checkAbundances = TRUE,
            method = "none",
            ...,
-           expr
+           expr,
+           groupCol = "GROUP",
+           blockCol = NULL
 ) {
     if (!missing(expr)) {
         .Deprecated(
