@@ -2,16 +2,22 @@
 % Please edit documentation in R/lefserPlotClad.R
 \name{lefserPlotClad}
 \alias{lefserPlotClad}
-\title{Plot Cladogram}
+\title{LEfSer plot cladogram}
 \usage{
-lefserPlotClad(x)
+lefserPlotClad(df, colors = "c", showTipLabels = FALSE, showNodeLabels = "p")
 }
 \arguments{
-\item{x}{An object of class "lefser_df" or "lefesr_df_all".}
+\item{df}{An object of class "lefser_df" or "lefesr_df_all".}
+
+\item{colors}{dfsdf}
+
+\item{showTipLabels}{sdfsd}
+
+\item{showNodeLabels}{sdfsdfs}
 }
 \value{
 A ggtree object.
 }
 \description{
-Plot Cladogram
+LEfSer plot cladogram
 }
