@@ -17,3 +17,14 @@ An object of class 'lefser_df_all' and 'data.frame'.
 \description{
 Run lefser on all taxonomic levels
 }
+\examples{
+
+data("zeller14")
+z14 <- zeller14[, zeller14$study_condition != "adenoma"]
+tn <- get_terminal_nodes(rownames(z14))
+z14tn <- z14[tn, ]
+z14tn_ra <- relativeAb(z14tn)
+
+resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
+
+}

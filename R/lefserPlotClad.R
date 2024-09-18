@@ -2,17 +2,32 @@
 # Functions for plotting a cladogram --------------------------------------
 
 #' LEfSer plot cladogram
+#' 
+#' \code{lefserPlotClad} plots a cladogram from the results of 
+#' `lefser` or `lefserAllRanks`
 #'
 #' @param df An object of class "lefser_df" or "lefesr_df_all".
-#' @param colors dfsdf
-#' @param showTipLabels sdfsd
-#' @param showNodeLabels sdfsdfs
+#' @param colors Colors corresponding to class 0 and 1.
+#' Options: "c" (colorblind), "l" (lefse), "g" (greyscale).
+#' Defaults to "c". This argument also accepts a character(2) with two color names.
+#' @param showTipLabels Logical. If TRUE, show tip labels. Default is FALSE.
+#' @param showNodeLabels Options: "p" = phylum, "c" = class, "o" = order,
+#' "f" = family, "g" = genus. It can accept several options, e.g., 
+#' c("p", "c").
 #'
 #' @importFrom ggtree %<+%
 #'
 #' @return A ggtree object.
 #' @export
 #'
+#' @examples
+#' data("zeller14")
+#' z14 <- zeller14[, zeller14$study_condition != "adenoma"]
+#' tn <- get_terminal_nodes(rownames(z14))
+#' z14tn <- z14[tn, ]
+#' z14tn_ra <- relativeAb(z14tn)
+#' resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
+#' ggt <- lefserPlotClad(df = resAll)
 lefserPlotClad <- function(
         df, colors = "c", showTipLabels = FALSE, showNodeLabels = "p"
 ) {
@@ -133,6 +148,16 @@ lefserPlotClad <- function(
 #'
 #' @return An object of class 'lefser_df_all' and 'data.frame'.
 #' @export
+#'
+#' @examples
+#' 
+#' data("zeller14")
+#' z14 <- zeller14[, zeller14$study_condition != "adenoma"]
+#' tn <- get_terminal_nodes(rownames(z14))
+#' z14tn <- z14[tn, ]
+#' z14tn_ra <- relativeAb(z14tn)
+#'
+#' resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
 #'
 lefserAllRanks <- function(relab,...) {
     ## Feature names should have the full taxonomy
