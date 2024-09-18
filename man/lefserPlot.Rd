@@ -13,7 +13,8 @@ lefserPlot(
 )
 }
 \arguments{
-\item{df}{Data frame produced by \code{lefser}.}
+\item{df}{Data frame produced by \code{lefser}. This data frame contains
+two columns labeled as \code{c("features", "scores")}.}
 
 \item{colors}{Colors corresponding to class 0 and 1.
 Options: "c" (colorblind), "l" (lefse), "g" (greyscale). Defaults to "c".
