@@ -7,3 +7,9 @@ z14tn_ra <- relativeAb(z14tn)
 
 res <- lefser(z14tn_ra, groupCol = "study_condition")
 resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
+
+x <- lefserPlotClad(df = res)
+x
+y <- lefserPlotClad(df = resAll)
+y
+sessioninfo::session_info()
