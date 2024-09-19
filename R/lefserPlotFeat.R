@@ -1,6 +1,6 @@
 #' Plot Feature
 #'
-#' \code{lefsePlotFeat} plots the abundance data of a DA feature across all
+#' \code{lefserPlotFeat} plots the abundance data of a DA feature across all
 #' samples.
 #'
 #' @param res An object of class lefser_df,
@@ -35,10 +35,10 @@
 #' res_block <- lefser(zeller14tn_ra,
 #'                     groupCol = "study_condition",
 #'                     blockCol = "age_category")
-#' plot_group <- lefsePlotFeat(res_group, res_group$features[[1]])
-#' plot_block <- lefsePlotFeat(res_block, res_block$features[[2]])
+#' plot_group <- lefserPlotFeat(res_group, res_group$features[[1]])
+#' plot_block <- lefserPlotFeat(res_block, res_block$features[[2]])
 #'
-lefsePlotFeat <- function(res, fName, colors = "colorblind") {
+lefserPlotFeat <- function(res, fName, colors = "colorblind") {
     dat <- .prepareDataHistogram(res = res, fName = fName)
     refGroup <- attr(res, "lgroupf")
     vLinePos <- which(dat$groupCol != refGroup)[1] - 0.5
