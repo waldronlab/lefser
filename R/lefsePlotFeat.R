@@ -150,8 +150,8 @@ lefsePlotFeat <- function(res, fName) {
         )
     }
     tse <- attr(res, "inputSE")
-    classCol <- attr(res, "grp")
-    subclassCol <- attr(res, "blk")
+    classCol <- attr(res, "class")
+    subclassCol <- attr(res, "subclass")
     refGrp <- attr(res, "lclassf")
     selectCols <- c(classCol, subclassCol)
     sampleData <- as.data.frame(SummarizedExperiment::colData(tse))
