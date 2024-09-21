@@ -244,6 +244,18 @@ lefser <-
         relab_data <- assay(relab, i = assay)
     }
       
+    if (!missing(groupCol)){
+      .Deprecated(
+            msg = "The 'groupCol' argument is deprecated, use 'classCol' instead."
+        )
+      classCol <- groupCol
+    }  
+    if (!missing(blockCol)){
+      .Deprecated(
+            msg = "The 'blockCol' argument is deprecated, use 'subclassCol' instead."
+        )
+      subclassCol <- blockCol
+    }
     ## Check whether relative abundance is provided or not
     if (checkAbundances && !identical(all.equal(colSums(relab_data), 
                                                 rep(1e6, ncol(relab_data)), 
