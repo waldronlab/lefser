@@ -12,10 +12,10 @@ res_group <- lefser(zeller14tn_ra,
 res_block <- lefser(zeller14tn_ra,
                     groupCol = "study_condition",
                     blockCol = "age_category")
-plot_group <- lefsePlotFeat(res_group, res_group$features[[1]])
-plot_block <- lefsePlotFeat(res_block, res_block$features[[2]])
+plot_group <- lefserPlotFeat(res_group, res_group$features[[1]])
+plot_block <- lefserPlotFeat(res_block, res_block$features[[2]])
 
-test_that("lefsePlotFeat works", {
+test_that("lefserPlotFeat works", {
   expect_s3_class(plot_group, "ggplot")
   expect_s3_class(plot_block, "ggplot")
 })
