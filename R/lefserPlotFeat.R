@@ -160,7 +160,7 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
     tse <- attr(res, "inputSE")
     classCol <- attr(res, "class")
     subclassCol <- attr(res, "subclass")
-    refGrp <- attr(res, "lclassf")
+    refClass <- attr(res, "lclassf")
     selectCols <- c(classCol, subclassCol)
     sampleData <- as.data.frame(SummarizedExperiment::colData(tse))
     sampleData <- sampleData[, selectCols, drop = FALSE]
@@ -175,7 +175,7 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
             values_to = "abundance"
         ) |>
         dplyr::left_join(sampleData, by = "sample")
-    dat[[classCol]] <- forcats::fct_relevel(dat[[classCol]], refGrp)
+    dat[[classCol]] <- forcats::fct_relevel(dat[[classCol]], refClass)
 
     if (is.null(subclassCol)) {
         dat <- dat |>
