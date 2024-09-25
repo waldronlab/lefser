@@ -161,7 +161,7 @@ filterKruskal <- function(relab, class, p.value, method = method) {
 #'
 #' @param relab A [SummarizedExperiment-class] with relative
 #'   abundances in the assay
-#' @param expr (`deprecated`) Use `relab` instead. A [SummarizedExperiment-class]
+#' @param expr (**DEFUNCT**) Use `relab` instead. A [SummarizedExperiment-class]
 #'   with relative abundances in the assay
 #' @param kruskal.threshold numeric(1) The p-value for the Kruskal-Wallis Rank
 #' Sum Test (default 0.05). If multiple hypothesis testing is performed, this
@@ -176,10 +176,10 @@ filterKruskal <- function(relab, class, p.value, method = method) {
 #' @param subclassCol character(1) Optional column name in `colData(relab)`
 #' indicating the subclasses, usually a factor with two levels (e.g.,
 #' `c("adult", "senior")`; default NULL), but can be more than two levels.
-#' @param groupCol (Deprecated) Column name in `colData(relab)` indicating
+#' @param groupCol (**DEPRECATED**) Column name in `colData(relab)` indicating
 #'   groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
 #'   default "GROUP").
-#' @param blockCol (Deprecated) Optional column name in `colData(relab)`
+#' @param blockCol (**DEPRECATED**) Optional column name in `colData(relab)`
 #'   indicating the blocks, usually a factor with two levels (e.g., `c("adult",
 #'   "senior")`; default NULL).
 #' @param assay The i-th assay matrix in the `SummarizedExperiment` ('relab';
@@ -242,13 +242,11 @@ lefser <-
            blockCol = NULL
 ) {
     if (!missing(expr)) {
-        .Deprecated(
-            msg = "The 'expr' argument is deprecated, use 'relab' instead."
+        .Defunct(
+            msg = "The 'expr' argument is defunct, use 'relab' instead."
         )
-        relab_data <- assay(expr, i = assay)
-    } else {
-        relab_data <- assay(relab, i = assay)
     }
+    relab_data <- assay(relab, i = assay)
 
     if (!missing(groupCol)){
         .Deprecated(
