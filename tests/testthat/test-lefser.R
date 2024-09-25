@@ -11,7 +11,7 @@ tn <- get_terminal_nodes(rownames(zeller142))
 zellersub <- zeller142[tn, ]
 zellersubra <- relativeAb(zellersub)
 
-## Set the level for group
+## Set the level for class
 colData(zellersubra)$study_condition <- factor(colData(zellersubra)$study_condition,
                                                levels = c("control", "CRC"))
 
@@ -22,15 +22,15 @@ test_that("lefser and lefserPlot work", {
     
     ## Subsetting a DataFrame with NULL
     set.seed(1234)
-    expect_warning(expect_error(lefser(zellersub, groupCol = NULL, blockCol = NULL)))
+    expect_warning(expect_error(lefser(zellersub, classCol = NULL, subclassCol = NULL)))
     withr::with_seed(1,
-      results <- lefser(zellersubra, groupCol = "study_condition", blockCol = NULL)
+      results <- lefser(zellersubra, classCol = "study_condition", subclassCol = NULL)
     )
     # TODO: compare results between LEfSe and lefser
     expect_equal(results[1, "scores"], -4.313678, tolerance = tol)
     expect_equal(results[nrow(results), "scores"], 4.099828, tolerance = tol)
     withr::with_seed(1, 
-      results2 <- lefser(zellersubra, groupCol = "study_condition", blockCol = "age_category")
+      results2 <- lefser(zellersubra, classCol = "study_condition", subclassCol = "age_category")
     )
     expect_equal(nrow(results2), 15)
     expect_equal(results2$scores,
@@ -64,15 +64,15 @@ test_that("lefser and lefserPlot work", {
 
 test_that("no significant results behaviors are consistent", {
     expect_message(
-        res1 <- lefser(zellersubra, groupCol = "study_condition", blockCol = "age_category", wilcox.threshold = 1e-10),
+        res1 <- lefser(zellersubra, classCol = "study_condition", subclassCol = "age_category", wilcox.threshold = 1e-10),
         "No significant features found."
     )
     expect_message(
-        res2 <- lefser(zellersubra, groupCol = "study_condition", blockCol = "age_category", kruskal.threshold = 1e-10),
+        res2 <- lefser(zellersubra, classCol = "study_condition", subclassCol = "age_category", kruskal.threshold = 1e-10),
         "No significant features found."
     )
     expect_message(
-        res3 <- lefser(zellersubra, groupCol = "study_condition", blockCol = "age_category", lda.threshold = 1e6),
+        res3 <- lefser(zellersubra, classCol = "study_condition", subclassCol = "age_category", lda.threshold = 1e6),
         "No significant features found."
     )
     expect_equal(nrow(res1), 0L)
@@ -84,11 +84,11 @@ test_that("no significant results behaviors are consistent", {
 })
 
 test_that("Relative abundance", {
-    expect_warning(lefser(zellersub, groupCol = "study_condition"), regexp = "^Convert counts.+")
+    expect_warning(lefser(zellersub, classCol = "study_condition"), regexp = "^Convert counts.+")
     expect_equal(assayNames(zellersubra), c("rel_abs", "exprs"))
     expect_equal(colSums(assay(zellersubra, "rel_abs")), rep(1e6, ncol(zellersubra)), check.attributes = FALSE)
     set.seed(1)
-    expect_warning(x <- lefser(zeller142, groupCol = "study_condition"),
+    expect_warning(x <- lefser(zeller142, classCol = "study_condition"),
                    "Variables in the input are collinear")
 })
 

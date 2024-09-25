@@ -25,10 +25,10 @@ A ggplot object.
 samples.
 }
 \details{
-The solid lines represent the mean by group or by group+block
-(if the block variable is present).
-The dashed lines represent the median by group or by group+block
-(if the block variable is present).
+The solid lines represent the mean by class or by class+subclass
+(if the subclass variable is present).
+The dashed lines represent the median by class or by class+subclass
+(if the subclass variable is present).
 }
 \examples{
 
@@ -39,13 +39,13 @@ zeller14tn <- zeller14[tn,]
 zeller14tn_ra <- relativeAb(zeller14tn)
 
 # (1) Using classes only
-res_group <- lefser(zeller14tn_ra,
-                    groupCol = "study_condition")
+res_class <- lefser(zeller14tn_ra,
+                    classCol = "study_condition")
 # (2) Using classes and sub-classes
-res_block <- lefser(zeller14tn_ra,
-                    groupCol = "study_condition",
-                    blockCol = "age_category")
-plot_group <- lefserPlotFeat(res_group, res_group$features[[1]])
-plot_block <- lefserPlotFeat(res_block, res_block$features[[2]])
+res_subclass <- lefser(zeller14tn_ra,
+                    classCol = "study_condition",
+                    subclassCol = "age_category")
+plot_class <- lefserPlotFeat(res_class, res_class$features[[1]])
+plot_subclass <- lefserPlotFeat(res_subclass, res_subclass$features[[2]])
 
 }
