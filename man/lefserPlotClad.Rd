@@ -24,7 +24,7 @@ A ggtree object.
 }
 \description{
 \code{lefserPlotClad} plots a cladogram from the results of
-\code{lefser} or \code{lefserAllRanks}
+\code{lefser} or \code{lefserClades}
 }
 \examples{
 data("zeller14")

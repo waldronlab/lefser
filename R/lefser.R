@@ -91,8 +91,7 @@ ldaFunction <- function (data, groups) {
     lda.fit <- lda(class ~ ., data = data)
     w <- lda.fit$scaling[, 1] # extract LDA coefficients
     w.unit <- w / sqrt(sum(w ^ 2)) # scaling LDA coefficient by their Euclidean norm to get unit-normalized coefficient
-    
-    ss <- data[,-match("class", colnames(data))]
+    ss <- data[,-match("class", colnames(data)), drop = FALSE]
     xy.matrix <- as.matrix(ss) # the original feature matrix
 
     ## Transform the original feature matrix
@@ -119,7 +118,7 @@ ldaFunction <- function (data, groups) {
     ## Feature Importance
     lda.means.diff <- (lda.fit$means[2,] - lda.fit$means[1,]) # difference between the class means for each feature
     res <- (lda.means.diff + coeff) / 2
-    
+    names(res) <- colnames(lda.fit$means)
     return(res)
 }
 
@@ -140,7 +139,7 @@ filterKruskal <- function(relab, group, p.value, method = method) {
 
   # extracts features with statistically significant differential abundance
   # from "relab" matrix
-  relab[kw.sub,]
+  relab[kw.sub,, drop = FALSE]
 }
 
 #' R implementation of the LEfSe method
@@ -294,7 +293,7 @@ lefser <-
     relab_sub_t_df <- as.data.frame(relab_sub_t)
     # relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, group = groupf)
     relab_sub_t_df <- cbind(relab_sub_t_df, class = groupf)
-
+    
     ## LDA model
     warn <- testthat::capture_warnings(
         raw_lda_scores <- ldaFunction(relab_sub_t_df, lgroupf)
@@ -305,7 +304,6 @@ lefser <-
         msg <- "Variables in the input are collinear. Try only with the terminal nodes using `get_terminal_nodes` function"
         warning(msg)
     }
-
     ## Processing LDA scores
     processed_scores <-
       sign(raw_lda_scores) * log((1 + abs(raw_lda_scores)), 10)

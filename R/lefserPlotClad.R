@@ -4,7 +4,7 @@
 #' LEfSer plot cladogram
 #' 
 #' \code{lefserPlotClad} plots a cladogram from the results of 
-#' `lefser` or `lefserAllRanks`
+#' `lefser` or `lefserClades`
 #'
 #' @param df An object of class "lefser_df" or "lefesr_df_all".
 #' @param colors Colors corresponding to class 0 and 1.
@@ -33,15 +33,12 @@ lefserPlotClad <- function(
 ) {
     inputClass <- class(df)[1]
     if (inputClass == "lefser_df") {
-        message("Woriking with lefser_df. Consider using lefserAll.")
-        # df$features <- .extracTips(df$features)
-    } else if (inputClass == "lefser_df_all") {
-        message("Working with lefser_df_all")
-        ## .extractTips should be use here as well
-        ## The feature names format should use full taxonomy
+        message("Working with lefser_df. Consider using lefserAll.")
+    } else if (inputClass == "lefser_df_clades") {
+        message("Working with lefser_df_clades")
     } else {
         stop(
-            "You need an object of class 'lefser_df_all'",
+            "You need an object of class 'lefser_df_class'",
             call. = FALSE
         )
     }
@@ -93,11 +90,20 @@ lefserPlotClad <- function(
                 TRUE ~ NA
             )
         )
-    # return(treeData)
     
     gt <- ggtree::ggtree(
         tree, layout = "circular",  branch.length = "none", size = 0.2
     ) %<+% treeData
+    
+    gt <- gt +
+        ggtree::geom_tippoint(
+            mapping = ggtree::aes(fill = sample, size = abs), shape = 21,
+            na.rm=TRUE
+        ) +
+        ggtree::geom_nodepoint(
+            mapping = ggtree::aes(fill = sample, size = abs), shape = 21,
+            na.rm = TRUE
+        )
     
     if (showTipLabels) {
         gt <- gt + 
@@ -108,14 +114,6 @@ lefserPlotClad <- function(
     }
     
     gt2 <- gt +
-        ggtree::geom_tippoint(
-            mapping = ggtree::aes(fill = sample, size = abs), shape = 21,
-            na.rm=TRUE
-        ) +
-        ggtree::geom_nodepoint(
-            mapping = ggtree::aes(fill = sample, size = abs), shape = 21,
-            na.rm = TRUE
-        ) +
         ggrepel::geom_label_repel(
             mapping = ggtree::aes(label = showNodeLabs),
             na.rm = TRUE
@@ -159,85 +157,40 @@ lefserPlotClad <- function(
 #'
 #' resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
 #'
-lefserAllRanks <- function(relab,...) {
-    ## Feature names should have the full taxonomy
-    se <- .rowNames2RowData(relab)
+lefserClades <- function(relab, ...) {
+    se <- .selectTaxRanks(relab)
+    se <- .appendRankLetter(se)
+    l <- .dropFeatures(se)
+    se <- l[["se"]]
+    pathStrings <- l[["pathStrings"]]
     seL <- mia::splitByRanks(se)
-    ## The kingdom level is not needed
-    ## The mia package doesn't support strain.
-    seL <- seL[names(seL) != "kingdom"]
     seL <- purrr::map(seL, ~ {
         seVar <- .x
-        rowDat <- as.data.frame(SummarizedExperiment::rowData(seVar))
-        rowDat <- purrr::discard(rowDat, function(x) all(is.na(x)))
-        rowDat <- S4Vectors::DataFrame(rowDat)
-        SummarizedExperiment::rowData(seVar) <- rowDat
+        row_data <- as.data.frame(SummarizedExperiment::rowData(seVar))
+        row_data <- purrr::discard(row_data, ~ all(is.na(.x)))
+        SummarizedExperiment::rowData(seVar) <- S4Vectors::DataFrame(row_data)
+        newRowNames <- .rowData2PathStrings(seVar)
+        BiocGenerics::rownames(seVar) <- newRowNames
         seVar
     })
-    for (i in seq_along(seL)) {
-        rownames(seL[[i]]) <- .lognRowNames(seL[[i]])
-    }
-    
-    res <- seL |>
-        purrr::map(function(x, ...) lefser(relab = x,...), ...) |>
-        dplyr::bind_rows()
-    resOriginal <- lefser(relab, ...)
-    ## Get only tip names (full names with full taxonomy are too long).
-    # resOriginal$features  <- stringr::str_extract(
-    #     resOriginal$features, "[^|]+$"
-    # )
-    res <- res |>
-        ## Avoid repeating features.
-        dplyr::filter(!.data[["features"]] %in% resOriginal$features) |>
-        ## Features not supported by mia are added (strain, OTUs, etc.)
-        dplyr::bind_rows(resOriginal)
-
-    controlVar <- attr(resOriginal, "lgroupf")
-    caseVar <- attr(resOriginal, "case")
-
-    class(res) <- c("lefser_df_all", class(res))
-
-    ## These pathStrings could be used in the plotting function instead (or not)
-    pathStrings <- .selectPathStrings(relab, res)
+    resL <- purrr::map(seL, function(x, ...) lefser(relab = x,...), ...)
+    controlVar <- resL |> 
+        purrr::map(~ attr(.x, "lgroupf")) |> 
+        unlist(use.names = FALSE) |> 
+        unique()
+    caseVar <- resL |> 
+        purrr::map(~ attr(.x, "case")) |> 
+        unlist(use.names = FALSE) |> 
+        unique()
+    names(resL) <- names(seL)
+    res <- dplyr::bind_rows(resL, .id = "Rank") |> 
+        dplyr::relocate(.data$Rank, .after = tidyselect::last_col())
+    class(res) <- c("lefser_df_clades", class(res))
     attr(res, "pathStrings") <- pathStrings
     attr(res, "tree") <- .toTree(pathStrings)
-
     attr(res, "lgroupf") <- controlVar
     attr(res, "case") <- caseVar
     return(res)
-}
-
-## Add taxonomic information to rowData
-## This step is necessary for mia to work
-.rowNames2RowData <- function(x) {
-    se <- x
-    taxonomy <- .getTaxonomyFromPathStr(rownames(se))
-    dataFrame <- data.frame(tax = taxonomy) |>
-        tidyr::separate(
-            col = "tax", into = paste0("col", 1:10), # Number of taxa is usually seven, so 10 should be more than enough.
-            sep = "\\|", extra = "merge", fill = "right"
-        ) |>
-        purrr::discard(~ all(is.na(.x)))
-    ## purrr::map_chr ensures that the a single letter is used per column.
-    ## Having two or more letters would trigger and error message from map_chr.
-    firstLetter <- purrr::map_chr(dataFrame, ~ {
-        taxLvl <- stringr::str_extract(.x, "\\w__")
-        unique(taxLvl[which(!is.na(taxLvl))])
-    })
-    rankNames <- dplyr::case_when(
-        firstLetter == "k__" ~ "kingdom",
-        firstLetter == "p__" ~ "phylum",
-        firstLetter == "c__" ~ "class",
-        firstLetter == "o__" ~ "order",
-        firstLetter == "f__" ~ "family",
-        firstLetter == "g__" ~ "genus",
-        firstLetter == "s__" ~ "species",
-        firstLetter == "t__" ~ "strain",
-    )
-    colnames(dataFrame) <- rankNames
-    DF <- S4Vectors::DataFrame(dataFrame)
-    SummarizedExperiment::rowData(se) <- DF
-    return(se)
 }
 
 ## This functions makes sure that only the taxonomy
@@ -261,7 +214,71 @@ lefserAllRanks <- function(relab,...) {
     return(pathStrings)
 }
 
-# Create cladogram --------------------------------------------------------
+.rowData2PathStrings <- function(se) {
+    xDat <- as.data.frame(SummarizedExperiment::rowData(se))
+    pathStrings <- tidyr::unite(
+        data = xDat, col = "taxonomy", sep = "|",
+        1:tidyselect::last_col()
+    ) |> 
+        dplyr::pull(.data$taxonomy)
+    pathStrings <- sub("(\\|NA)+$", "", pathStrings)
+    return(pathStrings)
+}
+
+.selectTaxRanks <- function(x) {
+    taxNames <- c(
+        "kingdom", "phylum", "class", "order", "family",
+        "genus", "species", "strain"
+    )
+    se <- x
+    rowDat <- SummarizedExperiment::rowData(se)
+    colnames(rowDat) <- stringr::str_to_lower(colnames(rowDat))
+    colnames(rowDat)[which(colnames(rowDat) == "superkingdom")] <- "kingdom"
+    selectCols <- intersect(taxNames, colnames(rowDat))
+    SummarizedExperiment::rowData(se) <- rowDat[, selectCols]
+    return(se)
+}
+
+.appendRankLetter <- function(x) {
+    se <- x
+    rowDat <- SummarizedExperiment::rowData(se)
+    for (i in seq_along(rowDat)) {
+        chr_vct <- rowDat[[i]]
+        rankLetter <- stringr::str_c(stringr::str_extract(colnames(rowDat)[i], "^\\w"), "__")
+        rowDat[[i]] <- stringr::str_c(rankLetter, chr_vct)
+    }
+    SummarizedExperiment::rowData(se) <- rowDat
+    return(se)
+}
+
+.dropFeatures <- function(x) {
+    se <- x
+    row_data <- as.data.frame(SummarizedExperiment::rowData(se))
+    nrow1 <- nrow(row_data)
+    row_data <- tidyr::drop_na(row_data)
+    nrow2 <- nrow(row_data)
+    if (nrow1 > nrow2) {
+        message(
+            "Dropped ", nrow1 - nrow2,
+            " features without full taxonomy information."
+        )
+    }
+    se <- se[rownames(row_data),]
+    pathStrings <- sort(unique(.rowData2PathStrings(se)))
+    l1 <- length(pathStrings)
+    tips <- stringr::str_extract(pathStrings, "(|\\w__\\w+)?$")
+    dupTips <- tips[which(duplicated(tips))]
+    pathStrings <- pathStrings[!tips %in% dupTips]
+    l2 <- length(pathStrings)
+    if (l1 > l2) {
+        message(
+            "Dropped ", l1 - l2,
+            " features with duplicated tip names."
+        )
+    }
+    list(se = se, pathStrings = pathStrings)
+}
+
 ## Convert a character vector with pathStrings into a cladogram
 ## These could come from the rownames of a SummarizedExperiment with
 ## terminal nodes
@@ -305,22 +322,61 @@ lefserAllRanks <- function(relab,...) {
     stringr::str_extract(pathStrs, "[^|]+$")
 }
 
-
-# Utils -------------------------------------------------------------------
-.lognRowNames <- function(se) {
-    dat <- SummarizedExperiment::rowData(se) |> 
-        as.data.frame() |> 
-        tibble::rownames_to_column(var = "rowname") |> 
-        dplyr::relocate(.data[["rowname"]])
-    lastColLgl <- all(dat[[colnames(dat)[ncol(dat)]]] == dat[["rowname"]])
-    if (lastColLgl) {
-        dat <- dat[, which(colnames(dat) != "rowname")]
-        output <- dat |> 
-            tidyr::unite(
-                col = "features", 1:tidyselect::last_col(), 
-                sep = "|", remove = TRUE, 
-            ) |> 
-            dplyr::pull(.data[["features"]])
-    } 
-    return(output)
+#' RowNames to RowData
+#' 
+#' \code{rowNames2RowData} transforms the taxonomy stored in the row names to 
+#' the rowData in a SummarizedExperiment.
+#' 
+#' @param x A SummarizedExperiment with the features taxonomy in the rownames.
+#'
+#' @return The same SummarizedExpriment with the taxonomy now in the rowData.
+#' @export
+#'
+#' @examples
+#'
+#' data("zeller14")
+#' 
+#' ## Keep only "CRC" and "control" (dichotomous variable)
+#' z14 <- zeller14[, zeller14$study_condition %in% c("control", "CRC")]
+#' 
+#' ## Get terminal nodes
+#' tn <- get_terminal_nodes(rownames(z14))
+#' z14_tn <- z14[tn, ]
+#' 
+#' ## Normalize to relative abundance (also known as Total Sum Scaling)
+#' z14_tn_ra <- relativeAb(z14_tn)
+#' 
+#' ## Add the taxonomy to the rowData
+#' input_se <- rowNames2RowData(z14_tn_ra)
+#' 
+rowNames2RowData <- function(x) {
+    se <- x
+    taxonomy <- .getTaxonomyFromPathStr(rownames(se))
+    dataFrame <- data.frame(tax = taxonomy) |>
+        tidyr::separate(
+            col = "tax", into = paste0("col", 1:10), # Number of taxa is usually seven, so 10 should be more than enough.
+            sep = "\\|", extra = "merge", fill = "right"
+        ) |>
+        purrr::discard(~ all(is.na(.x)))
+    ## purrr::map_chr ensures that the a single letter is used per column.
+    ## Having two or more letters would trigger and error message from map_chr.
+    firstLetter <- purrr::map_chr(dataFrame, ~ {
+        taxLvl <- stringr::str_extract(.x, "\\w__")
+        unique(taxLvl[which(!is.na(taxLvl))])
+    })
+    rankNames <- dplyr::case_when(
+        firstLetter == "k__" ~ "kingdom",
+        firstLetter == "p__" ~ "phylum",
+        firstLetter == "c__" ~ "class",
+        firstLetter == "o__" ~ "order",
+        firstLetter == "f__" ~ "family",
+        firstLetter == "g__" ~ "genus",
+        firstLetter == "s__" ~ "species",
+        firstLetter == "t__" ~ "strain",
+    )
+    colnames(dataFrame) <- rankNames
+    dataFrame <- purrr::modify(dataFrame, ~ sub("^\\w__", "", .x))
+    DF <- S4Vectors::DataFrame(dataFrame)
+    SummarizedExperiment::rowData(se) <- DF
+    return(se)
 }

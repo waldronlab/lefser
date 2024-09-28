@@ -1,18 +1,26 @@
-suppressPackageStartupMessages(library(lefser))
+
+suppressPackageStartupMessages({
+    library(MicrobiomeBenchmarkData)
+    library(lefser)
+})
+
+## Example 1 - Strains
 data("zeller14")
-z14 <- zeller14[, zeller14$study_condition != "adenoma"]
+z14 <- zeller14[, zeller14$study_condition %in% c("control", "CRC")]
 tn <- get_terminal_nodes(rownames(z14))
-z14tn <- z14[tn, ]
-z14tn_ra <- relativeAb(z14tn)
+z14_tn <- z14[tn, ]
+z14_tn_ra <- relativeAb(z14_tn)
+z14_input <- rowNames2RowData(z14_tn_ra)
+res_z14_cld <- lefserClades(relab = z14_input, groupCol = "study_condition")
+head(res_z14_cld)
+ggt <- lefserPlotClad(res_z14_cld)
+ggt
 
-resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
-ggt <- lefserPlotClad(df = resAll)
-# y
-# z <- lefserPlotClad(df = resAll, showTipLabels = TRUE, showNodeLabels = c("c"))
-# z
-# sessioninfo::session_info()
+## Example 2 - OTUs
+tse <- getBenchmarkData("HMP_2012_16S_gingival_V35", dryrun = FALSE)[[1]]
+tse_ra <- relativeAb(tse)
+res_tse_cld <- lefserClades(relab = tse_ra, groupCol = "body_subsite")
+ggt2 <- lefserPlotClad(res_tse_cld, showTipLabels = TRUE)
+ggt2
 
-
-# res <- lefser(z14tn_ra, groupCol = "study_condition")
-# x <- lefserPlotClad(df = res)
-# x
+sessioninfo::session_info()
