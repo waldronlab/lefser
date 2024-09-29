@@ -334,7 +334,7 @@ lefser <-
 
     ## Filter with LDA threshold
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
-    res_scores <- scores_df[threshold_scores, ]
+    res_scores <- scores_df[threshold_scores, , drop = FALSE]
     class(res_scores) <- c("lefser_df", class(res_scores))
     attr(res_scores, "classes") <- lclassf
 
@@ -344,17 +344,18 @@ lefser <-
     attr(res_scores, "kth") <-  kruskal.threshold
     attr(res_scores, "wth") <- wilcox.threshold
     attr(res_scores, "ldath") <- lda.threshold
-    attr(res_scores, "class") <- classCol
-    attr(res_scores, "subclass") <- subclassCol
+    attr(res_scores, "class_arg") <- classCol
+    attr(res_scores, "subclass_arg") <- subclassCol
     attr(res_scores, "method") <- method
-    attr(res_scores, "lgroupf") <- lgroupf[1]
-    attr(res_scores, "case") <- lgroupf[2]
+    # attr(res_scores, "lgroupf") <- lgroupf[1]
+    # attr(res_scores, "case") <- lgroupf[2]
     
     ## Some more attributes to create the cladogram.
-    pathStrings <- .selectPathStrings(relab, res_scores)
-    attr(res_scores, "pathStrings") <- pathStrings
-    attr(res_scores, "tree") <- .toTree(pathStrings)
+    # pathStrings <- .selectPathStrings(relab, res_scores)
+    # # attr(res_scores, "pathStrings") <- pathStrings
+    # attr(res_scores, "tree") <- .toTree(pathStrings)
     attr(res_scores, "lclassf") <- lclassf[1]
+    attr(res_scores, "case") <- lclassf[2]
 
     res_scores
  }

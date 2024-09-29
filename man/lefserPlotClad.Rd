@@ -32,6 +32,6 @@ z14 <- zeller14[, zeller14$study_condition != "adenoma"]
 tn <- get_terminal_nodes(rownames(z14))
 z14tn <- z14[tn, ]
 z14tn_ra <- relativeAb(z14tn)
-resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
+resAll <- lefserAllRanks(relab = z14tn_ra, classCol = "study_condition")
 ggt <- lefserPlotClad(df = resAll)
 }

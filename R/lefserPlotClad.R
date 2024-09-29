@@ -26,7 +26,7 @@
 #' tn <- get_terminal_nodes(rownames(z14))
 #' z14tn <- z14[tn, ]
 #' z14tn_ra <- relativeAb(z14tn)
-#' resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
+#' resAll <- lefserAllRanks(relab = z14tn_ra, classCol = "study_condition")
 #' ggt <- lefserPlotClad(df = resAll)
 lefserPlotClad <- function(
         df, colors = "c", showTipLabels = FALSE, showNodeLabels = "p"
@@ -47,7 +47,7 @@ lefserPlotClad <- function(
     
     colors <- .selectPalette(colors)
     tree <- attr(df, "tree")
-    controlVar <- attr(df, "lgroupf")
+    controlVar <- attr(df, "lclassf")
     caseVar <- attr(df, "case")
     
     res <- df |>
@@ -67,15 +67,16 @@ lefserPlotClad <- function(
     dat <- dplyr::relocate(res, node)
     
     internalNodes <- ape::Ntip(tree) + 1:ape::Nnode(tree)
-    collapseThem <- purrr::map_int(internalNodes, ~ {
-        chNods <- treeio::offspring(.data = tree, .node = .x, type = "tips")
-        if (any(chNods %in% dat$node)) {
-            return(NA)
-        } else {
-            return(.x)
-        }
-    }) |>
-        purrr::discard(is.na)
+    
+    # collapseThem <- purrr::map_int(internalNodes, ~ {
+    #     chNods <- treeio::offspring(.data = tree, .node = .x, type = "tips")
+    #     if (any(chNods %in% dat$node)) {
+    #         return(NA)
+    #     } else {
+    #         return(.x)
+    #     }
+    # }) |>
+    #     purrr::discard(is.na)
     
     nodLab <- match.arg(
         arg = showNodeLabels,
@@ -124,16 +125,17 @@ lefserPlotClad <- function(
         ) +
         ggplot2::scale_size(name = "Absolute\nscore") +
         ggtree::theme(legend.position = "right")
-    for (i in collapseThem) {
-        gt2 <- withCallingHandlers(
-            ggtree::collapse(gt2, node = i),
-            warning = function(w) {
-                if (grepl("collapse", w$message)) {
-                    invokeRestart("muffleWarning")
-                }
-            }
-        )
-    }
+    
+    # for (i in collapseThem) {
+    #     gt2 <- withCallingHandlers(
+    #         ggtree::collapse(gt2, node = i),
+    #         warning = function(w) {
+    #             if (grepl("collapse", w$message)) {
+    #                 invokeRestart("muffleWarning")
+    #             }
+    #         }
+    #     )
+    # }
     return(gt2)
 }
 
@@ -163,19 +165,33 @@ lefserClades <- function(relab, ...) {
     l <- .dropFeatures(se)
     se <- l[["se"]]
     pathStrings <- l[["pathStrings"]]
-    seL <- mia::splitByRanks(se)
-    seL <- purrr::map(seL, ~ {
-        seVar <- .x
+    seL <- as.list(mia::splitByRanks(se))
+    ## Restrict to species. Kingdom would not be informative
+    seL <- seL[!names(seL) %in% c("kingdom", "strain")]
+    seL <- purrr::imap(seL, function(x, idx) {
+        seVar <- x
         row_data <- as.data.frame(SummarizedExperiment::rowData(seVar))
-        row_data <- purrr::discard(row_data, ~ all(is.na(.x)))
+        row_data <- row_data[,1:which(colnames(row_data) == idx), drop = FALSE]
+        # row_data <- purrr::discard(row_data, ~ all(is.na(.x)))
         SummarizedExperiment::rowData(seVar) <- S4Vectors::DataFrame(row_data)
         newRowNames <- .rowData2PathStrings(seVar)
         BiocGenerics::rownames(seVar) <- newRowNames
         seVar
     })
-    resL <- purrr::map(seL, function(x, ...) lefser(relab = x,...), ...)
+    resL <- purrr::map(seL, function(x, ...) {
+        withCallingHandlers(
+            lefser(relab = x,...),
+            warning = function(w) {
+                if (grepl("relativeAb", w$message)) {
+                    invokeRestart("muffleWarning")
+                }
+            }
+        )
+        },
+        ...
+    )
     controlVar <- resL |> 
-        purrr::map(~ attr(.x, "lgroupf")) |> 
+        purrr::map(~ attr(.x, "lclassf")) |> 
         unlist(use.names = FALSE) |> 
         unique()
     caseVar <- resL |> 
@@ -188,7 +204,7 @@ lefserClades <- function(relab, ...) {
     class(res) <- c("lefser_df_clades", class(res))
     attr(res, "pathStrings") <- pathStrings
     attr(res, "tree") <- .toTree(pathStrings)
-    attr(res, "lgroupf") <- controlVar
+    attr(res, "lclassf") <- controlVar
     attr(res, "case") <- caseVar
     return(res)
 }
