@@ -6,7 +6,7 @@ zeller14tn <- zeller14[tn,]
 zeller14tn_ra <- relativeAb(zeller14tn)
 
 res <- lefser(
-    zeller14tn_ra, groupCol = "study_condition", blockCol = "age_category"
+    zeller14tn_ra, classCol = "study_condition", subclassCol = "age_category"
 )
 lefserPlot(res)
 lefserPlot(res, colors = "l")
@@ -19,21 +19,21 @@ sessioninfo::session_info()
 
 
 # (1) Using classes only
-res_group <- lefser(zeller14tn_ra,
-                    groupCol = "study_condition")
+res_class <- lefser(zeller14tn_ra,
+                    classCol = "study_condition")
 # (2) Using classes and sub-classes
-res_block <- lefser(zeller14tn_ra,
-                    groupCol = "study_condition",
-                    blockCol = "age_category")
+res_subclass <- lefser(zeller14tn_ra,
+                    classCol = "study_condition",
+                    subclassCol = "age_category")
 
-plot_group <- lefsePlotFeat(res_group, res_group$features[[1]], colors = "g")
-plot_block <- lefsePlotFeat(res_block, res_block$features[[2]], colors = "g")
+plot_class <- lefsePlotFeat(res_class, res_class$features[[1]], colors = "g")
+plot_subclass <- lefsePlotFeat(res_subclass, res_subclass$features[[2]], colors = "g")
 
-plot_group <- lefsePlotFeat(res_group, res_group$features[[1]], colors = c("orange", "blue"))
-plot_block <- lefsePlotFeat(res_block, res_block$features[[1]], colors = c("orange", "blue"))
-plot_block
+plot_class <- lefsePlotFeat(res_class, res_class$features[[1]], colors = c("orange", "blue"))
+plot_subclass <- lefsePlotFeat(res_subclass, res_subclass$features[[1]], colors = c("orange", "blue"))
+plot_subclass
 
-lefserPlot(res_block, colors = "")
+lefserPlot(res_subclass, colors = "")
 
 
 

@@ -28,5 +28,5 @@ on.exit(Sys.setlocal("LC_COLLATE", loc))
 # seed from
 # https://github.com/SegataLab/lefse/blob/a4b3140c34b3abe5579a916a20c2a8659c3ac53c/lefse.py#L9
 set.seed(1982)
-res <- lefser(zell, groupCol = "study_condition", blockCol = "age_category")
+res <- lefser(zell, classCol = "study_condition", subclassCol = "age_category")
 lefserPlot(res)

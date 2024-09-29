@@ -1,6 +1,6 @@
 #' Plot Feature
 #'
-#' \code{lefsePlotFeat} plots the abundance data of a DA feature across all
+#' \code{lefserPlotFeat} plots the abundance data of a DA feature across all
 #' samples.
 #'
 #' @param res An object of class lefser_df,
@@ -12,10 +12,10 @@
 #' This argument also accepts a character(2) with two color names.
 #'
 #' @details
-#' The solid lines represent the mean by group or by group+block
-#' (if the block variable is present).
-#' The dashed lines represent the median by group or by group+block
-#' (if the block variable is present).
+#' The solid lines represent the mean by class or by class+subclass
+#' (if the subclass variable is present).
+#' The dashed lines represent the median by class or by class+subclass
+#' (if the subclass variable is present).
 #'
 #' @return A ggplot object.
 #' @export
@@ -29,34 +29,34 @@
 #' zeller14tn_ra <- relativeAb(zeller14tn)
 #'
 #' # (1) Using classes only
-#' res_group <- lefser(zeller14tn_ra,
-#'                     groupCol = "study_condition")
+#' res_class <- lefser(zeller14tn_ra,
+#'                     classCol = "study_condition")
 #' # (2) Using classes and sub-classes
-#' res_block <- lefser(zeller14tn_ra,
-#'                     groupCol = "study_condition",
-#'                     blockCol = "age_category")
-#' plot_group <- lefsePlotFeat(res_group, res_group$features[[1]])
-#' plot_block <- lefsePlotFeat(res_block, res_block$features[[2]])
+#' res_subclass <- lefser(zeller14tn_ra,
+#'                     classCol = "study_condition",
+#'                     subclassCol = "age_category")
+#' plot_class <- lefserPlotFeat(res_class, res_class$features[[1]])
+#' plot_subclass <- lefserPlotFeat(res_subclass, res_subclass$features[[2]])
 #'
-lefsePlotFeat <- function(res, fName, colors = "colorblind") {
+lefserPlotFeat <- function(res, fName, colors = "colorblind") {
     dat <- .prepareDataHistogram(res = res, fName = fName)
-    refGroup <- attr(res, "lgroupf")
-    vLinePos <- which(dat$groupCol != refGroup)[1] - 0.5
+    refclass <- attr(res, "lclassf")
+    vLinePos <- which(dat$classCol != refclass)[1] - 0.5
     colVar <- .selectPalette(colors)
-    l <- split(dat, dat$groupCol)
+    l <- split(dat, dat$classCol)
     maxYVal <- max(dat$abundance)
     vals <- purrr::map(l, ~ {
         head(.x[["sample"]], 1)
     })
     sumDat <- .sumDatHist(dat)
-    cond <- "blockCol" %in% colnames(dat)
+    cond <- "subclassCol" %in% colnames(dat)
     if (isFALSE(cond)) {
         p <- dat |>
             ggplot2::ggplot(
                 data = dat, mapping = ggplot2::aes(sample, abundance)
             ) +
             ggplot2::geom_col(
-                mapping = ggplot2::aes(fill = groupCol), width = 1
+                mapping = ggplot2::aes(fill = classCol), width = 1
             ) +
             ggplot2::scale_fill_manual(
                 values = colVar
@@ -67,7 +67,7 @@ lefsePlotFeat <- function(res, fName, colors = "colorblind") {
                 data = dat, mapping = ggplot2::aes(sample, abundance)
             ) +
             ggplot2::geom_col(
-                mapping = ggplot2::aes(fill = blockCol), width = 1
+                mapping = ggplot2::aes(fill = subclassCol), width = 1
             ) +
             ggplot2::scale_fill_manual(
                 values = colVar
@@ -83,16 +83,16 @@ lefsePlotFeat <- function(res, fName, colors = "colorblind") {
         ) +
         ggplot2::annotate(
             geom = "label",
-            x = vals[[levels(dat$groupCol)[1]]],
+            x = vals[[levels(dat$classCol)[1]]],
             y = maxYVal,
-            label = levels(dat$groupCol)[1],
+            label = levels(dat$classCol)[1],
             hjust = 0, vjust = 1
         ) +
         ggplot2::annotate(
             geom = "label",
-            x = vals[[levels(dat$groupCol)[2]]],
+            x = vals[[levels(dat$classCol)[2]]],
             y = maxYVal,
-            label = levels(dat$groupCol)[2],
+            label = levels(dat$classCol)[2],
             hjust = 0, vjust = 1
         ) +
         ggplot2::geom_vline(xintercept = vLinePos) +
@@ -126,13 +126,13 @@ lefsePlotFeat <- function(res, fName, colors = "colorblind") {
 }
 
 .sumDatHist <- function(x) {
-    cond <- "blockCol" %in% colnames(x)
+    cond <- "subclassCol" %in% colnames(x)
     if (isFALSE(cond)) {
-        l <- split(x, x$groupCol)
+        l <- split(x, x$classCol)
     } else if (isTRUE(cond)) {
        l <- x |>
            dplyr::mutate(
-               classes = paste0(.data$groupCol, "--", .data$blockCol)
+               classes = paste0(.data$classCol, "--", .data$subclassCol)
            ) |>
            {\(y) split(y, y[["classes"]])}()
     }
@@ -158,10 +158,10 @@ lefsePlotFeat <- function(res, fName, colors = "colorblind") {
         )
     }
     tse <- attr(res, "inputSE")
-    groupCol <- attr(res, "grp")
-    blockCol <- attr(res, "blk")
-    refGrp <- attr(res, "lgroupf")
-    selectCols <- c(groupCol, blockCol)
+    classCol <- attr(res, "class")
+    subclassCol <- attr(res, "subclass")
+    refclass <- attr(res, "lclassf")
+    selectCols <- c(classCol, subclassCol)
     sampleData <- as.data.frame(SummarizedExperiment::colData(tse))
     sampleData <- sampleData[, selectCols, drop = FALSE]
     sampleData <- tibble::rownames_to_column(sampleData, var = "sample")
@@ -175,28 +175,28 @@ lefsePlotFeat <- function(res, fName, colors = "colorblind") {
             values_to = "abundance"
         ) |>
         dplyr::left_join(sampleData, by = "sample")
-    dat[[groupCol]] <- forcats::fct_relevel(dat[[groupCol]], refGrp)
+    dat[[classCol]] <- forcats::fct_relevel(dat[[classCol]], refclass)
 
-    if (is.null(blockCol)) {
+    if (is.null(subclassCol)) {
         dat <- dat |>
             dplyr::filter(.data[["features"]] == fName) |>
             dplyr::arrange(
-                .data[[groupCol]],
+                .data[[classCol]],
                 dplyr::desc(.data[["abundance"]])
             ) |>
             dplyr::mutate(sample = forcats::fct_inorder(.data[["sample"]]))
-        colnames(dat)[which(colnames(dat) == groupCol)] <- "groupCol"
-    } else if (!is.null(blockCol)) {
+        colnames(dat)[which(colnames(dat) == classCol)] <- "classCol"
+    } else if (!is.null(subclassCol)) {
         dat <- dat |>
             dplyr::filter(.data[["features"]] == fName) |>
             dplyr::arrange(
-                .data[[groupCol]],
-                dplyr::desc(.data[[blockCol]]),
+                .data[[classCol]],
+                dplyr::desc(.data[[subclassCol]]),
                 dplyr::desc(.data[["abundance"]])
             ) |>
             dplyr::mutate(sample = forcats::fct_inorder(.data[["sample"]]))
-        colnames(dat)[which(colnames(dat) == groupCol)] <- "groupCol"
-        colnames(dat)[which(colnames(dat) == blockCol)] <- "blockCol"
+        colnames(dat)[which(colnames(dat) == classCol)] <- "classCol"
+        colnames(dat)[which(colnames(dat) == subclassCol)] <- "subclassCol"
     }
     return(dat)
 }
