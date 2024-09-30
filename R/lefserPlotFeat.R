@@ -158,8 +158,8 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
         )
     }
     tse <- attr(res, "inputSE")
-    classCol <- attr(res, "class")
-    subclassCol <- attr(res, "subclass")
+    classCol <- attr(res, "class_arg")
+    subclassCol <- attr(res, "subclass_arg")
     refclass <- attr(res, "lclassf")
     selectCols <- c(classCol, subclassCol)
     sampleData <- as.data.frame(SummarizedExperiment::colData(tse))
