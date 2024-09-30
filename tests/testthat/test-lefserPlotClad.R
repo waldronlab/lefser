@@ -4,7 +4,7 @@ tn <- get_terminal_nodes(rownames(z14))
 z14tn <- z14[tn, ]
 z14tn_ra <- relativeAb(z14tn)
 
-res <- lefser(z14tn_ra, groupCol = "study_condition")
+res <- lefser(z14tn_ra, classCol = "study_condition")
 z14_input <- rowNames2RowData(z14tn_ra)
 resAll <- lefserClades(z14_input, classCol = "study_condition")
 
