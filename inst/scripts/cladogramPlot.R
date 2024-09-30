@@ -15,7 +15,7 @@ z14_input <- rowNames2RowData(z14_tn_ra)
 
 res_z14_cld <- lefserClades(relab = z14_input, classCol = "study_condition")
 head(res_z14_cld)
-ggt <- lefserPlotClad(res_z14_cld)
+ggt <- lefserPlotClad(res_z14_cld, showNodeLabels = "g")
 ggt
 
 
@@ -24,7 +24,7 @@ ggt
 tse <- getBenchmarkData("HMP_2012_16S_gingival_V35", dryrun = FALSE)[[1]]
 tse_ra <- relativeAb(tse)
 res_tse_cld <- lefserClades(relab = tse_ra, classCol = "body_subsite")
-ggt2 <- lefserPlotClad(res_tse_cld, showTipLabels = TRUE)
+ggt2 <- lefserPlotClad(res_tse_cld, showNodeLabels = "g")
 ggt2
 
 sessioninfo::session_info()

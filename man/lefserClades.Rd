@@ -2,20 +2,27 @@
 % Please edit documentation in R/lefserPlotClad.R
 \name{lefserClades}
 \alias{lefserClades}
-\title{Run lefser on all taxonomic levels}
+\title{Run lefser at different clades}
 \usage{
 lefserClades(relab, ...)
 }
 \arguments{
-\item{relab}{A SummarizedExperiment.}
+\item{relab}{A (Tree) SummarizedExperiment with full taxonomy in the rowData.}
 
 \item{...}{Arguments passed to the \code{lefser} function.}
 }
 \value{
-An object of class 'lefser_df_all' and 'data.frame'.
+An object of class 'lefser_df_clades', "lefser_df", and 'data.frame'.
 }
 \description{
-Run lefser on all taxonomic levels
+\code{lefesrCaldes} Agglomerates the features abundance at different
+taxonomic ranks using \code{mia::splitByRanks} and performs lefser at
+each rank. The analysis is run at the species, genus, family, order,
+class, and phylum levels.
+}
+\details{
+When running \code{lefserClades}, all features with NAs in the rowData will
+be dropped. This is to avoid creating artificial clades with NAs.
 }
 \examples{
 
@@ -24,7 +31,9 @@ z14 <- zeller14[, zeller14$study_condition != "adenoma"]
 tn <- get_terminal_nodes(rownames(z14))
 z14tn <- z14[tn, ]
 z14tn_ra <- relativeAb(z14tn)
+z14_input <- rowNames2RowData(z14_tn_ra)
 
-resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
+resAll <- lefserAllRanks(relab = z14tn_input, groupCol = "study_condition")
+head(resAll)
 
 }

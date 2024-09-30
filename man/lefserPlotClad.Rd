@@ -7,15 +7,17 @@
 lefserPlotClad(df, colors = "c", showTipLabels = FALSE, showNodeLabels = "p")
 }
 \arguments{
-\item{df}{An object of class "lefser_df" or "lefesr_df_all".}
+\item{df}{An object of class "lefesr_df_clades".}
 
 \item{colors}{Colors corresponding to class 0 and 1.
 Options: "c" (colorblind), "l" (lefse), "g" (greyscale).
-Defaults to "c". This argument also accepts a character(2) with two color names.}
+Defaults to "c".
+This argument also accepts a character(2) with two color names.}
 
 \item{showTipLabels}{Logical. If TRUE, show tip labels. Default is FALSE.}
 
-\item{showNodeLabels}{Options: "p" = phylum, "c" = class, "o" = order,
+\item{showNodeLabels}{Label's to be shown in the tree.
+Options: "p" = phylum, "c" = class, "o" = order,
 "f" = family, "g" = genus. It can accept several options, e.g.,
 c("p", "c").}
 }
@@ -24,7 +26,7 @@ A ggtree object.
 }
 \description{
 \code{lefserPlotClad} plots a cladogram from the results of
-\code{lefser} or \code{lefserClades}
+\code{lefserClades}.
 }
 \examples{
 data("zeller14")

@@ -1,17 +1,17 @@
 
-# Functions for plotting a cladogram --------------------------------------
-
 #' LEfSer plot cladogram
 #' 
-#' \code{lefserPlotClad} plots a cladogram from the results of 
-#' `lefser` or `lefserClades`
+#' \code{lefserPlotClad} plots a cladogram from the results of
+#' \code{lefserClades}.
 #'
-#' @param df An object of class "lefser_df" or "lefesr_df_all".
+#' @param df An object of class "lefesr_df_clades".
 #' @param colors Colors corresponding to class 0 and 1.
 #' Options: "c" (colorblind), "l" (lefse), "g" (greyscale).
-#' Defaults to "c". This argument also accepts a character(2) with two color names.
+#' Defaults to "c".
+#' This argument also accepts a character(2) with two color names.
 #' @param showTipLabels Logical. If TRUE, show tip labels. Default is FALSE.
-#' @param showNodeLabels Options: "p" = phylum, "c" = class, "o" = order,
+#' @param showNodeLabels  Label's to be shown in the tree.
+#' Options: "p" = phylum, "c" = class, "o" = order,
 #' "f" = family, "g" = genus. It can accept several options, e.g., 
 #' c("p", "c").
 #'
@@ -141,12 +141,23 @@ lefserPlotClad <- function(
 
 # Run lefser at all taxonomic levels --------------------------------------
 
-#' Run lefser on all taxonomic levels
+#' Run lefser at different clades
+#' 
+#' \code{lefesrCaldes} Agglomerates the features abundance at different
+#' taxonomic ranks using \code{mia::splitByRanks} and performs lefser at
+#' each rank. The analysis is run at the species, genus, family, order,
+#' class, and phylum levels.
 #'
-#' @param relab A SummarizedExperiment.
+#' @param relab A (Tree) SummarizedExperiment with full taxonomy in the rowData.
 #' @param ... Arguments passed to the \code{lefser} function.
 #'
-#' @return An object of class 'lefser_df_all' and 'data.frame'.
+#' @return An object of class 'lefser_df_clades', "lefser_df", and 'data.frame'.
+#' 
+#' @details
+#' 
+#' When running \code{lefserClades}, all features with NAs in the rowData will
+#' be dropped. This is to avoid creating artificial clades with NAs.
+#' 
 #' @export
 #'
 #' @examples
@@ -156,9 +167,11 @@ lefserPlotClad <- function(
 #' tn <- get_terminal_nodes(rownames(z14))
 #' z14tn <- z14[tn, ]
 #' z14tn_ra <- relativeAb(z14tn)
+#' z14_input <- rowNames2RowData(z14_tn_ra)
 #'
-#' resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
-#'
+#' resAll <- lefserAllRanks(relab = z14tn_input, groupCol = "study_condition")
+#' head(resAll)
+#' 
 lefserClades <- function(relab, ...) {
     se <- .selectTaxRanks(relab)
     se <- .appendRankLetter(se)
@@ -168,6 +181,11 @@ lefserClades <- function(relab, ...) {
     seL <- as.list(mia::splitByRanks(se))
     ## Restrict to species. Kingdom would not be informative
     seL <- seL[!names(seL) %in% c("kingdom", "strain")]
+    msgRanks <- paste(names(seL), collapse = ", ")
+    msgRanks <- msgRanks[length(msgRanks):1]
+    message(
+        "lefser will be run at the ", msgRanks, " level."
+    )
     seL <- purrr::imap(seL, function(x, idx) {
         seVar <- x
         row_data <- as.data.frame(SummarizedExperiment::rowData(seVar))
@@ -178,7 +196,11 @@ lefserClades <- function(relab, ...) {
         BiocGenerics::rownames(seVar) <- newRowNames
         seVar
     })
-    resL <- purrr::map(seL, function(x, ...) {
+    resL <- purrr::imap(seL, function(x, idx, ...) {
+        message(
+            "\n>>>> Running lefse at the ", idx, " level.", 
+            " <<<<"
+        )
         withCallingHandlers(
             lefser(relab = x,...),
             warning = function(w) {
