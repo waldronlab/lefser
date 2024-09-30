@@ -5,10 +5,11 @@ z14tn <- z14[tn, ]
 z14tn_ra <- relativeAb(z14tn)
 
 res <- lefser(z14tn_ra, groupCol = "study_condition")
-resAll <- lefserAllRanks(relab = z14tn_ra, groupCol = "study_condition")
+z14_input <- rowNames2RowData(z14tn_ra)
+resAll <- lefserClades(z14_input, classCol = "study_condition")
 
-test_that("lefserAllRanks works", {
-    expect_s3_class(resAll, "lefser_df_all")
+test_that("lefserClades works", {
+    expect_s3_class(resAll, "lefser_df_clades")
 })
 
 test_that("lefserPlotClad works", {

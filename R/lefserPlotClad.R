@@ -167,9 +167,9 @@ lefserPlotClad <- function(
 #' tn <- get_terminal_nodes(rownames(z14))
 #' z14tn <- z14[tn, ]
 #' z14tn_ra <- relativeAb(z14tn)
-#' z14_input <- rowNames2RowData(z14_tn_ra)
+#' z14_input <- rowNames2RowData(z14tn_ra)
 #'
-#' resAll <- lefserAllRanks(relab = z14tn_input, groupCol = "study_condition")
+#' resAll <- lefserClades(relab = z14_input, classCol = "study_condition")
 #' head(resAll)
 #' 
 lefserClades <- function(relab, ...) {
