@@ -92,7 +92,7 @@ ldaFunction <- function (data, classes) {
     w <- lda.fit$scaling[, 1] # extract LDA coefficients
     w.unit <- w / sqrt(sum(w ^ 2)) # scaling LDA coefficient by their Euclidean norm to get unit-normalized coefficient
 
-    ss <- data[,-match("class", colnames(data))]
+    ss <- data[,-match("class", colnames(data)), drop = FALSE]
     xy.matrix <- as.matrix(ss) # the original feature matrix
 
     ## Transform the original feature matrix
@@ -119,6 +119,7 @@ ldaFunction <- function (data, classes) {
     ## Feature Importance
     lda.means.diff <- (lda.fit$means[2,] - lda.fit$means[1,]) # difference between the class means for each feature
     res <- (lda.means.diff + coeff) / 2
+    names(res) <- colnames(lda.fit$means)
 
     return(res)
 }
@@ -140,7 +141,7 @@ filterKruskal <- function(relab, class, p.value, method = method) {
 
   # extracts features with statistically significant differential abundance
   # from "relab" matrix
-  relab[kw.sub,]
+  relab[kw.sub,, drop = FALSE]
 }
 
 #' R implementation of the LEfSe method
@@ -308,6 +309,7 @@ lefser <-
     ## Transposed relative abundance matrix with the 'class' column
     relab_sub_t <- t(relab_sub)
     relab_sub_t_df <- as.data.frame(relab_sub_t)
+
     # relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, class = classf)
     relab_sub_t_df <- cbind(relab_sub_t_df, class = classf)
 
@@ -321,7 +323,6 @@ lefser <-
         msg <- "Variables in the input are collinear. Try only with the terminal nodes using `get_terminal_nodes` function"
         warning(msg)
     }
-
     ## Processing LDA scores
     processed_scores <-
       sign(raw_lda_scores) * log((1 + abs(raw_lda_scores)), 10)
@@ -333,7 +334,7 @@ lefser <-
 
     ## Filter with LDA threshold
     threshold_scores <- abs(scores_df$scores) >= lda.threshold
-    res_scores <- scores_df[threshold_scores, ]
+    res_scores <- scores_df[threshold_scores, , drop = FALSE]
     class(res_scores) <- c("lefser_df", class(res_scores))
     attr(res_scores, "classes") <- lclassf
 
@@ -343,10 +344,19 @@ lefser <-
     attr(res_scores, "kth") <-  kruskal.threshold
     attr(res_scores, "wth") <- wilcox.threshold
     attr(res_scores, "ldath") <- lda.threshold
-    attr(res_scores, "class") <- classCol
-    attr(res_scores, "subclass") <- subclassCol
+    attr(res_scores, "class_arg") <- classCol
+    attr(res_scores, "subclass_arg") <- subclassCol
     attr(res_scores, "method") <- method
+    # attr(res_scores, "lgroupf") <- lgroupf[1]
+    # attr(res_scores, "case") <- lgroupf[2]
+    
+    ## Some more attributes to create the cladogram.
+    # pathStrings <- .selectPathStrings(relab, res_scores)
+    # # attr(res_scores, "pathStrings") <- pathStrings
+    # attr(res_scores, "tree") <- .toTree(pathStrings)
     attr(res_scores, "lclassf") <- lclassf[1]
+    attr(res_scores, "case") <- lclassf[2]
+
     res_scores
  }
 
