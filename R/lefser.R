@@ -337,6 +337,9 @@ lefser <-
     res_scores <- scores_df[threshold_scores, , drop = FALSE]
     class(res_scores) <- c("lefser_df", class(res_scores))
     attr(res_scores, "classes") <- lclassf
+    if (nrow(res_scores) == 0L) {
+        return(.return_no_results())
+    }
 
     ## Add attributes with argument values
     ## This is used for plottin functions
