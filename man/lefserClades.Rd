@@ -33,7 +33,7 @@ z14tn <- z14[tn, ]
 z14tn_ra <- relativeAb(z14tn)
 z14_input <- rowNames2RowData(z14tn_ra)
 
-resAll <- lefserClades(relab = z14_input, classCol = "study_condition")
-head(resAll)
+resCl <- lefserClades(relab = z14_input, classCol = "study_condition")
+head(Cl)
 
 }

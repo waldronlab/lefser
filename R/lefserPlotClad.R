@@ -12,8 +12,8 @@
 #' @param showTipLabels Logical. If TRUE, show tip labels. Default is FALSE.
 #' @param showNodeLabels  Label's to be shown in the tree.
 #' Options: "p" = phylum, "c" = class, "o" = order,
-#' "f" = family, "g" = genus. It can accept several options, e.g., 
-#' c("p", "c").
+#' "f" = family, "g" = genus, "s" = species, "t" = strain.
+#' It can accept several options, e.g., c("p", "c").
 #'
 #' @importFrom ggtree %<+%
 #'
@@ -26,19 +26,16 @@
 #' tn <- get_terminal_nodes(rownames(z14))
 #' z14tn <- z14[tn, ]
 #' z14tn_ra <- relativeAb(z14tn)
-#' resAll <- lefserAllRanks(relab = z14tn_ra, classCol = "study_condition")
-#' ggt <- lefserPlotClad(df = resAll)
+#' resCl <- lefserClades(relab = z14tn_ra, classCol = "study_condition")
+#' ggt <- lefserPlotClad(df = resCl)
 lefserPlotClad <- function(
         df, colors = "c", showTipLabels = FALSE, showNodeLabels = "p"
 ) {
     inputClass <- class(df)[1]
-    if (inputClass == "lefser_df") {
-        message("Working with lefser_df. Consider using lefserAll.")
-    } else if (inputClass == "lefser_df_clades") {
-        message("Working with lefser_df_clades")
-    } else {
+    if (inputClass != "lefser_df_clades") {
         stop(
-            "You need an object of class 'lefser_df_class'",
+            "An object of class 'lefser_df_class' is needed.",
+            " Please use the `lefserClades` function.",
             call. = FALSE
         )
     }
@@ -68,19 +65,19 @@ lefserPlotClad <- function(
     
     internalNodes <- ape::Ntip(tree) + 1:ape::Nnode(tree)
     
-    # collapseThem <- purrr::map_int(internalNodes, ~ {
-    #     chNods <- treeio::offspring(.data = tree, .node = .x, type = "tips")
-    #     if (any(chNods %in% dat$node)) {
-    #         return(NA)
-    #     } else {
-    #         return(.x)
-    #     }
-    # }) |>
-    #     purrr::discard(is.na)
+    collapseThem <- purrr::map_int(internalNodes, ~ {
+        chNods <- treeio::offspring(.data = tree, .node = .x, type = "tips")
+        if (any(chNods %in% dat$node)) {
+            return(NA)
+        } else {
+            return(.x)
+        }
+    }) |>
+        purrr::discard(is.na)
     
     nodLab <- match.arg(
         arg = showNodeLabels,
-        choices = c("p", "c", "o", "f", "g"),
+        choices = c("p", "c", "o", "f", "g", "s", "t"),
         several.ok = TRUE
     )
     nodLabRgx <- paste0("[", paste0(nodLab, collapse = ""), "]__")
@@ -126,16 +123,16 @@ lefserPlotClad <- function(
         ggplot2::scale_size(name = "Absolute\nscore") +
         ggtree::theme(legend.position = "right")
     
-    # for (i in collapseThem) {
-    #     gt2 <- withCallingHandlers(
-    #         ggtree::collapse(gt2, node = i),
-    #         warning = function(w) {
-    #             if (grepl("collapse", w$message)) {
-    #                 invokeRestart("muffleWarning")
-    #             }
-    #         }
-    #     )
-    # }
+    for (i in collapseThem) {
+        gt2 <- withCallingHandlers(
+            ggtree::collapse(gt2, node = i),
+            warning = function(w) {
+                if (grepl("collapse", w$message)) {
+                    invokeRestart("muffleWarning")
+                }
+            }
+        )
+    }
     return(gt2)
 }
 
@@ -169,8 +166,8 @@ lefserPlotClad <- function(
 #' z14tn_ra <- relativeAb(z14tn)
 #' z14_input <- rowNames2RowData(z14tn_ra)
 #'
-#' resAll <- lefserClades(relab = z14_input, classCol = "study_condition")
-#' head(resAll)
+#' resCl <- lefserClades(relab = z14_input, classCol = "study_condition")
+#' head(Cl)
 #' 
 lefserClades <- function(relab, ...) {
     se <- .selectTaxRanks(relab)
@@ -179,8 +176,8 @@ lefserClades <- function(relab, ...) {
     se <- l[["se"]]
     pathStrings <- l[["pathStrings"]]
     seL <- as.list(mia::splitByRanks(se))
-    ## Restrict to species. Kingdom would not be informative
-    seL <- seL[!names(seL) %in% c("kingdom", "strain")]
+    ## Kingdom would not be informative
+    seL <- seL[!names(seL) %in% "kingdom"]
     msgRanks <- paste(names(seL), collapse = ", ")
     msgRanks <- msgRanks[length(msgRanks):1]
     message(
@@ -198,7 +195,7 @@ lefserClades <- function(relab, ...) {
     })
     resL <- purrr::imap(seL, function(x, idx, ...) {
         message(
-            "\n>>>> Running lefse at the ", idx, " level.", 
+            "\n>>>> Running lefser at the ", idx, " level.", 
             " <<<<"
         )
         withCallingHandlers(
@@ -271,7 +268,10 @@ lefserClades <- function(relab, ...) {
     se <- x
     rowDat <- SummarizedExperiment::rowData(se)
     colnames(rowDat) <- stringr::str_to_lower(colnames(rowDat))
-    colnames(rowDat)[which(colnames(rowDat) == "superkingdom")] <- "kingdom"
+    if ("superkingdom" %in% colnames(rowData)) {
+        messgage("superkingdom --> kingdom")
+        colnames(rowDat)[which(colnames(rowDat) == "superkingdom")] <- "kingdom"
+    }
     selectCols <- intersect(taxNames, colnames(rowDat))
     SummarizedExperiment::rowData(se) <- rowDat[, selectCols]
     return(se)
@@ -282,7 +282,20 @@ lefserClades <- function(relab, ...) {
     rowDat <- SummarizedExperiment::rowData(se)
     for (i in seq_along(rowDat)) {
         chr_vct <- rowDat[[i]]
-        rankLetter <- stringr::str_c(stringr::str_extract(colnames(rowDat)[i], "^\\w"), "__")
+        rankName <- colnames(rowDat)[i]
+        rankLetter <- dplyr::case_when(
+            rankName == "kingdom" ~ "k__",
+            rankName == "phylum" ~ "p__",
+            rankName == "class" ~ "c__",
+            rankName == "order" ~ "o__",
+            rankName == "family" ~ "f__",
+            rankName == "genus" ~ "g__",
+            rankName == "species" ~ "s__",
+            rankName == "strain" ~ "t__",
+        )
+        # rankLetter <- stringr::str_c(
+        #     stringr::str_extract(colnames(rowDat)[i], "^\\w"), "__"
+        # )
         rowDat[[i]] <- stringr::str_c(rankLetter, chr_vct)
     }
     SummarizedExperiment::rowData(se) <- rowDat
@@ -293,6 +306,15 @@ lefserClades <- function(relab, ...) {
     se <- x
     row_data <- as.data.frame(SummarizedExperiment::rowData(se))
     nrow1 <- nrow(row_data)
+    for (i in seq_along(row_data)) {
+        sumNA <- sum(is.na(row_data[[i]]))
+        if (sumNA > 0) {
+            message(
+                sumNA, " features don't have ", colnames(row_data)[i],
+                " information."
+            )
+        }
+    }
     row_data <- tidyr::drop_na(row_data)
     nrow2 <- nrow(row_data)
     if (nrow1 > nrow2) {

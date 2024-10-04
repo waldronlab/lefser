@@ -18,8 +18,8 @@ This argument also accepts a character(2) with two color names.}
 
 \item{showNodeLabels}{Label's to be shown in the tree.
 Options: "p" = phylum, "c" = class, "o" = order,
-"f" = family, "g" = genus. It can accept several options, e.g.,
-c("p", "c").}
+"f" = family, "g" = genus, "s" = species, "t" = strain.
+It can accept several options, e.g., c("p", "c").}
 }
 \value{
 A ggtree object.
@@ -34,6 +34,6 @@ z14 <- zeller14[, zeller14$study_condition != "adenoma"]
 tn <- get_terminal_nodes(rownames(z14))
 z14tn <- z14[tn, ]
 z14tn_ra <- relativeAb(z14tn)
-resAll <- lefserAllRanks(relab = z14tn_ra, classCol = "study_condition")
-ggt <- lefserPlotClad(df = resAll)
+resCl <- lefserClades(relab = z14tn_ra, classCol = "study_condition")
+ggt <- lefserPlotClad(df = resCl)
 }
