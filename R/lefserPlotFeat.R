@@ -44,7 +44,8 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
     vLinePos <- which(dat$classCol != refclass)[1] - 0.5
     colVar <- .selectPalette(colors)
     l <- split(dat, dat$classCol)
-    maxYVal <- max(dat$abundance)
+    # maxYVal <- max(dat$abundance)
+    maxYVal <- 1
     vals <- purrr::map(l, ~ {
         head(.x[["sample"]], 1)
     })
@@ -75,7 +76,9 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
     }
     p <- p +
         ggplot2::scale_y_continuous(
-            labels = scales::scientific, expand = c(0, 0)
+            limits = c(0, 1),
+            # labels = scales::scientific,
+            expand = c(0, 0)
         ) +
         ggplot2::labs(
             x = "Samples", y = "Relative abundance",
@@ -165,8 +168,10 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
     sampleData <- as.data.frame(SummarizedExperiment::colData(tse))
     sampleData <- sampleData[, selectCols, drop = FALSE]
     sampleData <- tibble::rownames_to_column(sampleData, var = "sample")
-    dat <- tse[res[["features"]],] |>
-        SummarizedExperiment::assay() |>
+    mat <- tse[res[["features"]],] |>
+        SummarizedExperiment::assay()
+    mat <- apply(mat, 2, function(x) x / sum(x))
+    dat <- mat |> 
         as.data.frame() |>
         tibble::rownames_to_column(var = "features") |>
         tidyr::pivot_longer(

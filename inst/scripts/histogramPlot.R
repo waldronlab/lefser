@@ -1,4 +1,4 @@
-# suppressMessages(library(lefser))
+suppressMessages(library(lefser))
 data(zeller14)
 zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
 tn <- get_terminal_nodes(rownames(zeller14))
@@ -12,6 +12,11 @@ resSubClass <- lefser(
     zeller14tn_ra, classCol = "study_condition", subclassCol = "age_category"
 )
 ## Plot one feature
-plotClass <- lefserPlotFeat(resClass, res$features[[1]], colors = "c")
-plotSubClass <- lefserPlotFeat(resSubClass, res$features[[1]], colors = "c")
+plotClass <- lefserPlotFeat(resClass, resClass$features[[1]], colors = "c")
+plotClass
+plotSubClass <- lefserPlotFeat(resSubClass, resSubClass$features[[1]], colors = "c")
+plotSubClass
 sessioninfo::session_info()
+
+
+
