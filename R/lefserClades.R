@@ -38,7 +38,7 @@ lefserClades <- function(relab, ...) {
     pathStrings <- l[["pathStrings"]]
     seL <- as.list(mia::splitByRanks(se))
     ## Kingdom would not be informative
-    seL <- seL[!names(seL) %in% "kingdom"]
+    # seL <- seL[!names(seL) %in% "kingdom"]
     msgRanks <- paste(names(seL), collapse = ", ")
     msgRanks <- msgRanks[length(msgRanks):1]
     message(
@@ -78,6 +78,14 @@ lefserClades <- function(relab, ...) {
         purrr::map(~ attr(.x, "case")) |> 
         unlist(use.names = FALSE) |> 
         unique()
+    classArgVar <- resL |> 
+        purrr::map(~ attr(.x, "class_arg")) |> 
+        unlist(use.names = FALSE) |> 
+        unique()
+    subclassArgVar <- resL |> 
+        purrr::map(~ attr(.x, "subclass_arg")) |> 
+        unlist(use.names = FALSE) |> 
+        unique()
     names(resL) <- names(seL)
     res <- dplyr::bind_rows(resL, .id = "Rank") |> 
         dplyr::relocate(.data$Rank, .after = tidyselect::last_col())
@@ -86,6 +94,9 @@ lefserClades <- function(relab, ...) {
     attr(res, "tree") <- .toTree(pathStrings)
     attr(res, "lclassf") <- controlVar
     attr(res, "case") <- caseVar
+    attr(res, "inputSE") <- seL
+    attr(res, "class_arg") <- classArgVar
+    attr(res, "subclass_arg") <- subclassArgVar
     return(res)
 }
 
@@ -129,8 +140,8 @@ lefserClades <- function(relab, ...) {
     se <- x
     rowDat <- SummarizedExperiment::rowData(se)
     colnames(rowDat) <- stringr::str_to_lower(colnames(rowDat))
-    if ("superkingdom" %in% colnames(rowData)) {
-        messgage("superkingdom --> kingdom")
+    if ("superkingdom" %in% colnames(rowDat)) {
+        message("superkingdom --> kingdom")
         colnames(rowDat)[which(colnames(rowDat) == "superkingdom")] <- "kingdom"
     }
     selectCols <- intersect(taxNames, colnames(rowDat))

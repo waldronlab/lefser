@@ -153,23 +153,29 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
 }
 
 .prepareDataHistogram <- function(res, fName) {
-    if (!.isLefser(res)) {
+    if ("lefser_df" == class(res)[1]) {
+        tse <- attr(res, "inputSE")
+        sampleData <- as.data.frame(SummarizedExperiment::colData(tse))
+        mat <- SummarizedExperiment::assay(tse)
+    } else if ("lefser_df_clades" == class(res)[1]) {
+        seL <- attr(res, "inputSE")
+        sampleData <- as.data.frame(SummarizedExperiment::colData(seL[[1]]))
+        matL <- purrr::map(seL, SummarizedExperiment::assay)
+        mat <- do.call("rbind", matL)
+    } else {
         stop(
-            "Expected an object of class 'lefser_df'.",
-            " Only the output of a lefser function call is valid.",
+            "Need an object of class lefser_df or lefser_df_class",
             call. = FALSE
         )
     }
-    tse <- attr(res, "inputSE")
     classCol <- attr(res, "class_arg")
     subclassCol <- attr(res, "subclass_arg")
     refclass <- attr(res, "lclassf")
     selectCols <- c(classCol, subclassCol)
-    sampleData <- as.data.frame(SummarizedExperiment::colData(tse))
+    # sampleData <- as.data.frame(SummarizedExperiment::colData(tse))
     sampleData <- sampleData[, selectCols, drop = FALSE]
     sampleData <- tibble::rownames_to_column(sampleData, var = "sample")
-    mat <- tse[res[["features"]],] |>
-        SummarizedExperiment::assay()
+    mat <- mat[res[["features"]], ]
     mat <- apply(mat, 2, function(x) x / sum(x))
     dat <- mat |> 
         as.data.frame() |>
