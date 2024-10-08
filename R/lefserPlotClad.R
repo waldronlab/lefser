@@ -82,12 +82,15 @@ lefserPlotClad <- function(
     )
     nodLabRgx <- paste0("[", paste0(nodLab, collapse = ""), "]__")
     treeData <- dat |>
+        dplyr::mutate(abs = round(.data$abs, 1)) |> 
         dplyr::mutate(
             showNodeLabs = dplyr::case_when(
                 grepl(nodLabRgx, features) ~ features,
                 TRUE ~ NA
             )
         )
+    minval <- floor(min(treeData$abs, na.rm = TRUE))
+    maxval <- floor(max(treeData$abs, na.rm = TRUE))
     
     gt <- ggtree::ggtree(
         tree, layout = "circular",  branch.length = "none", size = 0.2
@@ -120,7 +123,14 @@ lefserPlotClad <- function(
             values = colors, breaks = c(controlVar, caseVar),
             name = "Sample", na.value = NA
         ) +
-        ggplot2::scale_size(name = "Absolute\nscore") +
+        ggplot2::scale_size(
+            name = "Absolute\nLDA score",
+            limits = c(minval, maxval),
+            # range = range(seq_along(seq(minval, maxval, 1))),
+            range = c(minval, maxval),
+            breaks = seq(minval, maxval, 1)
+            
+        ) +
         ggtree::theme(legend.position = "right")
     
     for (i in collapseThem) {

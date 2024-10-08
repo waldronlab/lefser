@@ -14,7 +14,7 @@ z14_tn_ra <- relativeAb(z14_tn)
 z14_input <- rowNames2RowData(z14_tn_ra)
 
 resCl <- lefserClades(relab = z14_input, classCol = "study_condition")
-lefserPlotFeat(resCl, resCl$features[[22]])
+(ggt <- lefserPlotClad(resCl))
 
 ## Example 2 - OTUs
 ## Clades will be summarized at the genus level and above
@@ -22,6 +22,6 @@ tse <- getBenchmarkData("HMP_2012_16S_gingival_V35", dryrun = FALSE)[[1]]
 tse_ra <- relativeAb(tse)
 res_tse_cld <- lefserClades(relab = tse_ra, classCol = "body_subsite")
 
-lefserPlotFeat(res_tse_cld, res_tse_cld$features[[20]])
+(ggt2 <- lefserPlotClad(res_tse_cld))
 
 sessioninfo::session_info()
