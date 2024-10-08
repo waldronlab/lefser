@@ -104,3 +104,65 @@ get_terminal_nodes <- function(string) {
         return(x)
     }
 }
+
+#' RowNames to RowData
+#' 
+#' \code{rowNames2RowData} transforms the taxonomy stored in the row names to 
+#' the rowData in a SummarizedExperiment.
+#' 
+#' @param x A SummarizedExperiment with the features taxonomy in the rownames.
+#'
+#' @return The same SummarizedExpriment with the taxonomy now in the rowData.
+#' @export
+#'
+#' @examples
+#'
+#' data("zeller14")
+#' 
+#' ## Keep only "CRC" and "control" (dichotomous variable)
+#' z14 <- zeller14[, zeller14$study_condition %in% c("control", "CRC")]
+#' 
+#' ## Get terminal nodes
+#' tn <- get_terminal_nodes(rownames(z14))
+#' z14_tn <- z14[tn, ]
+#' 
+#' ## Normalize to relative abundance (also known as Total Sum Scaling)
+#' z14_tn_ra <- relativeAb(z14_tn)
+#' 
+#' ## Add the taxonomy to the rowData
+#' input_se <- rowNames2RowData(z14_tn_ra)
+#' 
+rowNames2RowData <- function(x) {
+    se <- x
+    taxonomy <- .getTaxonomyFromPathStr(rownames(se))
+    dataFrame <- data.frame(tax = taxonomy) |>
+        tidyr::separate(
+            col = "tax", into = paste0("col", 1:10), # Number of taxa is usually seven, so 10 should be more than enough.
+            sep = "\\|", extra = "merge", fill = "right"
+        ) |>
+        purrr::discard(~ all(is.na(.x)))
+    ## purrr::map_chr ensures that the a single letter is used per column.
+    ## Having two or more letters would trigger and error message from map_chr.
+    firstLetter <- purrr::map_chr(dataFrame, ~ {
+        taxLvl <- stringr::str_extract(.x, "\\w__")
+        unique(taxLvl[which(!is.na(taxLvl))])
+    })
+    rankNames <- dplyr::case_when(
+        firstLetter == "k__" ~ "kingdom",
+        firstLetter == "p__" ~ "phylum",
+        firstLetter == "c__" ~ "class",
+        firstLetter == "o__" ~ "order",
+        firstLetter == "f__" ~ "family",
+        firstLetter == "g__" ~ "genus",
+        firstLetter == "s__" ~ "species",
+        firstLetter == "t__" ~ "strain",
+    )
+    colnames(dataFrame) <- rankNames
+    dataFrame <- purrr::modify(dataFrame, ~ sub("^\\w__", "", .x))
+    DF <- S4Vectors::DataFrame(dataFrame)
+    SummarizedExperiment::rowData(se) <- DF
+    return(se)
+}
+
+
+
