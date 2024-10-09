@@ -1,3 +1,17 @@
+# version 1.15.10
+* [Major] Name of the two arguments for `lefser` function is changed from 
+`groupCol` and `blockCol` to `classCol` and `subclassCol`, respectively.
+* [Major] Defunct `expr` argument in `lefser`
+* [New function] `lefserPlotFeat` plots the histogram of relative abundance 
+(in the (0,1) interval) of the selected features
+* [New function] `lefserPlotClad` draws the cladogram of the significantly 
+more abundant taxa and their LDA scores
+* [New function] `lefserClades` runs the `lefser`, returning additional 
+information (e.g., agglomerates the features abundance at different taxonomic
+ranks) required for `lefserPlotClad`.
+* [New feature] Visualization functions are using a color-blind friendly color
+palette by default. 
+
 # version 1.15.7 
 * [Major algorithm update] We remove the step (`createUniqueValues`) in the 
 `lefser` function, which used to add small random numbers to make all the 
