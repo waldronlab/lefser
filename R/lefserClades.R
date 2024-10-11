@@ -28,7 +28,6 @@
 #' z14_input <- rowNames2RowData(z14tn_ra)
 #'
 #' resCl <- lefserClades(relab = z14_input, classCol = "study_condition")
-#' head(Cl)
 #' 
 lefserClades <- function(relab, ...) {
     se <- .selectTaxRanks(relab)

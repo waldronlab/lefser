@@ -26,7 +26,9 @@
 #' tn <- get_terminal_nodes(rownames(z14))
 #' z14tn <- z14[tn, ]
 #' z14tn_ra <- relativeAb(z14tn)
-#' resCl <- lefserClades(relab = z14tn_ra, classCol = "study_condition")
+#' z14_input <- rowNames2RowData(z14tn_ra)
+#'
+#' resCl <- lefserClades(relab = z14_input, classCol = "study_condition")
 #' ggt <- lefserPlotClad(df = resCl)
 lefserPlotClad <- function(
         df, colors = "c", showTipLabels = FALSE, showNodeLabels = "p"

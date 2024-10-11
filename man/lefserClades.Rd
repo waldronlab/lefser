@@ -34,6 +34,5 @@ z14tn_ra <- relativeAb(z14tn)
 z14_input <- rowNames2RowData(z14tn_ra)
 
 resCl <- lefserClades(relab = z14_input, classCol = "study_condition")
-head(Cl)
 
 }
