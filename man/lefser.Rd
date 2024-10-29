@@ -16,7 +16,6 @@ lefser(
   checkAbundances = TRUE,
   method = "none",
   ...,
-  expr,
   groupCol = "GROUP",
   blockCol = NULL
 )
@@ -58,9 +57,6 @@ Character string of length one, passed on to \link[stats]{p.adjust} to set
 option for multiple testing. For multiple pairwise comparisons, each comparison
 is adjusted separately. Options are "holm", "hochberg", "hommel",
 "bonferroni", "BH", "BY", "fdr" (synonym for "BH"), and "none".}
-
-\item{expr}{(\strong{DEFUNCT}) Use \code{relab} instead. A \linkS4class{SummarizedExperiment}
-with relative abundances in the assay}
 
 \item{groupCol}{(\strong{DEPRECATED}) Column name in \code{colData(relab)} indicating
 groups, usually a factor with two levels (e.g., \code{c("cases", "controls")};

@@ -162,8 +162,6 @@ filterKruskal <- function(relab, class, p.value, method = method) {
 #'
 #' @param relab A [SummarizedExperiment-class] with relative
 #'   abundances in the assay
-#' @param expr (**DEFUNCT**) Use `relab` instead. A [SummarizedExperiment-class]
-#'   with relative abundances in the assay
 #' @param kruskal.threshold numeric(1) The p-value for the Kruskal-Wallis Rank
 #' Sum Test (default 0.05). If multiple hypothesis testing is performed, this
 #' threshold is applied to corrected p-values.
