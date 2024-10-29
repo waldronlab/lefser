@@ -16,8 +16,8 @@ lefser(
   checkAbundances = TRUE,
   method = "none",
   ...,
-  groupCol = "GROUP",
-  blockCol = NULL
+  groupCol,
+  blockCol
 )
 }
 \arguments{
@@ -58,11 +58,11 @@ option for multiple testing. For multiple pairwise comparisons, each comparison
 is adjusted separately. Options are "holm", "hochberg", "hommel",
 "bonferroni", "BH", "BY", "fdr" (synonym for "BH"), and "none".}
 
-\item{groupCol}{(\strong{DEPRECATED}) Column name in \code{colData(relab)} indicating
+\item{groupCol}{(\strong{DEFUNCT}) Column name in \code{colData(relab)} indicating
 groups, usually a factor with two levels (e.g., \code{c("cases", "controls")};
 default "GROUP").}
 
-\item{blockCol}{(\strong{DEPRECATED}) Optional column name in \code{colData(relab)}
+\item{blockCol}{(\strong{DEFUNCT}) Optional column name in \code{colData(relab)}
 indicating the blocks, usually a factor with two levels (e.g., \code{c("adult", "senior")}; default NULL).}
 
 \item{\ldots}{Additional inputs to lower level functions (not used).}
