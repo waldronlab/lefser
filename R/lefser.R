@@ -162,8 +162,6 @@ filterKruskal <- function(relab, class, p.value, method = method) {
 #'
 #' @param relab A [SummarizedExperiment-class] with relative
 #'   abundances in the assay
-#' @param expr (**DEFUNCT**) Use `relab` instead. A [SummarizedExperiment-class]
-#'   with relative abundances in the assay
 #' @param kruskal.threshold numeric(1) The p-value for the Kruskal-Wallis Rank
 #' Sum Test (default 0.05). If multiple hypothesis testing is performed, this
 #' threshold is applied to corrected p-values.
@@ -177,10 +175,10 @@ filterKruskal <- function(relab, class, p.value, method = method) {
 #' @param subclassCol character(1) Optional column name in `colData(relab)`
 #' indicating the subclasses, usually a factor with two levels (e.g.,
 #' `c("adult", "senior")`; default NULL), but can be more than two levels.
-#' @param groupCol (**DEPRECATED**) Column name in `colData(relab)` indicating
+#' @param groupCol (**DEFUNCT**) Column name in `colData(relab)` indicating
 #'   groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
 #'   default "GROUP").
-#' @param blockCol (**DEPRECATED**) Optional column name in `colData(relab)`
+#' @param blockCol (**DEFUNCT**) Optional column name in `colData(relab)`
 #'   indicating the blocks, usually a factor with two levels (e.g., `c("adult",
 #'   "senior")`; default NULL).
 #' @param assay The i-th assay matrix in the `SummarizedExperiment` ('relab';
@@ -238,29 +236,19 @@ lefser <-
            checkAbundances = TRUE,
            method = "none",
            ...,
-           expr,
-           groupCol = "GROUP",
-           blockCol = NULL
+           groupCol,
+           blockCol
 ) {
-    if (!missing(expr)) {
-        .Defunct(
-            msg = "The 'expr' argument is defunct, use 'relab' instead."
-        )
-    }
     relab_data <- assay(relab, i = assay)
 
-    if (!missing(groupCol)){
-        .Deprecated(
-            msg = "The 'groupCol' argument is deprecated, use 'classCol' instead."
+    if (!missing(groupCol))
+        .Defunct(
+            msg = "The 'groupCol' argument is defunct, use 'classCol' instead."
         )
-        classCol <- groupCol
-    }
-    if (!missing(blockCol)){
-        .Deprecated(
-            msg = "The 'blockCol' argument is deprecated, use 'subclassCol' instead."
+    if (!missing(blockCol))
+        .Defunct(
+            msg = "The 'blockCol' argument is defunct, use 'subclassCol' instead."
         )
-        subclassCol <- blockCol
-    }
     ## Check whether relative abundance is provided or not
     if (checkAbundances && !identical(all.equal(colSums(relab_data),
                                                 rep(1e6, ncol(relab_data)),
@@ -352,7 +340,7 @@ lefser <-
     attr(res_scores, "method") <- method
     # attr(res_scores, "lgroupf") <- lgroupf[1]
     # attr(res_scores, "case") <- lgroupf[2]
-    
+
     ## Some more attributes to create the cladogram.
     # pathStrings <- .selectPathStrings(relab, res_scores)
     # # attr(res_scores, "pathStrings") <- pathStrings
