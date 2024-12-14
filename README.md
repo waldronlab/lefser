@@ -35,7 +35,7 @@ To cite `lefser` in publications, use:
 > <a href="https://doi.org/10.1093/bioinformatics/btae707">https://doi.org/10.1093/bioinformatics/btae707</a>.
 > </p>
 
-A BibTeX entry for LaTeX users is: 
+A **BibTeX** entry for **LaTeX** users is: 
 
      @article{10.1093/bioinformatics/btae707,
       author = {Khleborodova, Asya and Gamboa-Tuz, Samuel D and Ramos, Marcel and Segata, Nicola and Waldron, Levi and Oh, Sehyun},
