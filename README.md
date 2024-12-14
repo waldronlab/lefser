@@ -30,7 +30,7 @@ To cite `lefser` in publications, use:
 > <p>
 > Asya Khleborodova, Samuel D Gamboa-Tuz, Marcel Ramos, Nicola Segata, Levi Waldron, Sehyun Oh,
 > <em>Lefser</em>: Implementation of metagenomic biomarker 
-> discovery tool, <em>LEfSe</em.>, in R, <em>Bioinformatics</em>, 2024;, btae707, <a 
+> discovery tool, <em>LEfSe</em>, in R, <em>Bioinformatics</em>, 2024;, btae707, <a 
 > href="https://doi.org/10.1093/bioinformatics/btae707">doi:10.1093/bioinformatics/btae707</a>,
 > <a href="https://doi.org/10.1093/bioinformatics/btae707">https://doi.org/10.1093/bioinformatics/btae707</a>.
 > </p>
