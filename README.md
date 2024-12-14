@@ -22,3 +22,30 @@ statistical method and the associated plotting functionality.
 
 [LEfSe]: https://huttenhower.sph.harvard.edu/galaxy/
 [Segata et al. 2011]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3218848/
+
+## To Cite *lefser* software package
+
+To cite `lefser` in publications, use:
+
+> <p>
+> Asya Khleborodova, Samuel D Gamboa-Tuz, Marcel Ramos, Nicola Segata, Levi Waldron, Sehyun Oh,
+> <em>Lefser</em>: Implementation of metagenomic biomarker 
+> discovery tool, <em>LEfSe</em.>, in R, <em>Bioinformatics</em>, 2024;, btae707, <a 
+> href="https://doi.org/10.1093/bioinformatics/btae707">doi:10.1093/bioinformatics/btae707</a>,
+> <a href="https://doi.org/10.1093/bioinformatics/btae707">https://doi.org/10.1093/bioinformatics/btae707</a>.
+> </p>
+
+A BibTeX entry for LaTeX users is: 
+
+     @article{10.1093/bioinformatics/btae707,
+      author = {Khleborodova, Asya and Gamboa-Tuz, Samuel D and Ramos, Marcel and Segata, Nicola and Waldron, Levi and Oh, Sehyun},
+      title = {Lefser: Implementation of metagenomic biomarker discovery tool, LEfSe, in R},
+      journal = {Bioinformatics},
+      pages = {btae707},
+      year = {2024},
+      month = {11},
+      issn = {1367-4811},
+      doi = {10.1093/bioinformatics/btae707},
+      url = {https://doi.org/10.1093/bioinformatics/btae707},
+      eprint = {https://academic.oup.com/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btae707/60811200/btae707.pdf},
+    }
