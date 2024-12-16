@@ -54,6 +54,13 @@ BiocManager::install("lefser")
 library(lefser)
 ```
 
+## Citing *lefser*
+
+Your citations are crucial in keeping our software free and open source. To
+cite our package, please use this publication at the link [here][1].
+
+[1]: https://doi.org/10.1093/bioinformatics/btae707
+
 # Analysis example
 ## Prepare input
 
