@@ -1,0 +1,21 @@
+citHeader("To cite lefser in publications, use:")
+
+bibentry(
+    bibtype = "Article",
+    title = "Lefser: Implementation of metagenomic biomarker discovery tool, LEfSe, in R",
+    author = c(
+        person("Asya", "Khleborodova"),
+        person("Samuel D", "Gamboa-Tuz"),
+        person("Marcel", "Ramos"),
+        person("Nicola", "Segata"),
+        person("Levi", "Waldron"),
+        person("Sehyun", "Oh")
+    ),
+    journal = "Bioinformatics",
+    year = "2024",
+    month = "11",
+    pages = "btae707",
+    issn = "1367-4811",
+    doi = "10.1093/bioinformatics/btae707",
+    url = "https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btae707/7908399"
+)
