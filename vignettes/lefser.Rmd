@@ -186,7 +186,30 @@ the `mia` package.
 mia::makeTreeSummarizedExperimentFromPhyloseq(kostic)
 ```
 
+# Citing `lefser` software package
 
+Without your citations our free and open-source software would not be possible. Please cite `lefser` as shown here:
+
+<mark>
+Asya Khleborodova, Samuel D Gamboa-Tuz, Marcel Ramos, Nicola Segata, Levi Waldron, Sehyun Oh,
+*Lefser*: Implementation of metagenomic biomarker 
+discovery tool, *LEfSe*, in R, *Bioinformatics*, 2024;, btae707, [doi:10.1093/bioinformatics/btae707](https://doi.org/10.1093/bioinformatics/btae707)
+</mark>
+
+A **BibTeX** entry for **LaTeX** users is: 
+
+     @article{10.1093/bioinformatics/btae707,
+      author = {Khleborodova, Asya and Gamboa-Tuz, Samuel D and Ramos, Marcel and Segata, Nicola and Waldron, Levi and Oh, Sehyun},
+      title = {Lefser: Implementation of metagenomic biomarker discovery tool, LEfSe, in R},
+      journal = {Bioinformatics},
+      pages = {btae707},
+      year = {2024},
+      month = {11},
+      issn = {1367-4811},
+      doi = {10.1093/bioinformatics/btae707},
+      url = {https://doi.org/10.1093/bioinformatics/btae707},
+      eprint = {https://academic.oup.com/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btae707/60811200/btae707.pdf},
+    }
 
 
 # Session Info
