@@ -63,7 +63,7 @@ lefserPlotClad <- function(
     
     labels <- c(tree$tip.label, tree$node.label)
     res$node <- match(res$features, labels)
-    dat <- dplyr::relocate(res, node)
+    dat <- dplyr::relocate(res, .data$node)
     
     internalNodes <- ape::Ntip(tree) + 1:ape::Nnode(tree)
     
@@ -118,7 +118,7 @@ lefserPlotClad <- function(
     
     gt2 <- gt +
         ggrepel::geom_label_repel(
-            mapping = ggtree::aes(label = showNodeLabs),
+            mapping = ggtree::aes(label = .data$showNodeLabs),
             na.rm = TRUE
         ) +
         ggtree::scale_fill_manual(

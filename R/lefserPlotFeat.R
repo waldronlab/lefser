@@ -54,10 +54,10 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
     if (isFALSE(cond)) {
         p <- dat |>
             ggplot2::ggplot(
-                data = dat, mapping = ggplot2::aes(sample, abundance)
+                data = dat, mapping = ggplot2::aes(sample, .data$abundance)
             ) +
             ggplot2::geom_col(
-                mapping = ggplot2::aes(fill = classCol), width = 1
+                mapping = ggplot2::aes(fill = .data$classCol), width = 1
             ) +
             ggplot2::scale_fill_manual(
                 values = colVar
@@ -65,10 +65,11 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
     } else if (isTRUE(cond)) {
         p <- dat |>
             ggplot2::ggplot(
-                data = dat, mapping = ggplot2::aes(sample, abundance)
+                data = dat,
+                mapping = ggplot2::aes(.data$sample, .data$abundance)
             ) +
             ggplot2::geom_col(
-                mapping = ggplot2::aes(fill = subclassCol), width = 1
+                mapping = ggplot2::aes(fill = .data$subclassCol), width = 1
             ) +
             ggplot2::scale_fill_manual(
                 values = colVar
@@ -111,16 +112,16 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
             ggplot2::geom_segment(
                 data = sumDat[[i]],
                 mapping = ggplot2::aes(
-                    x = x1, xend = x2,
-                    y = mean1, yend = mean2
+                    x = .data$x1, xend = .data$x2,
+                    y = .data$mean1, yend = .data$mean2
                 ),
                 linetype = 1
             ) +
             ggplot2::geom_segment(
                 data = sumDat[[i]],
                 mapping = ggplot2::aes(
-                    x = x1, xend = x2,
-                    y = median1, yend = median2
+                    x = .data$x1, xend = .data$x2,
+                    y = .data$median1, yend = .data$median2
                 ),
                 linetype = 2
             )
