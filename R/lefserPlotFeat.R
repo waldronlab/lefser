@@ -54,7 +54,7 @@ lefserPlotFeat <- function(res, fName, colors = "colorblind") {
     if (isFALSE(cond)) {
         p <- dat |>
             ggplot2::ggplot(
-                data = dat, mapping = ggplot2::aes(sample, .data$abundance)
+                data = dat, mapping = ggplot2::aes(.data$sample, .data$abundance)
             ) +
             ggplot2::geom_col(
                 mapping = ggplot2::aes(fill = .data$classCol), width = 1
