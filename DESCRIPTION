@@ -33,7 +33,14 @@ Imports:
     tidyr,
     forcats,
     stringr,
-    ggtree
+    ggtree,
+    BiocGenerics,
+    ape,
+    ggrepel,
+    mia,
+    purrr,
+    tidyselect,
+    treeio
 Suggests: 
   knitr,
   rmarkdown,
