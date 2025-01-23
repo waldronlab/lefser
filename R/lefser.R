@@ -155,13 +155,14 @@ filterKruskal <- function(relab, class, p.value, method = method) {
 #' @details
 #' The LEfSe method expects relative abundances in the `expr` input. A warning
 #' will be emitted if the column sums do not result in 1. Use the \code{relativeAb}
-#' helper function to convert the data in the `SummarizedExperiment` to relative
-#' abundances. The `checkAbundances` argument enables checking the data
-#' for presence of relative abundances and can be turned off by setting the
-#' argument to `FALSE`.
+#' helper function to convert the data in the
+#' [`SummarizedExperiment`][SummarizedExperiment::SummarizedExperiment-class]
+#' to relative abundances. The `checkAbundances` argument enables checking the
+#' data for presence of relative abundances and can be turned off by setting
+#' the argument to `FALSE`.
 #'
-#' @param relab A [SummarizedExperiment-class] with relative
-#'   abundances in the assay
+#' @param relab A [SummarizedExperiment-class][SummarizedExperiment::SummarizedExperiment-class]
+#' with relative abundances in the assay
 #' @param kruskal.threshold numeric(1) The p-value for the Kruskal-Wallis Rank
 #' Sum Test (default 0.05). If multiple hypothesis testing is performed, this
 #' threshold is applied to corrected p-values.
@@ -181,8 +182,9 @@ filterKruskal <- function(relab, class, p.value, method = method) {
 #' @param blockCol (**DEFUNCT**) Optional column name in `colData(relab)`
 #'   indicating the blocks, usually a factor with two levels (e.g., `c("adult",
 #'   "senior")`; default NULL).
-#' @param assay The i-th assay matrix in the `SummarizedExperiment` ('relab';
-#' default 1).
+#' @param assay The i-th assay matrix in the
+#' [`SummarizedExperiment`][SummarizedExperiment::SummarizedExperiment-class]
+#' ('relab'; #' default 1).
 #' @param trim.names Default is `FALSE`. If `TRUE`, this function extracts
 #' the most specific taxonomic rank of organism.
 #' @param checkAbundances `logical(1)` Whether to check if the assay data in the

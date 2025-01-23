@@ -7,18 +7,19 @@
 lefserClades(relab, ...)
 }
 \arguments{
-\item{relab}{A (Tree) SummarizedExperiment with full taxonomy in the rowData.}
-
-\item{...}{Arguments passed to the \code{lefser} function.}
+\item{relab}{A
+\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{(Tree) SummarizedExperiment}
+with full taxonomy in the rowData @param ... Arguments passed to the
+\code{lefser} function.}
 }
 \value{
 An object of class 'lefser_df_clades', "lefser_df", and 'data.frame'.
 }
 \description{
 \code{lefesrCaldes} Agglomerates the features abundance at different
-taxonomic ranks using \code{mia::splitByRanks} and performs lefser at
-each rank. The analysis is run at the species, genus, family, order,
-class, and phylum levels.
+taxonomic ranks using \link[mia:agglomerate-methods]{mia::splitByRanks}
+and performs lefser at each rank. The analysis is run at the species,
+genus, family, order, class, and phylum levels.
 }
 \details{
 When running \code{lefserClades}, all features with NAs in the rowData will

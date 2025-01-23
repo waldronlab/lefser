@@ -21,8 +21,8 @@ lefser(
 )
 }
 \arguments{
-\item{relab}{A \linkS4class{SummarizedExperiment} with relative
-abundances in the assay}
+\item{relab}{A \link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment-class}
+with relative abundances in the assay}
 
 \item{kruskal.threshold}{numeric(1) The p-value for the Kruskal-Wallis Rank
 Sum Test (default 0.05). If multiple hypothesis testing is performed, this
@@ -42,8 +42,9 @@ default "CLASS").}
 indicating the subclasses, usually a factor with two levels (e.g.,
 \code{c("adult", "senior")}; default NULL), but can be more than two levels.}
 
-\item{assay}{The i-th assay matrix in the \code{SummarizedExperiment} ('relab';
-default 1).}
+\item{assay}{The i-th assay matrix in the
+\code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}}
+('relab'; #' default 1).}
 
 \item{trim.names}{Default is \code{FALSE}. If \code{TRUE}, this function extracts
 the most specific taxonomic rank of organism.}
@@ -81,10 +82,11 @@ are identified as biomarkers.
 \details{
 The LEfSe method expects relative abundances in the \code{expr} input. A warning
 will be emitted if the column sums do not result in 1. Use the \code{relativeAb}
-helper function to convert the data in the \code{SummarizedExperiment} to relative
-abundances. The \code{checkAbundances} argument enables checking the data
-for presence of relative abundances and can be turned off by setting the
-argument to \code{FALSE}.
+helper function to convert the data in the
+\code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}}
+to relative abundances. The \code{checkAbundances} argument enables checking the
+data for presence of relative abundances and can be turned off by setting
+the argument to \code{FALSE}.
 }
 \examples{
 
