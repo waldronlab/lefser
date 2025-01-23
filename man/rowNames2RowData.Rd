@@ -7,14 +7,19 @@
 rowNames2RowData(x)
 }
 \arguments{
-\item{x}{A SummarizedExperiment with the features taxonomy in the rownames.}
+\item{x}{A
+\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}
+with the features taxonomy in the rownames.}
 }
 \value{
-The same SummarizedExpriment with the taxonomy now in the rowData.
+The same
+\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}
+with the taxonomy now in the rowData.
 }
 \description{
 \code{rowNames2RowData} transforms the taxonomy stored in the row names to
-the rowData in a SummarizedExperiment.
+the rowData in a
+\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}.
 }
 \examples{
 

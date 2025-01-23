@@ -5,7 +5,8 @@
 \alias{zeller14}
 \title{Example dataset for lefser}
 \format{
-A SummarizedExperiment with 1585 features, 199 samples
+A \link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}
+with 1585 features, 199 samples
 \describe{
 \item{study_condition}{adenoma, control, CRC}
 \item{age_category}{adult, senior}
@@ -19,7 +20,7 @@ data("zeller14")
 }
 \description{
 The ZellerG_2014 dataset contains microbiome count data for CRC patients and
-controls. It was for curatedMetagenomicData using the script in the package
-directory "data-raw".
+controls. It was for \link[curatedMetagenomicData:curatedMetagenomicData]{curatedMetagenomicData}
+using the script in the package directory "data-raw".
 }
 \keyword{datasets}

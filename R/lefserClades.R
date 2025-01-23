@@ -2,12 +2,14 @@
 #' Run lefser at different clades
 #' 
 #' \code{lefesrCaldes} Agglomerates the features abundance at different
-#' taxonomic ranks using \code{mia::splitByRanks} and performs lefser at
-#' each rank. The analysis is run at the species, genus, family, order,
-#' class, and phylum levels.
+#' taxonomic ranks using [mia::splitByRanks][mia::splitByRanks]
+#' and performs lefser at each rank. The analysis is run at the species,
+#' genus, family, order, class, and phylum levels.
 #'
-#' @param relab A (Tree) SummarizedExperiment with full taxonomy in the rowData.
-#' @param ... Arguments passed to the \code{lefser} function.
+#' @param relab A
+#' [(Tree) SummarizedExperiment][TreeSummarizedExperiment::TreeSummarizedExperiment-class]
+#' with full taxonomy in the rowData @param ... Arguments passed to the
+#' \code{lefser} function.
 #'
 #' @return An object of class 'lefser_df_clades', "lefser_df", and 'data.frame'.
 #' 

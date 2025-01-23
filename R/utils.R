@@ -6,7 +6,8 @@
 #'
 #' @inheritParams lefser
 #'
-#' @param se A SummarizedExperiment object with counts
+#' @param se A [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment-class]
+#' object with counts
 #'
 #' @examples
 #'
@@ -21,11 +22,13 @@
 #' assay(relativeAb(se))
 #'
 #' @description
-#' This function calculates the relative abundance of each feature in the SummarizedExperiment
+#' This function calculates the relative abundance of each feature in the
+#' [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment-class]
 #' object containing count data, expressed as counts per million (CPM)
 #'
-#' @returns returns a new SummarizedExperiment object with counts per million
-#' calculated and added as a new assay named rel_abs.
+#' @returns returns a new
+#' [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment-class]
+#' object with counts per million calculated and added as a new assay named rel_abs.
 #'
 #' @export
 relativeAb <- function(se, assay = 1L) {
@@ -108,11 +111,16 @@ get_terminal_nodes <- function(string) {
 #' RowNames to RowData
 #' 
 #' \code{rowNames2RowData} transforms the taxonomy stored in the row names to 
-#' the rowData in a SummarizedExperiment.
+#' the rowData in a
+#' [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment-class].
 #' 
-#' @param x A SummarizedExperiment with the features taxonomy in the rownames.
+#' @param x A
+#' [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment-class]
+#' with the features taxonomy in the rownames.
 #'
-#' @return The same SummarizedExpriment with the taxonomy now in the rowData.
+#' @return The same
+#' [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment-class]
+#' with the taxonomy now in the rowData.
 #' @export
 #'
 #' @examples
