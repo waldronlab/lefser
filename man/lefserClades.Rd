@@ -8,7 +8,7 @@ lefserClades(relab, ...)
 }
 \arguments{
 \item{relab}{A
-\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{(Tree) SummarizedExperiment}
+(Tree) \link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}
 with full taxonomy in the rowData @param ... Arguments passed to the
 \code{lefser} function.}
 }

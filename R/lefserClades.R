@@ -7,7 +7,7 @@
 #' genus, family, order, class, and phylum levels.
 #'
 #' @param relab A
-#' [(Tree) SummarizedExperiment][TreeSummarizedExperiment::TreeSummarizedExperiment-class]
+#' (Tree) [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment-class]
 #' with full taxonomy in the rowData @param ... Arguments passed to the
 #' \code{lefser} function.
 #'
