@@ -1,5 +1,5 @@
 ---
-title: "lefser: a Megatanomic biomarker discovery tool"
+title: "lefser: a metagenomic biomarker discovery tool"
 author: Asya Khleborodova, Sehyun Oh, Ludwig Geistlinger, and Levi Waldron
 date: "`r Sys.Date()`"
 output:
