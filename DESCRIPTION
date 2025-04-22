@@ -18,7 +18,7 @@ Authors@R: c(
 License: Artistic-2.0
 Depends:
   SummarizedExperiment,
-  R (>= 4.0.0)
+  R (>= 4.5.0)
 Imports:
     coin,
     MASS,
