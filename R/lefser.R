@@ -176,12 +176,6 @@ filterKruskal <- function(relab, class, p.value, method = method) {
 #' @param subclassCol character(1) Optional column name in `colData(relab)`
 #' indicating the subclasses, usually a factor with two levels (e.g.,
 #' `c("adult", "senior")`; default NULL), but can be more than two levels.
-#' @param groupCol (**DEFUNCT**) Column name in `colData(relab)` indicating
-#'   groups, usually a factor with two levels (e.g., `c("cases", "controls")`;
-#'   default "GROUP").
-#' @param blockCol (**DEFUNCT**) Optional column name in `colData(relab)`
-#'   indicating the blocks, usually a factor with two levels (e.g., `c("adult",
-#'   "senior")`; default NULL).
 #' @param assay The i-th assay matrix in the
 #' [`SummarizedExperiment`][SummarizedExperiment::SummarizedExperiment-class]
 #' ('relab'; #' default 1).
@@ -237,20 +231,10 @@ lefser <-
            trim.names = FALSE,
            checkAbundances = TRUE,
            method = "none",
-           ...,
-           groupCol,
-           blockCol
+           ...
 ) {
     relab_data <- assay(relab, i = assay)
 
-    if (!missing(groupCol))
-        .Defunct(
-            msg = "The 'groupCol' argument is defunct, use 'classCol' instead."
-        )
-    if (!missing(blockCol))
-        .Defunct(
-            msg = "The 'blockCol' argument is defunct, use 'subclassCol' instead."
-        )
     ## Check whether relative abundance is provided or not
     if (checkAbundances && !identical(all.equal(colSums(relab_data),
                                                 rep(1e6, ncol(relab_data)),
