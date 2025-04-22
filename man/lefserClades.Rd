@@ -11,6 +11,8 @@ lefserClades(relab, ...)
 (Tree) \link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}
 with full taxonomy in the rowData @param ... Arguments passed to the
 \code{lefser} function.}
+
+\item{\ldots}{Additional arguments passed to \code{lefser}}
 }
 \value{
 An object of class 'lefser_df_clades', "lefser_df", and 'data.frame'.

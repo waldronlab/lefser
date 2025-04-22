@@ -1,6 +1,6 @@
 
 #' Run lefser at different clades
-#' 
+#'
 #' \code{lefesrCaldes} Agglomerates the features abundance at different
 #' taxonomic ranks using [mia::splitByRanks][mia::splitByRanks]
 #' and performs lefser at each rank. The analysis is run at the species,
@@ -11,17 +11,19 @@
 #' with full taxonomy in the rowData @param ... Arguments passed to the
 #' \code{lefser} function.
 #'
+#' @param \ldots Additional arguments passed to `lefser`
+#'
 #' @return An object of class 'lefser_df_clades', "lefser_df", and 'data.frame'.
-#' 
+#'
 #' @details
-#' 
+#'
 #' When running \code{lefserClades}, all features with NAs in the rowData will
 #' be dropped. This is to avoid creating artificial clades with NAs.
-#' 
+#'
 #' @export
 #'
 #' @examples
-#' 
+#'
 #' data("zeller14")
 #' z14 <- zeller14[, zeller14$study_condition != "adenoma"]
 #' tn <- get_terminal_nodes(rownames(z14))
@@ -30,7 +32,7 @@
 #' z14_input <- rowNames2RowData(z14tn_ra)
 #'
 #' resCl <- lefserClades(relab = z14_input, classCol = "study_condition")
-#' 
+#'
 lefserClades <- function(relab, ...) {
     se <- .selectTaxRanks(relab)
     se <- .appendRankLetter(se)
@@ -57,7 +59,7 @@ lefserClades <- function(relab, ...) {
     })
     resL <- purrr::imap(seL, function(x, idx, ...) {
         message(
-            "\n>>>> Running lefser at the ", idx, " level.", 
+            "\n>>>> Running lefser at the ", idx, " level.",
             " <<<<"
         )
         withCallingHandlers(
@@ -71,24 +73,24 @@ lefserClades <- function(relab, ...) {
     },
     ...
     )
-    controlVar <- resL |> 
-        purrr::map(~ attr(.x, "lclassf")) |> 
-        unlist(use.names = FALSE) |> 
+    controlVar <- resL |>
+        purrr::map(~ attr(.x, "lclassf")) |>
+        unlist(use.names = FALSE) |>
         unique()
-    caseVar <- resL |> 
-        purrr::map(~ attr(.x, "case")) |> 
-        unlist(use.names = FALSE) |> 
+    caseVar <- resL |>
+        purrr::map(~ attr(.x, "case")) |>
+        unlist(use.names = FALSE) |>
         unique()
-    classArgVar <- resL |> 
-        purrr::map(~ attr(.x, "class_arg")) |> 
-        unlist(use.names = FALSE) |> 
+    classArgVar <- resL |>
+        purrr::map(~ attr(.x, "class_arg")) |>
+        unlist(use.names = FALSE) |>
         unique()
-    subclassArgVar <- resL |> 
-        purrr::map(~ attr(.x, "subclass_arg")) |> 
-        unlist(use.names = FALSE) |> 
+    subclassArgVar <- resL |>
+        purrr::map(~ attr(.x, "subclass_arg")) |>
+        unlist(use.names = FALSE) |>
         unique()
     names(resL) <- names(seL)
-    res <- dplyr::bind_rows(resL, .id = "Rank") |> 
+    res <- dplyr::bind_rows(resL, .id = "Rank") |>
         dplyr::relocate(.data$Rank, .after = tidyselect::last_col())
     class(res) <- c("lefser_df_clades", class(res))
     attr(res, "pathStrings") <- pathStrings
@@ -127,7 +129,7 @@ lefserClades <- function(relab, ...) {
     pathStrings <- tidyr::unite(
         data = xDat, col = "taxonomy", sep = "|",
         1:tidyselect::last_col()
-    ) |> 
+    ) |>
         dplyr::pull(.data$taxonomy)
     pathStrings <- sub("(\\|NA)+$", "", pathStrings)
     return(pathStrings)
