@@ -1,4 +1,22 @@
-# version 1.15.10
+# lefser 1.20.0
+
+## Significant user-visible changes
+
+* Removed `blockCol` and `groupCol` arguments in `lefser` function.
+
+# lefser 1.18.0
+
+## Significant user-visible changes
+
+* Removed defunct `expr` argument in `lefser` function.
+* Set `blockCol` and `groupCol` arguments to defunct in main `lefser` function.
+
+## Minor improvements and bug fixes
+
+* Added `CITATION` file and section in `README.md`
+
+# lefser 1.15.10
+
 * [Major] Name of the two arguments for `lefser` function is changed from 
 `groupCol` and `blockCol` to `classCol` and `subclassCol`, respectively.
 * [Major] Defunct `expr` argument in `lefser`
@@ -12,7 +30,7 @@ ranks) required for `lefserPlotClad`.
 * [New feature] Visualization functions are using a color-blind friendly color
 palette by default. 
 
-# version 1.15.7 
+# lefser 1.15.7 
 * [Major algorithm update] We remove the step (`createUniqueValues`) in the 
 `lefser` function, which used to add small random numbers to make all the 
 values unique. Potential issues (e.g., LDA) due to excess 0s should be managed 
