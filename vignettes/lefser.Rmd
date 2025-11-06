@@ -165,7 +165,7 @@ lefserPlot(res, label.font.face = "italic")
 ```
 
 
-# Benchmarking againt other tools
+# Benchmarking against other tools
 The codes for benchmarking *lefser* against *LEfSe* and the other R
 implementation of *LEfSe* is available [here][].
 

@@ -68,6 +68,12 @@ test_that("lefser and lefserPlot work", {
     expect_s3_class(plt_bold, "ggplot")
     plt_bold_italic <- lefserPlot(results2, label.font.face = "bold.italic")
     expect_s3_class(plt_bold_italic, "ggplot")
+    
+    # Test invalid font face
+    expect_error(
+        lefserPlot(results2, label.font.face = "invalid"),
+        "label.font.face must be one of"
+    )
 })
 
 test_that("no significant results behaviors are consistent", {
