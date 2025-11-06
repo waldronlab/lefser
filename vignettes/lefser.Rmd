@@ -156,6 +156,14 @@ head(res)
 lefserPlot(res)
 ```
 
+The font face of the feature labels can be customized. For example, to 
+italicize the taxa names (which is the standard convention for scientific 
+names):
+
+```{r}
+lefserPlot(res, label.font.face = "italic")
+```
+
 
 # Benchmarking againt other tools
 The codes for benchmarking *lefser* against *LEfSe* and the other R
