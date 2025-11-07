@@ -19,6 +19,9 @@ utils::globalVariables(c("features", "scores"))
 #' @param title A character(1). The title of the plot.
 #' @param label.font.size A numeric(1). The font size of the feature labels.
 #' The default is `3`.
+#' @param label.font.face A character(1). The font face of the feature labels.
+#' Options are "plain", "italic", "bold", or "bold.italic". The default is
+#' `"plain"`.
 #'
 #' @return
 #' Function returns plot of effect size scores produced by \code{lefser}.
@@ -28,13 +31,18 @@ utils::globalVariables(c("features", "scores"))
 #' @examples
 #' example("lefser")
 #' lefserPlot(res_class)
+#' 
+#' # Plot with italicized feature labels
+#' lefserPlot(res_class, label.font.face = "italic")
 #'
 #' @export
 lefserPlot <- function(df,
                        colors = "c",
                        trim.names = TRUE,
                        title = "",
-                       label.font.size = 3) {
+                       label.font.size = 3,
+                       label.font.face = c("plain", "italic", "bold", "bold.italic")) {
+    label.font.face <- match.arg(label.font.face)
 
     df <- .trunc(df, trim.names)
     classes <- attr(df, "classes")
@@ -79,7 +87,8 @@ lefserPlot <- function(df,
             hjust = ifelse(df$scores < 0, 0, 1),
             nudge_y = ifelse(df$scores < 0, 0.1, -0.1),
             color = "black",
-            size = label.font.size) +
+            size = label.font.size,
+            fontface = label.font.face) +
         theme(    # Guide lines
             panel.grid.major.x = element_line(
                 color = "grey", linewidth = 0.5, linetype = "dotted"),

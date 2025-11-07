@@ -1,3 +1,11 @@
+# lefser 1.22.0
+
+## Minor improvements and bug fixes
+
+* Added `label.font.face` parameter to `lefserPlot()` function to allow 
+customization of font face for feature labels (e.g., "plain", "italic", 
+"bold", "bold.italic")
+
 # lefser 1.20.0
 
 ## Significant user-visible changes
