@@ -1,11 +1,10 @@
-# lefser 1.21.0
+# lefser 1.22.0
 
 ## Minor improvements and bug fixes
 
 * Added `label.font.face` parameter to `lefserPlot()` function to allow 
 customization of font face for feature labels (e.g., "plain", "italic", 
-"bold", "bold.italic"). This enables users to italicize taxa names, which
-is the standard convention for scientific names.
+"bold", "bold.italic")
 
 # lefser 1.20.0
 
