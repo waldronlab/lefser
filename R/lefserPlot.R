@@ -48,7 +48,7 @@ utils::globalVariables(c("features", "scores"))
 #' @export
 lefserPlot <- function(
     df,
-    colors = "c",
+    colors = c("c", "l", "g"),
     trim.names = TRUE,
     title = "",
     label.font.size = 3,

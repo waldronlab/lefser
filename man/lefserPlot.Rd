@@ -6,7 +6,7 @@
 \usage{
 lefserPlot(
   df,
-  colors = "c",
+  colors = c("c", "l", "g"),
   trim.names = TRUE,
   title = "",
   label.font.size = 3,

@@ -31,7 +31,7 @@
 #' resCl <- lefserClades(relab = z14_input, classCol = "study_condition")
 #' ggt <- lefserPlotClad(df = resCl)
 lefserPlotClad <- function(
-        df, colors = "c", showTipLabels = FALSE, showNodeLabels = "p"
+        df, colors = c("c", "l", "g"), showTipLabels = FALSE, showNodeLabels = "p"
 ) {
     inputClass <- class(df)[1]
     if (inputClass != "lefser_df_clades") {
