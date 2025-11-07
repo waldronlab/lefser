@@ -16,20 +16,20 @@ lefserPlot(
 )
 }
 \arguments{
-\item{df}{Data frame produced by \code{lefser}. This data frame contains
-two columns labeled as \code{c("features", "scores")}.}
+\item{df}{Data frame produced by \code{lefser}. This data frame contains two
+columns labeled as \code{c("features", "scores")}.}
 
-\item{colors}{Colors corresponding to class 0 and 1.
-Options: "c" (colorblind), "l" (lefse), "g" (greyscale). Defaults to "c".
-This argument also accepts a character(2) with two color names.}
+\item{colors}{Colors corresponding to class 0 and 1. Options: "c"
+(colorblind), "l" (lefse), "g" (greyscale). Defaults to "c". This argument
+also accepts a character(2) with two color names.}
 
-\item{trim.names}{Under the default (\code{TRUE}), this function extracts the
-most specific taxonomic rank of organism.}
+\item{trim.names}{Under the default (\code{TRUE}), this function extracts the most
+specific taxonomic rank of organism.}
 
 \item{title}{A character(1). The title of the plot.}
 
-\item{label.font.size}{A numeric(1). The font size of the feature labels.
-The default is \code{3}.}
+\item{label.font.size}{A numeric(1). The font size of the feature labels. The
+default is \code{3}.}
 
 \item{label.font.color}{A character(1). The font color of the feature labels.
 The default is \code{"black"}.}

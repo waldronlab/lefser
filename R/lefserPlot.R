@@ -9,44 +9,53 @@ utils::globalVariables(c("features", "scores"))
 #' @importFrom dplyr %>% arrange mutate row_number
 #' @importFrom utils head tail
 #'
-#' @param df Data frame produced by \code{lefser}. This data frame contains
-#' two columns labeled as `c("features", "scores")`.
-#' @param colors Colors corresponding to class 0 and 1.
-#' Options: "c" (colorblind), "l" (lefse), "g" (greyscale). Defaults to "c".
-#' This argument also accepts a character(2) with two color names.
-#' @param trim.names Under the default (`TRUE`), this function extracts the
-#' most specific taxonomic rank of organism.
+#' @param df Data frame produced by `lefser`. This data frame contains two
+#'   columns labeled as `c("features", "scores")`.
+#'
+#' @param colors Colors corresponding to class 0 and 1. Options: "c"
+#'   (colorblind), "l" (lefse), "g" (greyscale). Defaults to "c". This argument
+#'   also accepts a character(2) with two color names.
+#'
+#' @param trim.names Under the default (`TRUE`), this function extracts the most
+#'   specific taxonomic rank of organism.
+#'
 #' @param title A character(1). The title of the plot.
-#' @param label.font.size A numeric(1). The font size of the feature labels.
-#' The default is `3`.
+#'
+#' @param label.font.size A numeric(1). The font size of the feature labels. The
+#'   default is `3`.
+#'
 #' @param label.font.color A character(1). The font color of the feature labels.
-#' The default is `"black"`.
+#'   The default is `"black"`.
+#'
 #' @param label.font.face A character(1). The font face of the feature labels.
-#' Options are "plain", "italic", "bold", or "bold.italic". The default is
-#' `"plain"`.
+#'   Options are "plain", "italic", "bold", or "bold.italic". The default is
+#'   `"plain"`.
+#'
 #' @param ... Additional arguments passed to `geom_text()`
 #'
 #' @return
-#' Function returns plot of effect size scores produced by \code{lefser}.
+#' Function returns plot of effect size scores produced by `lefser`.
 #' Positive scores represent the biomarker is more abundant in class '1'.
 #' Negative scores represent the biomarker is more abundant in class '0'.
 #'
 #' @examples
 #' example("lefser")
 #' lefserPlot(res_class)
-#' 
+#'
 #' # Plot with italicized feature labels
 #' lefserPlot(res_class, label.font.face = "italic", label.font.color = "red")
 #'
 #' @export
-lefserPlot <- function(df,
-                       colors = "c",
-                       trim.names = TRUE,
-                       title = "",
-                       label.font.size = 3,
-                       label.font.color = "black",
-                       label.font.face = c("plain", "italic", "bold", "bold.italic"),
-                       ...) {
+lefserPlot <- function(
+    df,
+    colors = "c",
+    trim.names = TRUE,
+    title = "",
+    label.font.size = 3,
+    label.font.color = "black",
+    label.font.face = c("plain", "italic", "bold", "bold.italic"),
+    ...
+) {
     label.font.face <- match.arg(label.font.face)
 
     df <- .trunc(df, trim.names)
@@ -54,9 +63,9 @@ lefserPlot <- function(df,
     colors <- .selectPalette(colors)
 
     ## Create the `class` column
-     if (!is.null(classes)) {
-         class <- ifelse(df$scores > 0, tail(classes, 1), head(classes, 1))
-         df$class <- factor(class, levels = classes)
+    if (!is.null(classes)) {
+        class <- ifelse(df$scores > 0, tail(classes, 1), head(classes, 1))
+        df$class <- factor(class, levels = classes)
     } else {
         class <- ifelse(df$scores > 0, 1, 0)
         df$class <- as.factor(class)
@@ -77,30 +86,47 @@ lefserPlot <- function(df,
         theme(
             axis.title.y = element_blank(),
             axis.title.x = element_text(size = 11),
-            axis.text.y  = element_blank(),
-            axis.text.x  = element_text(vjust = 0.7, size = 9)) +
+            axis.text.y = element_blank(),
+            axis.text.x = element_text(vjust = 0.7, size = 9)
+        ) +
         geom_bar(
-            stat = "identity", aes(fill = class), color = "black", size = 0.3) +
-        theme(    # Legends
+            stat = "identity",
+            aes(fill = class),
+            color = "black",
+            size = 0.3
+        ) +
+        theme(
+            # Legends
             legend.position = "top",
             legend.title = element_blank(),
             legend.key.height = unit(0.07, 'cm'),
-            legend.key.width = unit(0.6, 'cm')) +
+            legend.key.width = unit(0.6, 'cm')
+        ) +
         scale_fill_manual(values = colors) +
-        geom_text(    # Feature labeling
+        geom_text(
+            # Feature labeling
             aes(y = 0, label = features),
             hjust = ifelse(df$scores < 0, 0, 1),
             nudge_y = ifelse(df$scores < 0, 0.1, -0.1),
             color = label.font.color,
             size = label.font.size,
             fontface = label.font.face,
-            ...) +
-        theme(    # Guide lines
+            ...
+        ) +
+        theme(
+            # Guide lines
             panel.grid.major.x = element_line(
-                color = "grey", linewidth = 0.5, linetype = "dotted"),
+                color = "grey",
+                linewidth = 0.5,
+                linetype = "dotted"
+            ),
             panel.grid.minor.x = element_line(
-                color = "grey", linewidth = 0.5, linetype = "dotted")) +
+                color = "grey",
+                linewidth = 0.5,
+                linetype = "dotted"
+            )
+        ) +
         coord_flip()
 
-      return(plt)
+    return(plt)
 }
