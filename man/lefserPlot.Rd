@@ -10,7 +10,7 @@ lefserPlot(
   trim.names = TRUE,
   title = "",
   label.font.size = 3,
-  label.font.face = "plain"
+  label.font.face = c("plain", "italic", "bold", "bold.italic")
 )
 }
 \arguments{
