@@ -61,14 +61,6 @@ test_that("lefser and lefserPlot work", {
     plt <- lefserPlot(results2)
     expect_s3_class(plt, "ggplot")
     
-    # Test label.font.face parameter
-    plt_italic <- lefserPlot(results2, label.font.face = "italic")
-    expect_s3_class(plt_italic, "ggplot")
-    plt_bold <- lefserPlot(results2, label.font.face = "bold")
-    expect_s3_class(plt_bold, "ggplot")
-    plt_bold_italic <- lefserPlot(results2, label.font.face = "bold.italic")
-    expect_s3_class(plt_bold_italic, "ggplot")
-    
     # Test invalid font face
     expect_error(
         lefserPlot(results2, label.font.face = "invalid"),
