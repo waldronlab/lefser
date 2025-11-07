@@ -41,14 +41,8 @@ lefserPlot <- function(df,
                        trim.names = TRUE,
                        title = "",
                        label.font.size = 3,
-                       label.font.face = "plain") {
-
-    ## Validate label.font.face parameter
-    valid_faces <- c("plain", "italic", "bold", "bold.italic")
-    if (!label.font.face %in% valid_faces) {
-        stop("label.font.face must be one of: ",
-             paste(valid_faces, collapse = ", "))
-    }
+                       label.font.face = c("plain", "italic", "bold", "bold.italic")) {
+    label.font.face <- match.arg(label.font.face)
 
     df <- .trunc(df, trim.names)
     classes <- attr(df, "classes")
