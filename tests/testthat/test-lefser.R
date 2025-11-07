@@ -61,10 +61,9 @@ test_that("lefser and lefserPlot work", {
     plt <- lefserPlot(results2)
     expect_s3_class(plt, "ggplot")
     
-    # Test invalid font face
     expect_error(
         lefserPlot(results2, label.font.face = "invalid"),
-        "label.font.face must be one of"
+        "'arg' should be one of"
     )
 })
 
