@@ -10,7 +10,9 @@ lefserPlot(
   trim.names = TRUE,
   title = "",
   label.font.size = 3,
-  label.font.face = c("plain", "italic", "bold", "bold.italic")
+  label.font.color = "black",
+  label.font.face = c("plain", "italic", "bold", "bold.italic"),
+  ...
 )
 }
 \arguments{
@@ -29,9 +31,14 @@ most specific taxonomic rank of organism.}
 \item{label.font.size}{A numeric(1). The font size of the feature labels.
 The default is \code{3}.}
 
+\item{label.font.color}{A character(1). The font color of the feature labels.
+The default is \code{"black"}.}
+
 \item{label.font.face}{A character(1). The font face of the feature labels.
 Options are "plain", "italic", "bold", or "bold.italic". The default is
 \code{"plain"}.}
+
+\item{...}{Additional arguments passed to \code{geom_text()}}
 }
 \value{
 Function returns plot of effect size scores produced by \code{lefser}.
@@ -47,6 +54,6 @@ example("lefser")
 lefserPlot(res_class)
 
 # Plot with italicized feature labels
-lefserPlot(res_class, label.font.face = "italic")
+lefserPlot(res_class, label.font.face = "italic", label.font.color = "red")
 
 }
