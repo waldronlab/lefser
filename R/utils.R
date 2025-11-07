@@ -92,20 +92,24 @@ get_terminal_nodes <- function(string) {
 }
 
 ## A function for selecting colors for the plots
-.selectPalette <- function(x = "colorblind") {
-    if (is.character(x) && length(x) == 1) {
-        sel <- match.arg(x, choices = c("colorblind", "lefse", "greyscale"))
-        message("Using palette: ", sel)
-        presetColors <- list(
-            colorblind = c("#E57A77", "#7CA1CC"),
-            lefse = c("red", "forestgreen"),
-            greyscale = c("grey30", "grey60")
+.selectPalette <- function(x) {
+    stopifnot(is.character(x))
+    if (identical(x, c("c", "l", "g")))
+        x <- x[1L]
+    if (identical(length(x), 1L))
+        x <- switch(
+            x,
+            colorblind =,
+            c = c("#E57A77", "#7CA1CC"),
+            lefser =,
+            l = c("red", "forestgreen"),
+            greyscale =,
+            g = c("grey30", "grey60"),
+            stop("Unknown color palette option", call. = FALSE)
         )
-        selectedColor <- presetColors[[sel]]
-        return(selectedColor)
-    } else {
-        return(x)
-    }
+    if (!identical(length(x), 2L))
+        stop("'colors' must be of length 2", call. = FALSE)
+    return(x)
 }
 
 #' RowNames to RowData

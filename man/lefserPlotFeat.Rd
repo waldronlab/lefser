@@ -4,7 +4,7 @@
 \alias{lefserPlotFeat}
 \title{Plot Feature}
 \usage{
-lefserPlotFeat(res, fName, colors = "colorblind")
+lefserPlotFeat(res, fName, colors = c("c", "l", "g"))
 }
 \arguments{
 \item{res}{An object of class lefser_df,

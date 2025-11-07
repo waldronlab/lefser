@@ -38,7 +38,7 @@
 #' plot_class <- lefserPlotFeat(res_class, res_class$features[[1]])
 #' plot_subclass <- lefserPlotFeat(res_subclass, res_subclass$features[[2]])
 #'
-lefserPlotFeat <- function(res, fName, colors = "colorblind") {
+lefserPlotFeat <- function(res, fName, colors = c("c", "l", "g")) {
     dat <- .prepareDataHistogram(res = res, fName = fName)
     refclass <- attr(res, "lclassf")
     vLinePos <- which(dat$classCol != refclass)[1] - 0.5

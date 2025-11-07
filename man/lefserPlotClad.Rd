@@ -4,7 +4,12 @@
 \alias{lefserPlotClad}
 \title{LEfSer plot cladogram}
 \usage{
-lefserPlotClad(df, colors = "c", showTipLabels = FALSE, showNodeLabels = "p")
+lefserPlotClad(
+  df,
+  colors = c("c", "l", "g"),
+  showTipLabels = FALSE,
+  showNodeLabels = "p"
+)
 }
 \arguments{
 \item{df}{An object of class "lefesr_df_clades".}
