@@ -6,7 +6,7 @@ utils::globalVariables(c("features", "scores"))
 #' to their effect sizes and linked to their abundance in each class.
 #'
 #' @import ggplot2
-#' @importFrom dplyr %>% arrange mutate row_number
+#' @importFrom dplyr arrange mutate row_number
 #' @importFrom utils head tail
 #'
 #' @param df Data frame produced by `lefser`. This data frame contains two
@@ -73,8 +73,8 @@ lefserPlot <- function(
 
     ## Add the `order` column based on the scores
     ## To make duplicated features behave independently
-    df <- df %>%
-        arrange(scores) %>%
+    df <- df |>
+        arrange(scores) |>
         mutate(order = row_number())
         # mutate(order = seq_len(nrow(.)))
 
