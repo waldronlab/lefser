@@ -182,7 +182,7 @@ lefserPlotFeat <- function(res, fName, colors = c("c", "l", "g")) {
         as.data.frame() |>
         tibble::rownames_to_column(var = "features") |>
         tidyr::pivot_longer(
-            cols = 2:tidyselect::last_col(),
+            cols = !tidyselect::all_of("features"),
             names_to = "sample",
             values_to = "abundance"
         ) |>

@@ -128,7 +128,7 @@ lefserClades <- function(relab, ...) {
     xDat <- as.data.frame(SummarizedExperiment::rowData(se))
     pathStrings <- tidyr::unite(
         data = xDat, col = "taxonomy", sep = "|",
-        1:tidyselect::last_col()
+        tidyselect::everything()
     ) |>
         dplyr::pull(.data$taxonomy)
     pathStrings <- sub("(\\|NA)+$", "", pathStrings)
