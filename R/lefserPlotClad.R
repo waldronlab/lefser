@@ -16,6 +16,7 @@
 #' It can accept several options, e.g., c("p", "c").
 #'
 #' @importFrom ggtree %<+%
+#' @importFrom dplyr mutate case_when relocate
 #'
 #' @return A ggtree object.
 #' @export
@@ -50,21 +51,21 @@ lefserPlotClad <- function(
     caseVar <- attr(df, "case")
     
     res <- df |>
-        dplyr::mutate(
-            sample = dplyr::case_when(
+        mutate(
+            sample = case_when(
                 ## This assumes positive values always mean enriched in
                 ## the case condition.
                 .data[["scores"]] > 0 ~ .env[["caseVar"]],
                 TRUE ~ .env[["controlVar"]]
             )
         ) |>
-        dplyr::mutate(abs = abs(.data[["scores"]])) |>
+        mutate(abs = abs(.data[["scores"]])) |>
         as.data.frame()
     
     labels <- c(tree$tip.label, tree$node.label)
     res$node <- match(res$features, labels)
-    dat <- dplyr::relocate(res, .data$node)
-    
+    dat <- relocate(res, .data$node)
+
     internalNodes <- ape::Ntip(tree) + 1:ape::Nnode(tree)
     
     collapseThem <- purrr::map_int(internalNodes, ~ {
@@ -84,9 +85,9 @@ lefserPlotClad <- function(
     )
     nodLabRgx <- paste0("[", paste0(nodLab, collapse = ""), "]__")
     treeData <- dat |>
-        dplyr::mutate(abs = round(.data$abs, 1)) |> 
-        dplyr::mutate(
-            showNodeLabs = dplyr::case_when(
+        mutate(abs = round(.data$abs, 1)) |>
+        mutate(
+            showNodeLabs = case_when(
                 grepl(nodLabRgx, features) ~ features,
                 TRUE ~ NA
             )
