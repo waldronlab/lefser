@@ -1,5 +1,5 @@
 #' LEfSer plot cladogram
-#' 
+#'
 #' \code{lefserPlotClad} plots a cladogram from the results of
 #' \code{lefserClades}.
 #'
@@ -44,14 +44,14 @@ lefserPlotClad <- function(
             call. = FALSE
         )
     }
-    
+
     df$features <- .extractTips(df$features)
-    
+
     colors <- .selectPalette(colors)
     tree <- attr(df, "tree")
     controlVar <- attr(df, "lclassf")
     caseVar <- attr(df, "case")
-    
+
     res <- df |>
         mutate(
             sample = case_when(
@@ -63,13 +63,13 @@ lefserPlotClad <- function(
         ) |>
         mutate(abs = abs(.data[["scores"]])) |>
         as.data.frame()
-    
+
     labels <- c(tree$tip.label, tree$node.label)
     res$node <- match(res$features, labels)
     dat <- relocate(res, .data$node)
 
     internalNodes <- ape::Ntip(tree) + 1:ape::Nnode(tree)
-    
+
     collapseThem <- purrr::map_int(
         internalNodes,
         ~ {
@@ -82,7 +82,7 @@ lefserPlotClad <- function(
         }
     ) |>
         purrr::discard(is.na)
-    
+
     nodLab <- match.arg(
         arg = showNodeLabels,
         choices = c("p", "c", "o", "f", "g", "s", "t"),
@@ -99,7 +99,7 @@ lefserPlotClad <- function(
         )
     minval <- floor(min(treeData$abs, na.rm = TRUE))
     maxval <- floor(max(treeData$abs, na.rm = TRUE))
-    
+
     gt <- ggtree::ggtree(
         tree,
         layout = "circular",
@@ -107,7 +107,7 @@ lefserPlotClad <- function(
         size = 0.2
     ) %<+%
         treeData
-    
+
     gt <- gt +
         ggtree::geom_tippoint(
             mapping = ggtree::aes(fill = sample, size = abs),
@@ -119,9 +119,9 @@ lefserPlotClad <- function(
             shape = 21,
             na.rm = TRUE
         )
-    
+
     if (showTipLabels) {
-        gt <- gt + 
+        gt <- gt +
             ggtree::geom_tiplab(
                 mapping = ggtree::aes(label = features),
                 size = 2,
@@ -129,7 +129,7 @@ lefserPlotClad <- function(
                 na.rm = TRUE
             )
     }
-    
+
     gt2 <- gt +
         ggrepel::geom_label_repel(
             mapping = ggtree::aes(label = .data$showNodeLabs),
@@ -149,7 +149,7 @@ lefserPlotClad <- function(
             breaks = seq(minval, maxval, 1)
         ) +
         ggtree::theme(legend.position = "right")
-    
+
     for (i in collapseThem) {
         gt2 <- withCallingHandlers(
             ggtree::collapse(gt2, node = i),

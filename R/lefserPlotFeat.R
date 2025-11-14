@@ -178,7 +178,7 @@ lefserPlotFeat <- function(res, fName, colors = c("c", "l", "g")) {
     sampleData <- tibble::rownames_to_column(sampleData, var = "sample")
     mat <- mat[res[["features"]], ]
     mat <- apply(mat, 2, function(x) x / sum(x))
-    dat <- mat |> 
+    dat <- mat |>
         as.data.frame() |>
         tibble::rownames_to_column(var = "features") |>
         tidyr::pivot_longer(
