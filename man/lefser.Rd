@@ -80,19 +80,19 @@ data for presence of relative abundances and can be turned off by setting
 the argument to \code{FALSE}.
 }
 \examples{
+data(zeller14)
+zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
+tn <- get_terminal_nodes(rownames(zeller14))
+zeller14tn <- zeller14[tn,]
+zeller14tn_ra <- relativeAb(zeller14tn)
 
-    data(zeller14)
-    zeller14 <- zeller14[, zeller14$study_condition != "adenoma"]
-    tn <- get_terminal_nodes(rownames(zeller14))
-    zeller14tn <- zeller14[tn,]
-    zeller14tn_ra <- relativeAb(zeller14tn)
+# (1) Using classes only
+res_class <- lefser(relab = zeller14tn_ra, classCol = "study_condition")
 
-    # (1) Using classes only
-    res_class <- lefser(zeller14tn_ra,
-                        classCol = "study_condition")
-    # (2) Using classes and sub-classes
-    res_subclass <- lefser(zeller14tn_ra,
-                        classCol = "study_condition",
-                        subclassCol = "age_category")
-
+# (2) Using classes and sub-classes
+res_subclass <- lefser(
+    relab = zeller14tn_ra,
+    classCol = "study_condition",
+    subclassCol = "age_category"
+)
 }
