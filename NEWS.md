@@ -1,8 +1,15 @@
-# lefser 1.20.0
+# lefser 1.20.2
 
 ## Significant user-visible changes
 
 * Removed `blockCol` and `groupCol` arguments in `lefser` function.
+
+## Minor improvements and bug fixes
+
+* Fixed issue identifying classes in the `ldaFunction` effect size calculation
+(@nnmbr, #88)
+* Fix default color arguments in `lefserPlot()`, `lefserPlotFeat()`, and
+`lefserPlotClad()`
 
 # lefser 1.18.0
 
