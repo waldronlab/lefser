@@ -4,6 +4,8 @@
 
 * Fixed issue identifying classes in the `ldaFunction` effect size calculation
 (@nnmbr, #88)
+* Fix default `colors` arguments in `lefserPlot()`, `lefserPlotFeat()`, and
+`lefserPlotClad()`
 * Added `label.font.color` and `...` (ellipses) parameters to `lefserPlot()`
 function for increased flexibility in customizing feature labels.
 * Added `label.font.face` parameter to `lefserPlot()` function to allow 
