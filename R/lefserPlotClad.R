@@ -1,4 +1,3 @@
-
 #' LEfSer plot cladogram
 #' 
 #' \code{lefserPlotClad} plots a cladogram from the results of
@@ -32,7 +31,10 @@
 #' resCl <- lefserClades(relab = z14_input, classCol = "study_condition")
 #' ggt <- lefserPlotClad(df = resCl)
 lefserPlotClad <- function(
-        df, colors = c("c", "l", "g"), showTipLabels = FALSE, showNodeLabels = "p"
+    df,
+    colors = c("c", "l", "g"),
+    showTipLabels = FALSE,
+    showNodeLabels = "p"
 ) {
     inputClass <- class(df)[1]
     if (inputClass != "lefser_df_clades") {
@@ -68,14 +70,17 @@ lefserPlotClad <- function(
 
     internalNodes <- ape::Ntip(tree) + 1:ape::Nnode(tree)
     
-    collapseThem <- purrr::map_int(internalNodes, ~ {
-        chNods <- treeio::offspring(.data = tree, .node = .x, type = "tips")
-        if (any(chNods %in% dat$node)) {
-            return(NA)
-        } else {
-            return(.x)
+    collapseThem <- purrr::map_int(
+        internalNodes,
+        ~ {
+            chNods <- treeio::offspring(.data = tree, .node = .x, type = "tips")
+            if (any(chNods %in% dat$node)) {
+                return(NA)
+            } else {
+                return(.x)
+            }
         }
-    }) |>
+    ) |>
         purrr::discard(is.na)
     
     nodLab <- match.arg(
@@ -96,24 +101,32 @@ lefserPlotClad <- function(
     maxval <- floor(max(treeData$abs, na.rm = TRUE))
     
     gt <- ggtree::ggtree(
-        tree, layout = "circular",  branch.length = "none", size = 0.2
-    ) %<+% treeData
+        tree,
+        layout = "circular",
+        branch.length = "none",
+        size = 0.2
+    ) %<+%
+        treeData
     
     gt <- gt +
         ggtree::geom_tippoint(
-            mapping = ggtree::aes(fill = sample, size = abs), shape = 21,
-            na.rm=TRUE
+            mapping = ggtree::aes(fill = sample, size = abs),
+            shape = 21,
+            na.rm = TRUE
         ) +
         ggtree::geom_nodepoint(
-            mapping = ggtree::aes(fill = sample, size = abs), shape = 21,
+            mapping = ggtree::aes(fill = sample, size = abs),
+            shape = 21,
             na.rm = TRUE
         )
     
     if (showTipLabels) {
         gt <- gt + 
             ggtree::geom_tiplab(
-                mapping = ggtree::aes(label = features), size = 2,
-                geom = "text", na.rm=TRUE
+                mapping = ggtree::aes(label = features),
+                size = 2,
+                geom = "text",
+                na.rm = TRUE
             )
     }
     
@@ -123,8 +136,10 @@ lefserPlotClad <- function(
             na.rm = TRUE
         ) +
         ggtree::scale_fill_manual(
-            values = colors, breaks = c(controlVar, caseVar),
-            name = "Sample", na.value = NA
+            values = colors,
+            breaks = c(controlVar, caseVar),
+            name = "Sample",
+            na.value = NA
         ) +
         ggplot2::scale_size(
             name = "Absolute\nLDA score",
@@ -132,7 +147,6 @@ lefserPlotClad <- function(
             # range = range(seq_along(seq(minval, maxval, 1))),
             range = c(minval, maxval),
             breaks = seq(minval, maxval, 1)
-            
         ) +
         ggtree::theme(legend.position = "right")
     
