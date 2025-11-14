@@ -79,12 +79,16 @@ createUniqueValues <- function(df, class){
 }
 
 
-# Perform LDA modeling
-#
-# @param data A data frame with z-score values. Rows are samples and columns
-# are features that pass the significance cutoff.
-# @param classes The names of classes for the main class.
-#
+#' Perform LDA modeling
+#'
+#' @param data `data.frame()` of z-score values. Rows are samples and columns
+#'   are features that pass the significance cutoff
+#'
+#' @param classes `character(2)` levels of the coerced "class" factor variable
+#'   from `colData(relab)[[classCol]]`
+#'
+#' @noRd
+#' @keywords internal
 ldaFunction <- function (data, classes) {
 
     ## Fitting LDA model
@@ -100,8 +104,9 @@ ldaFunction <- function (data, classes) {
 
     ## Calculating Effect Size for each feature
     ## Effect Size = the absolute difference between the mean discriminant scores of the two classes
-    effect_size <-
-        abs(mean(LD[data[, "class"] == 1]) - mean(LD[data[, "class"] == 0]))
+    ldc1 <- LD[data[, "class"] == classes[1L]]
+    ldc2 <- LD[data[, "class"] == classes[2L]]
+    effect_size <- abs(mean(ldc1) - mean(ldc2))
 
     ## Coefficient scaling
     ## Scale the unit-normalized LDA coefficients by the effect size
