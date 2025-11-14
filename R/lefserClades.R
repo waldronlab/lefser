@@ -201,7 +201,9 @@ lefserClades <- function(relab, ...) {
     se <- se[rownames(row_data),]
     pathStrings <- sort(unique(.rowData2PathStrings(se)))
     l1 <- length(pathStrings)
-    tips <- stringr::str_extract(pathStrings, "(|\\w__\\w+)?$")
+    tips <- vapply(
+        strsplit(pathStrings, "|", fixed = TRUE), tail, character(1L), 1L
+    )
     dupTips <- tips[which(duplicated(tips))]
     pathStrings <- pathStrings[!tips %in% dupTips]
     l2 <- length(pathStrings)
