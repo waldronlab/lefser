@@ -97,3 +97,33 @@ test_that("Relative abundance", {
                    "Variables in the input are collinear")
 })
 
+test_that("ldaFunction correctly identifies classes and calculates scores", {
+    class_A_data <- data.frame(
+        feature1 = c(10, 11, 12),
+        feature2 = c(1, 2, 3),
+        class = "A"
+    )
+
+    class_B_data <- data.frame(
+        feature1 = c(1, 2, 3),
+        feature2 = c(10, 11, 12),
+        class = "B"
+    )
+
+    test_data <- rbind(class_A_data, class_B_data)
+    test_data$class <- factor(test_data$class, levels = c("A", "B"))
+
+    classes_levels <- levels(test_data$class)
+
+    ## ignore collinear warning
+    lda_scores <- lefser:::ldaFunction(
+        data = test_data, classes = classes_levels
+    ) |> suppressWarnings()
+
+    expect_type(lda_scores, "double")
+    expect_named(lda_scores, c("feature1", "feature2"))
+    expect_equal(
+        lda_scores,
+        c(feature1 = -4.5, feature2 = 4.5)
+    )
+})
