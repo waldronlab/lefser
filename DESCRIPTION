@@ -8,12 +8,18 @@ Description: lefser is the R implementation of the popular microbiome
 Version: 1.21.7
 Date: 2025-11-17
 Authors@R: c(
-  person("Sehyun", "Oh", , "shbrief@gmail.com", c("cre", "ctb"), c(ORCID = "0000-0002-9490-3061")),
-  person("Asya", "Khleborodova", , "asya.bioconductor@gmail.com", "aut"),
-  person("Samuel", "Gamboa-Tuz", , "Samuel.Gamboa.Tuz@gmail.com", "ctb"),
-  person("Marcel", "Ramos", , "marcel.ramos@sph.cuny.edu", "ctb", c(ORCID = "0000-0002-3242-0582")),
-  person("Ludwig", "Geistlinger", , "Ludwig.Geistlinger@sph.cuny.edu", "ctb", c(ORCID = "0000-0002-2495-5464")),
-  person("Levi", "Waldron", , "levi.waldron@sph.cuny.edu", "ctb", c(ORCID = "0000-0003-2725-0694"))
+    person("Sehyun", "Oh", , "shbrief@gmail.com", role = c("cre", "ctb"),
+           comment = c(ORCID = "0000-0002-9490-3061")),
+    person("Asya", "Khleborodova", , "asya.bioconductor@gmail.com", role = "aut"),
+    person("Samuel", "Gamboa-Tuz", , "Samuel.Gamboa.Tuz@gmail.com", role = "ctb"),
+    person("Marcel", "Ramos", , "marcel.ramos@sph.cuny.edu", role = "ctb",
+           comment = c(ORCID = "0000-0002-3242-0582")),
+    person("Ludwig", "Geistlinger", , "Ludwig.Geistlinger@sph.cuny.edu", role = "ctb",
+           comment = c(ORCID = "0000-0002-2495-5464")),
+    person("Levi", "Waldron", , "levi.waldron@sph.cuny.edu", role = "ctb",
+           comment = c(ORCID = "0000-0003-2725-0694")),
+    person("NCI", role = "fnd",
+           comment = c(GrantNo. = "R01CA230551"))
   )
 License: Artistic-2.0
 Depends:
