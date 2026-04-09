@@ -97,8 +97,22 @@ createUniqueValues <- function(df, class) {
 #' @noRd
 #' @keywords internal
 ldaFunction <- function(data, classes) {
-    ## Fitting LDA model
-    lda.fit <- lda(class ~ ., data = data)
+    ## Fitting LDA model; if lda fails due to numerically identical group means
+    ## (e.g. perfectly collinear features), add jitter via createUniqueValues and retry
+    lda.fit <- tryCatch(
+        lda(class ~ ., data = data),
+        error = function(e) {
+            if (grepl("group means are numerically identical",
+                      conditionMessage(e), fixed = TRUE)) {
+                class_col <- data[["class"]]
+                ss <- data[, -match("class", colnames(data)), drop = FALSE]
+                ss <- createUniqueValues(df = ss, class = class_col)
+                lda(class ~ ., data = cbind(ss, class = class_col))
+            } else {
+                stop(conditionMessage(e), call. = FALSE)
+            }
+        }
+    )
     w <- lda.fit$scaling[, 1] # extract LDA coefficients
     w.unit <- w / sqrt(sum(w^2)) # scaling LDA coefficient by their Euclidean norm to get unit-normalized coefficient
 
@@ -307,8 +321,6 @@ lefser <- function(
     ## Transposed relative abundance matrix with the 'class' column
     relab_sub_t <- t(relab_sub)
     relab_sub_t_df <- as.data.frame(relab_sub_t)
-
-    # relab_sub_t_df <- createUniqueValues(df = relab_sub_t_df, class = classf)
     relab_sub_t_df <- cbind(relab_sub_t_df, class = classf)
 
     ## LDA model
