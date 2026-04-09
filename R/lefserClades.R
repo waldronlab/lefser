@@ -91,7 +91,7 @@ lefserClades <- function(relab, ...) {
         unique()
     names(resL) <- names(seL)
     res <- dplyr::bind_rows(resL, .id = "Rank") |>
-        dplyr::relocate(.data$Rank, .after = tidyselect::last_col())
+        dplyr::relocate("Rank", .after = tidyselect::last_col())
     class(res) <- c("lefser_df_clades", class(res))
     attr(res, "pathStrings") <- pathStrings
     attr(res, "tree") <- .toTree(pathStrings)
