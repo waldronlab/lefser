@@ -98,36 +98,54 @@ test_that("Relative abundance", {
 })
 
 test_that("ldaFunction correctly identifies classes and calculates scores", {
+    ## Non-collinear data: feature1 clearly higher in class A, feature2 in class B.
+    ## The within-group deviations of the two features are not proportional, so
+    ## the within-group-centred scatter is full-rank and no filtering occurs.
+    class_A_data <- data.frame(
+        feature1 = c(100, 95, 105, 98, 102),
+        feature2 = c(5, 8, 3, 6, 7),
+        class = "A"
+    )
+    class_B_data <- data.frame(
+        feature1 = c(5, 8, 3, 6, 7),
+        feature2 = c(100, 95, 105, 98, 102),
+        class = "B"
+    )
+    test_data <- rbind(class_A_data, class_B_data)
+    test_data$class <- factor(test_data$class, levels = c("A", "B"))
+    classes_levels <- levels(test_data$class)
+
+    lda_scores <- lefser:::ldaFunction(data = test_data, classes = classes_levels)
+
+    expect_type(lda_scores, "double")
+    expect_named(lda_scores, c("feature1", "feature2"))
+    ## feature1 is higher in class A (reference) → negative score
+    expect_true(lda_scores[["feature1"]] < 0)
+    ## feature2 is higher in class B → positive score
+    expect_true(lda_scores[["feature2"]] > 0)
+})
+
+test_that("ldaFunction warns and removes within-group collinear features", {
+    ## The within-group deviations of feature1 and feature2 are identical
+    ## (anti-symmetric data), so they are linearly dependent in the
+    ## within-group-centred space.
     class_A_data <- data.frame(
         feature1 = c(10, 11, 12),
         feature2 = c(1, 2, 3),
         class = "A"
     )
-
     class_B_data <- data.frame(
         feature1 = c(1, 2, 3),
         feature2 = c(10, 11, 12),
         class = "B"
     )
-
     test_data <- rbind(class_A_data, class_B_data)
     test_data$class <- factor(test_data$class, levels = c("A", "B"))
 
-    classes_levels <- levels(test_data$class)
-
-    ## createUniqueValues adds jitter when needed (required for collinear test data);
-    ## use a seed for reproducibility; suppressWarnings() hides the LDA
-    ## "variables are collinear" warning that may appear for low-sample data
-    withr::with_seed(1, {
-        lda_scores <- lefser:::ldaFunction(
-            data = test_data, classes = classes_levels
-        ) |> suppressWarnings()
-    })
-
-    expect_type(lda_scores, "double")
-    expect_named(lda_scores, c("feature1", "feature2"))
-    ## feature1 is enriched in class A (reference), so its score is negative
-    ## feature2 is enriched in class B, so its score is positive
-    expect_true(lda_scores[["feature1"]] < 0)
-    expect_true(lda_scores[["feature2"]] > 0)
+    expect_warning(
+        lefser:::ldaFunction(
+            data = test_data, classes = levels(test_data$class)
+        ),
+        "Linearly dependent features removed before LDA"
+    )
 })

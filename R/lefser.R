@@ -86,6 +86,36 @@ createUniqueValues <- function(df, class) {
 }
 
 
+## Remove features that are linearly dependent in the within-group-centred
+## space. Such features cause lda() to fail with "group means are numerically
+## identical" even when classes are well separated. A warning listing the
+## removed features is emitted so users can investigate.
+filterCollinearFeatures <- function(df, class) {
+    feat_mat <- as.matrix(df)
+    ## Compute the within-group-centred matrix
+    wg_centered <- feat_mat
+    for (lv in levels(class)) {
+        idx <- class == lv
+        wg_centered[idx, ] <- sweep(
+            feat_mat[idx, , drop = FALSE], 2L,
+            colMeans(feat_mat[idx, , drop = FALSE])
+        )
+    }
+    ## QR decomposition on the centred matrix identifies linearly dependent columns
+    qr_res <- qr(wg_centered)
+    if (qr_res$rank == ncol(df)) return(df)
+    keep_idx    <- sort(qr_res$pivot[seq_len(qr_res$rank)])
+    removed_names <- colnames(df)[qr_res$pivot[seq(qr_res$rank + 1L, ncol(df))]]
+    warning(
+        "Linearly dependent features removed before LDA: ",
+        paste(removed_names, collapse = ", "),
+        ".\nConsider using `get_terminal_nodes` to reduce feature redundancy.",
+        call. = FALSE
+    )
+    df[, keep_idx, drop = FALSE]
+}
+
+
 #' Perform LDA modeling
 #'
 #' @param data `data.frame()` of z-score values. Rows are samples and columns
@@ -97,26 +127,19 @@ createUniqueValues <- function(df, class) {
 #' @noRd
 #' @keywords internal
 ldaFunction <- function(data, classes) {
-    ## Fitting LDA model; if lda fails due to numerically identical group means
-    ## (e.g. perfectly collinear features), add jitter via createUniqueValues and retry
-    lda.fit <- tryCatch(
-        lda(class ~ ., data = data),
-        error = function(e) {
-            if (grepl("group means are numerically identical",
-                      conditionMessage(e), fixed = TRUE)) {
-                class_col <- data[["class"]]
-                ss <- data[, -match("class", colnames(data)), drop = FALSE]
-                ss <- createUniqueValues(df = ss, class = class_col)
-                lda(class ~ ., data = cbind(ss, class = class_col))
-            } else {
-                stop(conditionMessage(e), call. = FALSE)
-            }
-        }
-    )
+    class_col <- data[["class"]]
+    ss <- data[, -match("class", colnames(data)), drop = FALSE]
+
+    ## Remove within-group-collinear features to prevent singular between-class
+    ## scatter ("group means are numerically identical" from lda)
+    ss <- filterCollinearFeatures(df = ss, class = class_col)
+    data <- cbind(ss, class = class_col)
+
+    ## Fitting LDA model
+    lda.fit <- lda(class ~ ., data = data)
     w <- lda.fit$scaling[, 1] # extract LDA coefficients
     w.unit <- w / sqrt(sum(w^2)) # scaling LDA coefficient by their Euclidean norm to get unit-normalized coefficient
 
-    ss <- data[, -match("class", colnames(data)), drop = FALSE]
     xy.matrix <- as.matrix(ss) # the original feature matrix
 
     ## Transform the original feature matrix
