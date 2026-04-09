@@ -124,6 +124,7 @@ test_that("ldaFunction correctly identifies classes and calculates scores", {
     expect_named(lda_scores, c("feature1", "feature2"))
     expect_equal(
         lda_scores,
-        c(feature1 = 0, feature2 = 9)
+        c(feature1 = 0, feature2 = 9),
+        tolerance = 1e-8
     )
 })
