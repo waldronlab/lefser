@@ -28,7 +28,7 @@ Depends:
 Imports:
     coin,
     MASS,
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     S4Vectors,
     stats,
     methods,
