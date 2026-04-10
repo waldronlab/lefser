@@ -101,14 +101,14 @@ test_that("Relative abundance", {
 
 test_that("ldaFunction correctly identifies classes and calculates scores", {
     class_A_data <- data.frame(
-        feature1 = c(10, 11, 12),
-        feature2 = c(1, 2, 3),
+        feature1 = c(10, 11, 12, 10, 11, 12),
+        feature2 = c(1, 2, 3, 2, 1, 3),
         class = "A"
     )
 
     class_B_data <- data.frame(
-        feature1 = c(1, 2, 3),
-        feature2 = c(10, 11, 12),
+        feature1 = c(1, 2, 3, 2, 1, 3),
+        feature2 = c(10, 11, 12, 10, 11, 12),
         class = "B"
     )
 
@@ -117,18 +117,14 @@ test_that("ldaFunction correctly identifies classes and calculates scores", {
 
     classes_levels <- levels(test_data$class)
 
-    ## ignore collinear warning or MASS lda errors in newer versions
-    lda_scores <- tryCatch(
-        suppressWarnings(lefser:::ldaFunction(data = test_data, classes = classes_levels)),
-        error = function(e) NULL
+    lda_scores <- lefser:::ldaFunction(
+        data = test_data, classes = classes_levels
     )
 
-    if (!is.null(lda_scores)) {
-        expect_type(lda_scores, "double")
-        expect_named(lda_scores, c("feature1", "feature2"))
-        expect_equal(
-            lda_scores,
-            c(feature1 = -4.5, feature2 = 4.5)
-        )
-    }
+    expect_type(lda_scores, "double")
+    expect_named(lda_scores, c("feature1", "feature2"))
+    expect_equal(
+        lda_scores,
+        c(feature1 = 0, feature2 = 9)
+    )
 })
