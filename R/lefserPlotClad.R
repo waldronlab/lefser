@@ -66,7 +66,7 @@ lefserPlotClad <- function(
 
     labels <- c(tree$tip.label, tree$node.label)
     res$node <- match(res$features, labels)
-    dat <- relocate(res, .data$node)
+    dat <- relocate(res, "node")
 
     internalNodes <- ape::Ntip(tree) + 1:ape::Nnode(tree)
 
@@ -104,7 +104,7 @@ lefserPlotClad <- function(
         tree,
         layout = "circular",
         branch.length = "none",
-        size = 0.2
+        linewidth = 0.2
     ) %<+%
         treeData
 

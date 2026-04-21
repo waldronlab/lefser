@@ -58,7 +58,9 @@ test_that("lefser and lefserPlot work", {
         ))
     ))
     
-    plt <- lefserPlot(results2)
+    plt <- expect_no_warning(
+        lefserPlot(results2)
+    )
     expect_s3_class(plt, "ggplot")
     
     expect_error(
@@ -115,10 +117,9 @@ test_that("ldaFunction correctly identifies classes and calculates scores", {
 
     classes_levels <- levels(test_data$class)
 
-    ## ignore collinear warning
     lda_scores <- lefser:::ldaFunction(
         data = test_data, classes = classes_levels
-    ) |> suppressWarnings()
+    )
 
     expect_type(lda_scores, "double")
     expect_named(lda_scores, c("feature1", "feature2"))
