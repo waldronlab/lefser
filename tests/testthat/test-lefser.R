@@ -101,14 +101,14 @@ test_that("Relative abundance", {
 
 test_that("ldaFunction correctly identifies classes and calculates scores", {
     class_A_data <- data.frame(
-        feature1 = c(10, 11, 12, 10, 11, 12),
-        feature2 = c(1, 2, 3, 2, 1, 3),
+        feature1 = c(10, 11, 12),
+        feature2 = c(2, 0, 4),
         class = "A"
     )
 
     class_B_data <- data.frame(
-        feature1 = c(1, 2, 3, 2, 1, 3),
-        feature2 = c(10, 11, 12, 10, 11, 12),
+        feature1 = c(2, 0, 4),
+        feature2 = c(10, 11, 12),
         class = "B"
     )
 
@@ -125,6 +125,7 @@ test_that("ldaFunction correctly identifies classes and calculates scores", {
     expect_named(lda_scores, c("feature1", "feature2"))
     expect_equal(
         lda_scores,
-        c(feature1 = 0, feature2 = 9)
+        c(feature1 = 0, feature2 = 9),
+        tolerance = 1e-8
     )
 })
