@@ -3,9 +3,7 @@ checkEnding <- function(resObj, index, column, value) {
 }
 
 library(lefser)
-dataenv <- new.env(parent = emptyenv())
-data("zeller14", package = "lefser", envir = dataenv)
-zeller14 <- dataenv[["zeller14"]]
+zeller14 <- load_lefser_dataset("zeller14")
 zeller142 <- zeller14[, zeller14$study_condition != "adenoma"]
 tn <- get_terminal_nodes(rownames(zeller142))
 zellersub <- zeller142[tn, ]

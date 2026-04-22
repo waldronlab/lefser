@@ -1,4 +1,6 @@
-data("zeller14")
+library(lefser)
+zeller14 <- load_lefser_dataset("zeller14")
+
 z14 <- zeller14[, zeller14$study_condition != "adenoma"]
 tn <- get_terminal_nodes(rownames(z14))
 z14tn <- z14[tn, ]
