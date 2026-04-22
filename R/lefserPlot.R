@@ -93,7 +93,7 @@ lefserPlot <- function(
             stat = "identity",
             aes(fill = class),
             color = "black",
-            size = 0.3
+            linewidth = 0.3
         ) +
         theme(
             # Legends
