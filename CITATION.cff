@@ -1,0 +1,73 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "lefser" in publications use:'
+type: software
+license: Artistic-2.0
+title: 'lefser: R implementation of the LEfSE method for microbiome biomarker discovery'
+version: 1.23.0
+doi: 10.1093/bioinformatics/btae707
+abstract: lefser is the R implementation of the popular microbiome biomarker discovery
+  too, LEfSe. It uses the Kruskal-Wallis test, Wilcoxon-Rank Sum test, and Linear
+  Discriminant Analysis to find biomarkers from two-level classes (and optional sub-classes).
+authors:
+- family-names: Oh
+  given-names: Sehyun
+  email: shbrief@gmail.com
+  orcid: https://orcid.org/0000-0002-9490-3061
+- family-names: Khleborodova
+  given-names: Asya
+  email: asya.bioconductor@gmail.com
+preferred-citation:
+  type: article
+  title: 'Lefser: Implementation of metagenomic biomarker discovery tool, LEfSe, in
+    R'
+  authors:
+  - family-names: Khleborodova
+    given-names: Asya
+    email: asya.bioconductor@gmail.com
+  - family-names: Gamboa-Tuz
+    given-names: Samuel D
+  - family-names: Ramos
+    given-names: Marcel
+  - family-names: Segata
+    given-names: Nicola
+  - family-names: Waldron
+    given-names: Levi
+  - family-names: Oh
+    given-names: Sehyun
+    email: shbrief@gmail.com
+    orcid: https://orcid.org/0000-0002-9490-3061
+  journal: Bioinformatics
+  year: '2024'
+  month: '11'
+  issn: 1367-4811
+  doi: 10.1093/bioinformatics/btae707
+  url: https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btae707/7908399
+  start: btae707
+repository: https://bioconductor.org/
+repository-code: https://github.com/waldronlab/lefser
+url: https://github.com/waldronlab/lefser
+date-released: '2026-04-22'
+contact:
+- family-names: Oh
+  given-names: Sehyun
+  email: shbrief@gmail.com
+  orcid: https://orcid.org/0000-0002-9490-3061
+keywords:
+- bioconductor-package
+- r01ca230551
+references:
+- type: manual
+  title: 'lefser: R implementation of the LEfSE method for microbiome biomarker discovery'
+  authors:
+  - family-names: Khleborodova
+    given-names: Asya
+    email: asya.bioconductor@gmail.com
+  year: '2026'
+  notes: R package version 1.23.0
+  url: https://github.com/waldronlab/lefser
+
