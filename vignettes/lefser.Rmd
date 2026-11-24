@@ -201,10 +201,10 @@ coldata <- as(sample_data(kostic), "data.frame")
 SummarizedExperiment(assays = list(counts = counts), colData = coldata)
 ```
 
-You may also consider using `makeTreeSummarizedExperimentFromPhyloseq` from 
+You may also consider using `convertFromPhyloseq` from 
 the `mia` package.
 ```{r}
-mia::makeTreeSummarizedExperimentFromPhyloseq(kostic)
+mia::convertFromPhyloseq(kostic)
 ```
 
 
