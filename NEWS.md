@@ -1,3 +1,16 @@
+# lefser 1.26.0
+
+## Minor improvements and bug fixes
+
+* Updated the vignette to use `mia::convertFromPhyloseq()` in place of the
+deprecated `mia::makeTreeSummarizedExperimentFromPhyloseq()` (@0xMuluh, #105)
+
+# lefser 1.24.0
+
+## Minor improvements and bug fixes
+
+* Added `CITATION.cff` file
+
 # lefser 1.22.0
 
 ## Minor improvements and bug fixes

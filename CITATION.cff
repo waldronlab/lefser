@@ -8,7 +8,7 @@ message: 'To cite package "lefser" in publications use:'
 type: software
 license: Artistic-2.0
 title: 'lefser: R implementation of the LEfSE method for microbiome biomarker discovery'
-version: 1.23.0
+version: 1.25.1
 doi: 10.1093/bioinformatics/btae707
 abstract: lefser is the R implementation of the popular microbiome biomarker discovery
   too, LEfSe. It uses the Kruskal-Wallis test, Wilcoxon-Rank Sum test, and Linear
@@ -51,7 +51,7 @@ preferred-citation:
 repository: https://bioconductor.org/
 repository-code: https://github.com/waldronlab/lefser
 url: https://github.com/waldronlab/lefser
-date-released: '2026-04-22'
+date-released: '2026-11-23'
 contact:
 - family-names: Oh
   given-names: Sehyun
@@ -68,6 +68,6 @@ references:
     given-names: Asya
     email: asya.bioconductor@gmail.com
   year: '2026'
-  notes: R package version 1.23.0
+  notes: R package version 1.25.1
   url: https://github.com/waldronlab/lefser
 
